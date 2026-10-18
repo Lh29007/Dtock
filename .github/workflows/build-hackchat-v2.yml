@@ -42,17 +42,17 @@ jobs:
             sleep 20
           done
 
-      - name: Compiler citro3d depuis GitHub
+      - name: Compiler citro3d v1.6.0 depuis GitHub
         run: |
           apt-get update -qq
-          apt-get install -y -qq git >/dev/null
-          git clone --depth 1 https://github.com/devkitPro/citro3d.git /tmp/citro3d
+          apt-get install -y -qq git bzip2 >/dev/null
+          git clone --depth 1 --branch v1.6.0 https://github.com/devkitPro/citro3d.git /tmp/citro3d
           make -C /tmp/citro3d -j"$(nproc)"
           make -C /tmp/citro3d install
 
-      - name: Compiler citro2d depuis GitHub
+      - name: Compiler citro2d v1.6.0 depuis GitHub
         run: |
-          git clone --depth 1 https://github.com/devkitPro/citro2d.git /tmp/citro2d
+          git clone --depth 1 --branch v1.6.0 https://github.com/devkitPro/citro2d.git /tmp/citro2d
           make -C /tmp/citro2d -j"$(nproc)"
           make -C /tmp/citro2d install
 
