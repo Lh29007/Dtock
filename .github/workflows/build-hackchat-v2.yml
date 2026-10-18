@@ -38,6 +38,10 @@ jobs:
       - name: Mettre à jour les dépôts devkitPro
         run: |
           {
+            if dkp-pacman -Q 3ds-dev 3ds-mbedtls >/dev/null 2>&1; then
+              echo "3ds-dev et 3ds-mbedtls déjà présents dans l'image : mise à jour ignorée"
+              exit 0
+            fi
             for attempt in 1 2 3; do
               dkp-pacman -Syu --noconfirm && break
               echo "Mise à jour échouée (essai $attempt)"
@@ -49,6 +53,10 @@ jobs:
       - name: Installer 3ds-dev et mbedTLS
         run: |
           {
+            if dkp-pacman -Q 3ds-dev 3ds-mbedtls >/dev/null 2>&1; then
+              echo "3ds-dev et 3ds-mbedtls déjà présents : installation ignorée"
+              exit 0
+            fi
             for attempt in 1 2 3; do
               dkp-pacman -S --needed --noconfirm 3ds-dev 3ds-mbedtls && break
               [ "$attempt" -eq 3 ] && exit 1
