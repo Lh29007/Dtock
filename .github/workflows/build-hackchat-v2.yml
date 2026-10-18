@@ -78,7 +78,7 @@ jobs:
           {
             rm -rf /tmp/citro2d
             git clone --depth 1 --branch v1.6.0 https://github.com/devkitPro/citro2d.git /tmp/citro2d
-            sed -i 's/-DCITRO2D_BUILD/-D_3DS -D__3DS__ -DCITRO2D_BUILD -include $(ALIGN_H) -Wno-error/' /tmp/citro2d/Makefile
+            sed -i 's/-DCITRO2D_BUILD/-D_3DS -D__3DS__ -DCITRO2D_BUILD -include $(ALIGN_H) -Wno-error -Wno-return-mismatch/' /tmp/citro2d/Makefile
             grep -n "ALIGN_H" /tmp/citro2d/Makefile
             make -C /tmp/citro2d -j"$(nproc)"
             make -C /tmp/citro2d install
