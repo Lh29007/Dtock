@@ -1,22 +1,289 @@
-=== Run 39160580503 — statut du job : failure ===
+=== Run 39160708515 — statut du job : success ===
 :: Synchronizing package databases...
  dkp-libs downloading...
  dkp-linux downloading...
-error: failed retrieving file 'dkp-libs.db' from pkg.devkitpro.org : The requested URL returned error: 403
-error: failed retrieving file 'dkp-linux.db' from pkg.devkitpro.org : The requested URL returned error: 403
-error: failed to synchronize all databases (failed to retrieve some files)
-Mise à jour échouée (essai 1)
-:: Synchronizing package databases...
- dkp-libs downloading...
- dkp-linux downloading...
-error: failed retrieving file 'dkp-linux.db' from pkg.devkitpro.org : The requested URL returned error: 403
-error: failed retrieving file 'dkp-libs.db' from pkg.devkitpro.org : The requested URL returned error: 403
-error: failed to synchronize all databases (failed to retrieve some files)
-Mise à jour échouée (essai 2)
-:: Synchronizing package databases...
- dkp-libs downloading...
- dkp-linux downloading...
-error: failed retrieving file 'dkp-linux.db' from pkg.devkitpro.org : The requested URL returned error: 403
-error: failed retrieving file 'dkp-libs.db' from pkg.devkitpro.org : The requested URL returned error: 403
-error: failed to synchronize all databases (failed to retrieve some files)
-Mise à jour échouée (essai 3)
+:: Starting full system upgrade...
+ there is nothing to do
+warning: 3ds-cmake-1.5.2-1 is up to date -- skipping
+warning: 3ds-examples-20240917-1 is up to date -- skipping
+warning: 3ds-pkg-config-0.28-5 is up to date -- skipping
+warning: catnip-0.2.0-1 is up to date -- skipping
+warning: citro2d-1.7.0-1 is up to date -- skipping
+warning: citro3d-1.7.1-2 is up to date -- skipping
+warning: devkitARM-r68-1 is up to date -- skipping
+warning: devkitarm-cmake-1.2.4-1 is up to date -- skipping
+warning: devkitarm-crtls-1.2.6-1 is up to date -- skipping
+warning: devkitarm-newlib-4.6.0.20260123-5 is up to date -- skipping
+warning: libctru-2.7.0-1 is up to date -- skipping
+warning: 3dslink-0.6.3-1 is up to date -- skipping
+warning: 3dstools-1.3.1-3 is up to date -- skipping
+warning: devkit-env-1.0.1-2 is up to date -- skipping
+warning: devkitARM-gdb-14.1-2 is up to date -- skipping
+warning: devkitarm-binutils-2.46.0-1 is up to date -- skipping
+warning: devkitarm-gcc-16.1.0-1 is up to date -- skipping
+warning: general-tools-1.4.4-1 is up to date -- skipping
+warning: picasso-2.7.2-3 is up to date -- skipping
+warning: tex3ds-2.3.0-4 is up to date -- skipping
+warning: 3ds-mbedtls-2.28.8-1 is up to date -- skipping
+ there is nothing to do
+Cloning into '/tmp/citro3d'...
+Note: switching to '7999093588b78a42c32947869eb29b590e074af0'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+38:CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D__3DS__ -include $(ALIGN_H) -Wno-error -DCITRO3D_BUILD
+make: Entering directory '/tmp/citro3d'
+attribs.c
+attribs.c
+base.c
+base.c
+buffers.c
+drawArrays.c
+buffers.c
+In file included from /opt/devkitpro/libctru/include/3ds.h:88,
+                 from /tmp/citro3d/include/c3d/types.h:3,
+                 from /tmp/citro3d/include/c3d/attribs.h:2,
+                 from /tmp/citro3d/source/internal.h:2,
+                 from /tmp/citro3d/source/buffers.c:1:
+/tmp/citro3d/source/buffers.c: In function 'C3Di_BufInfoBind':
+/tmp/citro3d/source/buffers.c:52:108: warning: expression does not compute the number of elements in this array; element type is 'C3D_BufCfg', not 'u32' {aka 'long unsigned int'} [-Wsizeof-array-div]
+   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
+      |                                                                                                            ^
+/opt/devkitpro/libctru/include/3ds/gpu/gpu.h:117:118: note: in definition of macro 'GPUCMD_AddMaskedIncrementalWrites'
+  117 | #define GPUCMD_AddMaskedIncrementalWrites(reg, mask, vals, num) GPUCMD_Add(GPUCMD_HEADER(1, (mask), (reg)), (vals), (num))
+      |                                                                                                                      ^~~
+/tmp/citro3d/source/buffers.c:52:9: note: in expansion of macro 'GPUCMD_AddIncrementalWrites'
+   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/tmp/citro3d/source/buffers.c:52:108: note: add parentheses around the second 'sizeof' to silence this warning
+/opt/devkitpro/libctru/include/3ds/gpu/gpu.h:117:118: note: in definition of macro 'GPUCMD_AddMaskedIncrementalWrites'
+  117 | #define GPUCMD_AddMaskedIncrementalWrites(reg, mask, vals, num) GPUCMD_Add(GPUCMD_HEADER(1, (mask), (reg)), (vals), (num))
+      |                                                                                                                      ^~~
+/tmp/citro3d/source/buffers.c:52:9: note: in expansion of macro 'GPUCMD_AddIncrementalWrites'
+   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+drawArrays.c
+drawElements.c
+In file included from /opt/devkitpro/libctru/include/3ds.h:88,
+                 from /tmp/citro3d/include/c3d/types.h:3,
+                 from /tmp/citro3d/include/c3d/attribs.h:2,
+                 from /tmp/citro3d/source/internal.h:2,
+                 from /tmp/citro3d/source/buffers.c:1:
+/tmp/citro3d/source/buffers.c: In function 'C3Di_BufInfoBind':
+/tmp/citro3d/source/buffers.c:52:108: warning: expression does not compute the number of elements in this array; element type is 'C3D_BufCfg', not 'u32' {aka 'long unsigned int'} [-Wsizeof-array-div]
+   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
+      |                                                                                                            ^
+/opt/devkitpro/libctru/include/3ds/gpu/gpu.h:117:118: note: in definition of macro 'GPUCMD_AddMaskedIncrementalWrites'
+  117 | #define GPUCMD_AddMaskedIncrementalWrites(reg, mask, vals, num) GPUCMD_Add(GPUCMD_HEADER(1, (mask), (reg)), (vals), (num))
+      |                                                                                                                      ^~~
+/tmp/citro3d/source/buffers.c:52:9: note: in expansion of macro 'GPUCMD_AddIncrementalWrites'
+   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/tmp/citro3d/source/buffers.c:52:108: note: add parentheses around the second 'sizeof' to silence this warning
+/opt/devkitpro/libctru/include/3ds/gpu/gpu.h:117:118: note: in definition of macro 'GPUCMD_AddMaskedIncrementalWrites'
+  117 | #define GPUCMD_AddMaskedIncrementalWrites(reg, mask, vals, num) GPUCMD_Add(GPUCMD_HEADER(1, (mask), (reg)), (vals), (num))
+      |                                                                                                                      ^~~
+/tmp/citro3d/source/buffers.c:52:9: note: in expansion of macro 'GPUCMD_AddIncrementalWrites'
+   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+effect.c
+fog.c
+drawElements.c
+framebuffer.c
+effect.c
+gas.c
+immediate.c
+fog.c
+framebuffer.c
+light.c
+lightenv.c
+lightlut.c
+gas.c
+mtxstack.c
+immediate.c
+proctex.c
+light.c
+renderqueue.c
+lightenv.c
+tex3ds.c
+/tmp/citro3d/source/renderqueue.c: In function 'onQueueFinish':
+/tmp/citro3d/source/renderqueue.c:64:25: warning: 'gfxConfigScreen' is deprecated [-Wdeprecated-declarations]
+   64 |                         gfxConfigScreen(GFX_TOP, false);
+      |                         ^~~~~~~~~~~~~~~
+In file included from /opt/devkitpro/libctru/include/3ds.h:27,
+                 from /tmp/citro3d/include/c3d/types.h:3,
+                 from /tmp/citro3d/include/c3d/attribs.h:2,
+                 from /tmp/citro3d/source/internal.h:2,
+                 from /tmp/citro3d/source/renderqueue.c:1:
+/opt/devkitpro/libctru/include/3ds/gfx.h:169:21: note: declared here
+  169 | CTR_DEPRECATED void gfxConfigScreen(gfxScreen_t scr, bool immediate);
+      |                     ^~~~~~~~~~~~~~~
+/tmp/citro3d/source/renderqueue.c:69:25: warning: 'gfxConfigScreen' is deprecated [-Wdeprecated-declarations]
+   69 |                         gfxConfigScreen(GFX_BOTTOM, false);
+      |                         ^~~~~~~~~~~~~~~
+/opt/devkitpro/libctru/include/3ds/gfx.h:169:21: note: declared here
+  169 | CTR_DEPRECATED void gfxConfigScreen(gfxScreen_t scr, bool immediate);
+      |                     ^~~~~~~~~~~~~~~
+lightlut.c
+texenv.c
+mtxstack.c
+texture.c
+proctex.c
+uniforms.c
+mtx_fromquat.c
+renderqueue.c
+tex3ds.c
+mtx_inverse.c
+mtx_lookat.c
+/tmp/citro3d/source/renderqueue.c: In function 'onQueueFinish':
+/tmp/citro3d/source/renderqueue.c:64:25: warning: 'gfxConfigScreen' is deprecated [-Wdeprecated-declarations]
+   64 |                         gfxConfigScreen(GFX_TOP, false);
+      |                         ^~~~~~~~~~~~~~~
+In file included from /opt/devkitpro/libctru/include/3ds.h:27,
+                 from /tmp/citro3d/include/c3d/types.h:3,
+                 from /tmp/citro3d/include/c3d/attribs.h:2,
+                 from /tmp/citro3d/source/internal.h:2,
+                 from /tmp/citro3d/source/renderqueue.c:1:
+/opt/devkitpro/libctru/include/3ds/gfx.h:169:21: note: declared here
+  169 | CTR_DEPRECATED void gfxConfigScreen(gfxScreen_t scr, bool immediate);
+      |                     ^~~~~~~~~~~~~~~
+/tmp/citro3d/source/renderqueue.c:69:25: warning: 'gfxConfigScreen' is deprecated [-Wdeprecated-declarations]
+   69 |                         gfxConfigScreen(GFX_BOTTOM, false);
+      |                         ^~~~~~~~~~~~~~~
+/opt/devkitpro/libctru/include/3ds/gfx.h:169:21: note: declared here
+  169 | CTR_DEPRECATED void gfxConfigScreen(gfxScreen_t scr, bool immediate);
+      |                     ^~~~~~~~~~~~~~~
+texenv.c
+mtx_multiply.c
+mtx_multiplyfvec3.c
+mtx_multiplyfvec4.c
+texture.c
+uniforms.c
+mtx_ortho.c
+mtx_fromquat.c
+mtx_orthotilt.c
+mtx_persp.c
+mtx_perspstereo.c
+mtx_inverse.c
+mtx_lookat.c
+mtx_perspstereotilt.c
+mtx_persptilt.c
+mtx_rotate.c
+mtx_multiply.c
+mtx_rotatex.c
+mtx_multiplyfvec3.c
+mtx_multiplyfvec4.c
+mtx_rotatey.c
+mtx_ortho.c
+mtx_rotatez.c
+mtx_scale.c
+mtx_orthotilt.c
+mtx_translate.c
+mtx_persp.c
+mtx_perspstereo.c
+mtx_transpose.c
+mtx_perspstereotilt.c
+quat_crossfvec3.c
+mtx_persptilt.c
+quat_fromaxisangle.c
+quat_frommtx.c
+mtx_rotate.c
+quat_frompitchyawroll.c
+quat_lookat.c
+mtx_rotatex.c
+mtx_rotatey.c
+quat_multiply.c
+mtx_rotatez.c
+quat_pow.c
+mtx_scale.c
+mtx_translate.c
+quat_rotate.c
+mtx_transpose.c
+quat_rotatex.c
+quat_rotatey.c
+quat_crossfvec3.c
+quat_rotatez.c
+quat_fromaxisangle.c
+quat_frommtx.c
+quat_frompitchyawroll.c
+libcitro3dd.a
+quat_lookat.c
+quat_multiply.c
+quat_pow.c
+quat_rotate.c
+quat_rotatex.c
+quat_rotatey.c
+quat_rotatez.c
+libcitro3d.a
+make: Leaving directory '/tmp/citro3d'
+make: Entering directory '/tmp/citro3d'
+make[1]: '/tmp/citro3d/lib/libcitro3dd.a' is up to date.
+mkdir -p /opt/devkitpro/libctru
+bzip2 -cd citro3d-1.6.0.tar.bz2 | tar -xf - -C /opt/devkitpro/libctru
+make: Leaving directory '/tmp/citro3d'
+Cloning into '/tmp/citro2d'...
+Note: switching to '6d83b408806c4e1ecd66d8df96c2f9635cab9635'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+38:CFLAGS	+=	$(INCLUDE) -D__3DS__ -D_3DS -D__3DS__ -DCITRO2D_BUILD -include $(ALIGN_H) -Wno-error -Wno-return-mismatch
+make: Entering directory '/tmp/citro2d'
+render2d.v.pica
+render2d.v.pica
+Assembler messages:
+{standard input}: Warning: end of file in comment; newline inserted
+Assembler messages:
+{standard input}: Warning: end of file in comment; newline inserted
+base.c
+base.c
+font.c
+font.c
+spritesheet.c
+text.c
+spritesheet.c
+text.c
+libcitro2dd.a
+libcitro2d.a
+make: Leaving directory '/tmp/citro2d'
+make: Entering directory '/tmp/citro2d'
+make[1]: '/tmp/citro2d/lib/libcitro2dd.a' is up to date.
+mkdir -p /opt/devkitpro/libctru
+bzip2 -cd citro2d-1.6.0.tar.bz2 | tar -xf - -C /opt/devkitpro/libctru
+make: Leaving directory '/tmp/citro2d'
+mkdir -p build
+smdhtool --create "hack.chat V2" "Client hack.chat V2 (GUI)" "hackchat-3ds-v2" \
+	/opt/devkitpro/libctru/default_icon.png hackchat3dsV2.smdh
+/opt/devkitpro/devkitARM/bin/arm-none-eabi-gcc -g -Wall -O2 -std=gnu11 -mword-relocations -ffunction-sections -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft -Isrc -I/opt/devkitpro/libctru/include -I/opt/devkitpro/portlibs/3ds/include -D__3DS__ -D_3DS -include /__w/Dtock/Dtock/hackchat-3ds-v2/compat/align.h -c src/hc.c -o build/hc.o
+/opt/devkitpro/devkitARM/bin/arm-none-eabi-gcc -g -Wall -O2 -std=gnu11 -mword-relocations -ffunction-sections -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft -Isrc -I/opt/devkitpro/libctru/include -I/opt/devkitpro/portlibs/3ds/include -D__3DS__ -D_3DS -include /__w/Dtock/Dtock/hackchat-3ds-v2/compat/align.h -c src/main.c -o build/main.o
+/opt/devkitpro/devkitARM/bin/arm-none-eabi-gcc -g -Wall -O2 -std=gnu11 -mword-relocations -ffunction-sections -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft -Isrc -I/opt/devkitpro/libctru/include -I/opt/devkitpro/portlibs/3ds/include -D__3DS__ -D_3DS -include /__w/Dtock/Dtock/hackchat-3ds-v2/compat/align.h -c src/ui.c -o build/ui.o
+/opt/devkitpro/devkitARM/bin/arm-none-eabi-gcc -g -Wall -O2 -std=gnu11 -mword-relocations -ffunction-sections -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft -Isrc -I/opt/devkitpro/libctru/include -I/opt/devkitpro/portlibs/3ds/include -D__3DS__ -D_3DS -include /__w/Dtock/Dtock/hackchat-3ds-v2/compat/align.h -c src/ws.c -o build/ws.o
+/opt/devkitpro/devkitARM/bin/arm-none-eabi-gcc -specs=3dsx.specs -g -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft -L/opt/devkitpro/libctru/lib -L/opt/devkitpro/portlibs/3ds/lib build/hc.o build/main.o build/ui.o build/ws.o -lcitro2d -lcitro3d -lmbedtls -lmbedx509 -lmbedcrypto -lctru -lm -o hackchat3dsV2.elf
+/opt/devkitpro/devkitARM/arm-none-eabi/bin/ld: warning: /opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/16.1.0/armv6k/fpu/crtn.o: missing .note.GNU-stack section implies executable stack
+/opt/devkitpro/devkitARM/arm-none-eabi/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+3dsxtool hackchat3dsV2.elf hackchat3dsV2.3dsx --romfs=romfs --smdh=hackchat3dsV2.smdh
