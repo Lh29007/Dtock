@@ -1,0 +1,77 @@
+name: Build 3DS
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Compiler hackchat.3dsx
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkitarm:latest
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer libctru et mbedTLS (devkitPro)
+        run: |
+          dkp-pacman -Sy --noconfirm
+          dkp-pacman -S --needed --noconfirm 3ds-dev 3ds-mbedtls
+
+      - name: Embarquer les certificats racine (romfs)
+        working-directory: hackchat-3ds
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq ca-certificates >/dev/null
+          mkdir -p romfs
+          cp /etc/ssl/certs/ca-certificates.crt romfs/cacert.pem
+
+      - name: Compiler
+        working-directory: hackchat-3ds
+        run: make -j"$(nproc)"
+
+      - name: Préparer le fichier de sortie
+        working-directory: hackchat-3ds
+        run: |
+          mkdir -p out
+          cp hackchat.3dsx out/hackchat.3dsx
+
+      - name: Garder le binaire en artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hackchat-3dsx
+          path: hackchat-3ds/out/hackchat.3dsx
+          if-no-files-found: error
+
+  release:
+    name: Publier dans les releases
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref_type == 'tag' || github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Télécharger le binaire
+        uses: actions/download-artifact@v4
+        with:
+          name: hackchat-3dsx
+          path: dist
+
+      - name: Créer ou mettre à jour la release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || format('3ds-build-{0}', github.run_number) }}
+          name: ${{ github.ref_type == 'tag' && github.ref_name || format('hack.chat 3DS (build {0})', github.run_number) }}
+          body: |
+            Build automatique de `hackchat.3dsx` (commit `${{ github.sha }}`).
+
+            Installation : copie le fichier dans la carte SD, à `/3ds/hackchat/hackchat.3dsx`,
+            puis lance-le depuis le Homebrew Launcher.
+          files: dist/hackchat.3dsx
+          fail_on_unmatched_files: true
