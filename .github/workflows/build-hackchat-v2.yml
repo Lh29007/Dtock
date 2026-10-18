@@ -22,13 +22,30 @@ jobs:
       - name: Récupérer le code
         uses: actions/checkout@v4
 
-      - name: Installer libctru, citro2d, citro3d et mbedTLS (devkitPro)
+      - name: Mettre à jour les dépôts devkitPro
         run: |
           for attempt in 1 2 3; do
-            if dkp-pacman -Syu --noconfirm && dkp-pacman -S --needed --noconfirm 3ds-dev 3ds-mbedtls 3ds-citro2d; then
-              break
-            fi
-            echo "Tentative $attempt échouée, nouvel essai dans 20 s…"
+            dkp-pacman -Syu --noconfirm && break
+            echo "Mise à jour échouée (essai $attempt)"
+            [ "$attempt" -eq 3 ] && exit 1
+            sleep 20
+          done
+
+      - name: Vérifier les paquets disponibles
+        run: dkp-pacman -Ss 3ds- | grep -E 'citro|mbedtls|3ds-dev' || true
+
+      - name: Installer 3ds-dev et mbedTLS
+        run: |
+          for attempt in 1 2 3; do
+            dkp-pacman -S --needed --noconfirm 3ds-dev 3ds-mbedtls && break
+            [ "$attempt" -eq 3 ] && exit 1
+            sleep 20
+          done
+
+      - name: Installer citro2d
+        run: |
+          for attempt in 1 2 3; do
+            dkp-pacman -S --needed --noconfirm 3ds-citro2d && break
             [ "$attempt" -eq 3 ] && exit 1
             sleep 20
           done
