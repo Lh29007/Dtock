@@ -3,6 +3,9 @@ name: Build 3DS
 on:
   push:
     branches: [main]
+    paths:
+      - 'hackchat-3ds/**'
+      - '.github/workflows/build-3ds.yml'
     tags: ['v*']
   workflow_dispatch:
 

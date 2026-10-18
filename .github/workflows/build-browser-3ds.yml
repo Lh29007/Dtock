@@ -1,0 +1,86 @@
+name: Build navigateur 3DS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'browser-3ds/**'
+      - '.github/workflows/build-browser-3ds.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Compiler browser.3dsx
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkitarm:latest
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer libctru et mbedTLS (devkitPro)
+        run: |
+          for attempt in 1 2 3; do
+            if dkp-pacman -Syu --noconfirm && dkp-pacman -S --needed --noconfirm 3ds-dev 3ds-mbedtls; then
+              break
+            fi
+            echo "Tentative $attempt échouée, nouvel essai dans 20 s…"
+            [ "$attempt" -eq 3 ] && exit 1
+            sleep 20
+          done
+
+      - name: Embarquer les certificats racine (romfs)
+        working-directory: browser-3ds
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq ca-certificates >/dev/null
+          mkdir -p romfs
+          cp /etc/ssl/certs/ca-certificates.crt romfs/cacert.pem
+
+      - name: Compiler
+        working-directory: browser-3ds
+        run: make -j"$(nproc)"
+
+      - name: Préparer le fichier de sortie
+        working-directory: browser-3ds
+        run: |
+          mkdir -p out
+          cp browser.3dsx out/browser.3dsx
+
+      - name: Garder le binaire en artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-3dsx
+          path: browser-3ds/out/browser.3dsx
+          if-no-files-found: error
+
+  release:
+    name: Publier dans les releases
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Télécharger le binaire
+        uses: actions/download-artifact@v4
+        with:
+          name: browser-3dsx
+          path: dist
+
+      - name: Créer la release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ format('browser-build-{0}', github.run_number) }}
+          name: ${{ format('Navigateur 3DS (build {0})', github.run_number) }}
+          body: |
+            Build automatique de `browser.3dsx` (commit `${{ github.sha }}`).
+
+            Navigateur web texte (HTTPS) : pas de JavaScript ni de CSS.
+            Installation : copie le fichier dans la carte SD, à `/3ds/browser/browser.3dsx`,
+            puis lance-le depuis le Homebrew Launcher.
+          files: dist/browser.3dsx
+          fail_on_unmatched_files: true
