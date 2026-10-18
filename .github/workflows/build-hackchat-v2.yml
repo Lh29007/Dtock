@@ -18,55 +18,87 @@ jobs:
     container:
       image: devkitpro/devkitarm:latest
 
+    defaults:
+      run:
+        shell: bash -eo pipefail {0}
+
+    env:
+      # Chaque étape ajoute sa sortie ici ; le log est commité dans le repo à la fin.
+      CI_LOG: ci-logs/build.log
+
     steps:
       - name: Récupérer le code
         uses: actions/checkout@v4
 
+      - name: Préparer le log
+        run: |
+          mkdir -p ci-logs
+          : > "$CI_LOG"
+
       - name: Mettre à jour les dépôts devkitPro
         run: |
-          for attempt in 1 2 3; do
-            dkp-pacman -Syu --noconfirm && break
-            echo "Mise à jour échouée (essai $attempt)"
-            [ "$attempt" -eq 3 ] && exit 1
-            sleep 20
-          done
-
-      - name: Vérifier les paquets disponibles
-        run: dkp-pacman -Ss 3ds- | grep -E 'citro|mbedtls|3ds-dev' || true
+          {
+            for attempt in 1 2 3; do
+              dkp-pacman -Syu --noconfirm && break
+              echo "Mise à jour échouée (essai $attempt)"
+              [ "$attempt" -eq 3 ] && exit 1
+              sleep 20
+            done
+          } 2>&1 | tee -a "$CI_LOG"
 
       - name: Installer 3ds-dev et mbedTLS
         run: |
-          for attempt in 1 2 3; do
-            dkp-pacman -S --needed --noconfirm 3ds-dev 3ds-mbedtls && break
-            [ "$attempt" -eq 3 ] && exit 1
-            sleep 20
-          done
+          {
+            for attempt in 1 2 3; do
+              dkp-pacman -S --needed --noconfirm 3ds-dev 3ds-mbedtls && break
+              [ "$attempt" -eq 3 ] && exit 1
+              sleep 20
+            done
+          } 2>&1 | tee -a "$CI_LOG"
 
       - name: Compiler citro3d v1.6.0 depuis GitHub
         run: |
-          apt-get update -qq
-          apt-get install -y -qq git bzip2 >/dev/null
-          git clone --depth 1 --branch v1.6.0 https://github.com/devkitPro/citro3d.git /tmp/citro3d
-          make -C /tmp/citro3d -j"$(nproc)" BUILD_CFLAGS="-include ${GITHUB_WORKSPACE}/hackchat-3ds-v2/compat/align.h -Wno-error"
-          make -C /tmp/citro3d install BUILD_CFLAGS="-include ${GITHUB_WORKSPACE}/hackchat-3ds-v2/compat/align.h -Wno-error"
+          {
+            apt-get update -qq
+            apt-get install -y -qq git bzip2 >/dev/null
+            rm -rf /tmp/citro3d
+            git clone --depth 1 --branch v1.6.0 https://github.com/devkitPro/citro3d.git /tmp/citro3d
+            # libctru avertit si -D_3DS est défini sans __3DS__ (et -Werror le transforme en erreur)
+            # ALIGN(x) n'existe plus dans la libctru actuelle : fourni par compat/align.h
+            sed -i 's/-DARM11 -D_3DS/-DARM11 -D_3DS -D__3DS__ -include $(ALIGN_H) -Wno-error/' /tmp/citro3d/Makefile
+            grep -n "ALIGN_H" /tmp/citro3d/Makefile
+            make -C /tmp/citro3d -j"$(nproc)"
+            make -C /tmp/citro3d install
+          } 2>&1 | tee -a "$CI_LOG"
+        env:
+          ALIGN_H: ${{ github.workspace }}/hackchat-3ds-v2/compat/align.h
 
       - name: Compiler citro2d v1.6.0 depuis GitHub
         run: |
-          git clone --depth 1 --branch v1.6.0 https://github.com/devkitPro/citro2d.git /tmp/citro2d
-          make -C /tmp/citro2d -j"$(nproc)" BUILD_CFLAGS="-include ${GITHUB_WORKSPACE}/hackchat-3ds-v2/compat/align.h -Wno-error"
-          make -C /tmp/citro2d install BUILD_CFLAGS="-include ${GITHUB_WORKSPACE}/hackchat-3ds-v2/compat/align.h -Wno-error"
+          {
+            rm -rf /tmp/citro2d
+            git clone --depth 1 --branch v1.6.0 https://github.com/devkitPro/citro2d.git /tmp/citro2d
+            sed -i 's/-DCITRO2D_BUILD/-D_3DS -D__3DS__ -DCITRO2D_BUILD -include $(ALIGN_H) -Wno-error/' /tmp/citro2d/Makefile
+            grep -n "ALIGN_H" /tmp/citro2d/Makefile
+            make -C /tmp/citro2d -j"$(nproc)"
+            make -C /tmp/citro2d install
+          } 2>&1 | tee -a "$CI_LOG"
+        env:
+          ALIGN_H: ${{ github.workspace }}/hackchat-3ds-v2/compat/align.h
 
       - name: Embarquer les certificats racine (romfs)
         working-directory: hackchat-3ds-v2
         run: |
-          apt-get update -qq
-          apt-get install -y -qq ca-certificates >/dev/null
-          mkdir -p romfs
-          cp /etc/ssl/certs/ca-certificates.crt romfs/cacert.pem
+          {
+            apt-get install -y -qq ca-certificates >/dev/null
+            mkdir -p romfs
+            cp /etc/ssl/certs/ca-certificates.crt romfs/cacert.pem
+          } 2>&1 | tee -a "$GITHUB_WORKSPACE/$CI_LOG"
 
       - name: Compiler
         working-directory: hackchat-3ds-v2
-        run: make -j"$(nproc)"
+        run: |
+          make -j"$(nproc)" 2>&1 | tee -a "$GITHUB_WORKSPACE/$CI_LOG"
 
       - name: Préparer le fichier de sortie
         working-directory: hackchat-3ds-v2
@@ -80,6 +112,23 @@ jobs:
           name: hackchat3dsV2
           path: hackchat-3ds-v2/out/hackchat3dsV2.3dsx
           if-no-files-found: error
+
+      - name: Publier le log de build dans le repo
+        if: always()
+        run: |
+          apt-get install -y -qq git >/dev/null 2>&1 || true
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          cd "$GITHUB_WORKSPACE"
+          {
+            echo "=== Run ${GITHUB_RUN_ID} — statut du job : ${{ job.status }} ==="
+            cat "$CI_LOG"
+          } > ci-logs/hackchat-v2-latest.log
+          rm -f "$CI_LOG"
+          git add ci-logs/hackchat-v2-latest.log
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -m "Log CI hack.chat V2 (run ${GITHUB_RUN_ID})" || exit 0
+          git push origin HEAD:main || echo "push du log impossible"
 
   release:
     name: Publier dans les releases
