@@ -42,13 +42,19 @@ jobs:
             sleep 20
           done
 
-      - name: Installer citro2d
+      - name: Compiler citro3d depuis GitHub
         run: |
-          for attempt in 1 2 3; do
-            dkp-pacman -S --needed --noconfirm 3ds-citro2d && break
-            [ "$attempt" -eq 3 ] && exit 1
-            sleep 20
-          done
+          apt-get update -qq
+          apt-get install -y -qq git >/dev/null
+          git clone --depth 1 https://github.com/devkitPro/citro3d.git /tmp/citro3d
+          make -C /tmp/citro3d -j"$(nproc)"
+          make -C /tmp/citro3d install
+
+      - name: Compiler citro2d depuis GitHub
+        run: |
+          git clone --depth 1 https://github.com/devkitPro/citro2d.git /tmp/citro2d
+          make -C /tmp/citro2d -j"$(nproc)"
+          make -C /tmp/citro2d install
 
       - name: Embarquer les certificats racine (romfs)
         working-directory: hackchat-3ds-v2
