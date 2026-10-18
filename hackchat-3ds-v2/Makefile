@@ -25,7 +25,7 @@ APP_AUTHOR      := hackchat-3ds-v2
 ARCH    := -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 INCLUDE := -Isrc -I$(CTRULIB)/include -I$(PORTLIBS)/include
 CFLAGS  := -g -Wall -O2 -std=gnu11 -mword-relocations -ffunction-sections \
-           $(ARCH) $(INCLUDE) -D__3DS__
+           $(ARCH) $(INCLUDE) -D__3DS__ -include $(CURDIR)/compat/align.h
 LDFLAGS := -specs=3dsx.specs -g $(ARCH) -L$(CTRULIB)/lib -L$(PORTLIBS)/lib
 LIBS    := -lcitro2d -lcitro3d -lmbedtls -lmbedx509 -lmbedcrypto -lctru -lm
 

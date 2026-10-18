@@ -47,14 +47,14 @@ jobs:
           apt-get update -qq
           apt-get install -y -qq git bzip2 >/dev/null
           git clone --depth 1 --branch v1.6.0 https://github.com/devkitPro/citro3d.git /tmp/citro3d
-          make -C /tmp/citro3d -j"$(nproc)"
-          make -C /tmp/citro3d install
+          make -C /tmp/citro3d -j"$(nproc)" BUILD_CFLAGS="-include ${GITHUB_WORKSPACE}/hackchat-3ds-v2/compat/align.h"
+          make -C /tmp/citro3d install BUILD_CFLAGS="-include ${GITHUB_WORKSPACE}/hackchat-3ds-v2/compat/align.h"
 
       - name: Compiler citro2d v1.6.0 depuis GitHub
         run: |
           git clone --depth 1 --branch v1.6.0 https://github.com/devkitPro/citro2d.git /tmp/citro2d
-          make -C /tmp/citro2d -j"$(nproc)"
-          make -C /tmp/citro2d install
+          make -C /tmp/citro2d -j"$(nproc)" BUILD_CFLAGS="-include ${GITHUB_WORKSPACE}/hackchat-3ds-v2/compat/align.h"
+          make -C /tmp/citro2d install BUILD_CFLAGS="-include ${GITHUB_WORKSPACE}/hackchat-3ds-v2/compat/align.h"
 
       - name: Embarquer les certificats racine (romfs)
         working-directory: hackchat-3ds-v2
