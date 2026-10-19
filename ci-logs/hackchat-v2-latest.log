@@ -1,4 +1,4 @@
-=== Run 39160708515 — statut du job : success ===
+=== Run 39222680448 — statut du job : success ===
 :: Synchronizing package databases...
  dkp-libs downloading...
  dkp-linux downloading...
@@ -51,8 +51,30 @@ attribs.c
 base.c
 base.c
 buffers.c
-drawArrays.c
 buffers.c
+drawArrays.c
+In file included from /opt/devkitpro/libctru/include/3ds.h:88,
+                 from /tmp/citro3d/include/c3d/types.h:3,
+                 from /tmp/citro3d/include/c3d/attribs.h:2,
+                 from /tmp/citro3d/source/internal.h:2,
+                 from /tmp/citro3d/source/buffers.c:1:
+/tmp/citro3d/source/buffers.c: In function 'C3Di_BufInfoBind':
+/tmp/citro3d/source/buffers.c:52:108: warning: expression does not compute the number of elements in this array; element type is 'C3D_BufCfg', not 'u32' {aka 'long unsigned int'} [-Wsizeof-array-div]
+   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
+      |                                                                                                            ^
+/opt/devkitpro/libctru/include/3ds/gpu/gpu.h:117:118: note: in definition of macro 'GPUCMD_AddMaskedIncrementalWrites'
+  117 | #define GPUCMD_AddMaskedIncrementalWrites(reg, mask, vals, num) GPUCMD_Add(GPUCMD_HEADER(1, (mask), (reg)), (vals), (num))
+      |                                                                                                                      ^~~
+/tmp/citro3d/source/buffers.c:52:9: note: in expansion of macro 'GPUCMD_AddIncrementalWrites'
+   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/tmp/citro3d/source/buffers.c:52:108: note: add parentheses around the second 'sizeof' to silence this warning
+/opt/devkitpro/libctru/include/3ds/gpu/gpu.h:117:118: note: in definition of macro 'GPUCMD_AddMaskedIncrementalWrites'
+  117 | #define GPUCMD_AddMaskedIncrementalWrites(reg, mask, vals, num) GPUCMD_Add(GPUCMD_HEADER(1, (mask), (reg)), (vals), (num))
+      |                                                                                                                      ^~~
+/tmp/citro3d/source/buffers.c:52:9: note: in expansion of macro 'GPUCMD_AddIncrementalWrites'
+   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 In file included from /opt/devkitpro/libctru/include/3ds.h:88,
                  from /tmp/citro3d/include/c3d/types.h:3,
                  from /tmp/citro3d/include/c3d/attribs.h:2,
@@ -77,48 +99,27 @@ In file included from /opt/devkitpro/libctru/include/3ds.h:88,
       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 drawArrays.c
 drawElements.c
-In file included from /opt/devkitpro/libctru/include/3ds.h:88,
-                 from /tmp/citro3d/include/c3d/types.h:3,
-                 from /tmp/citro3d/include/c3d/attribs.h:2,
-                 from /tmp/citro3d/source/internal.h:2,
-                 from /tmp/citro3d/source/buffers.c:1:
-/tmp/citro3d/source/buffers.c: In function 'C3Di_BufInfoBind':
-/tmp/citro3d/source/buffers.c:52:108: warning: expression does not compute the number of elements in this array; element type is 'C3D_BufCfg', not 'u32' {aka 'long unsigned int'} [-Wsizeof-array-div]
-   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
-      |                                                                                                            ^
-/opt/devkitpro/libctru/include/3ds/gpu/gpu.h:117:118: note: in definition of macro 'GPUCMD_AddMaskedIncrementalWrites'
-  117 | #define GPUCMD_AddMaskedIncrementalWrites(reg, mask, vals, num) GPUCMD_Add(GPUCMD_HEADER(1, (mask), (reg)), (vals), (num))
-      |                                                                                                                      ^~~
-/tmp/citro3d/source/buffers.c:52:9: note: in expansion of macro 'GPUCMD_AddIncrementalWrites'
-   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-/tmp/citro3d/source/buffers.c:52:108: note: add parentheses around the second 'sizeof' to silence this warning
-/opt/devkitpro/libctru/include/3ds/gpu/gpu.h:117:118: note: in definition of macro 'GPUCMD_AddMaskedIncrementalWrites'
-  117 | #define GPUCMD_AddMaskedIncrementalWrites(reg, mask, vals, num) GPUCMD_Add(GPUCMD_HEADER(1, (mask), (reg)), (vals), (num))
-      |                                                                                                                      ^~~
-/tmp/citro3d/source/buffers.c:52:9: note: in expansion of macro 'GPUCMD_AddIncrementalWrites'
-   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 effect.c
-fog.c
 drawElements.c
-framebuffer.c
 effect.c
-gas.c
-immediate.c
+fog.c
 fog.c
 framebuffer.c
-light.c
-lightenv.c
-lightlut.c
 gas.c
-mtxstack.c
+framebuffer.c
+gas.c
 immediate.c
-proctex.c
+immediate.c
 light.c
-renderqueue.c
 lightenv.c
-tex3ds.c
+light.c
+lightenv.c
+lightlut.c
+lightlut.c
+mtxstack.c
+proctex.c
+renderqueue.c
+mtxstack.c
 /tmp/citro3d/source/renderqueue.c: In function 'onQueueFinish':
 /tmp/citro3d/source/renderqueue.c:64:25: warning: 'gfxConfigScreen' is deprecated [-Wdeprecated-declarations]
    64 |                         gfxConfigScreen(GFX_TOP, false);
@@ -137,17 +138,10 @@ In file included from /opt/devkitpro/libctru/include/3ds.h:27,
 /opt/devkitpro/libctru/include/3ds/gfx.h:169:21: note: declared here
   169 | CTR_DEPRECATED void gfxConfigScreen(gfxScreen_t scr, bool immediate);
       |                     ^~~~~~~~~~~~~~~
-lightlut.c
-texenv.c
-mtxstack.c
-texture.c
 proctex.c
-uniforms.c
-mtx_fromquat.c
 renderqueue.c
 tex3ds.c
-mtx_inverse.c
-mtx_lookat.c
+texenv.c
 /tmp/citro3d/source/renderqueue.c: In function 'onQueueFinish':
 /tmp/citro3d/source/renderqueue.c:64:25: warning: 'gfxConfigScreen' is deprecated [-Wdeprecated-declarations]
    64 |                         gfxConfigScreen(GFX_TOP, false);
@@ -166,60 +160,66 @@ In file included from /opt/devkitpro/libctru/include/3ds.h:27,
 /opt/devkitpro/libctru/include/3ds/gfx.h:169:21: note: declared here
   169 | CTR_DEPRECATED void gfxConfigScreen(gfxScreen_t scr, bool immediate);
       |                     ^~~~~~~~~~~~~~~
-texenv.c
-mtx_multiply.c
-mtx_multiplyfvec3.c
-mtx_multiplyfvec4.c
 texture.c
 uniforms.c
-mtx_ortho.c
 mtx_fromquat.c
-mtx_orthotilt.c
-mtx_persp.c
-mtx_perspstereo.c
+tex3ds.c
 mtx_inverse.c
+texenv.c
+texture.c
 mtx_lookat.c
-mtx_perspstereotilt.c
-mtx_persptilt.c
-mtx_rotate.c
 mtx_multiply.c
-mtx_rotatex.c
+uniforms.c
+mtx_fromquat.c
 mtx_multiplyfvec3.c
 mtx_multiplyfvec4.c
-mtx_rotatey.c
 mtx_ortho.c
-mtx_rotatez.c
-mtx_scale.c
+mtx_inverse.c
+mtx_lookat.c
+mtx_multiply.c
 mtx_orthotilt.c
-mtx_translate.c
 mtx_persp.c
 mtx_perspstereo.c
-mtx_transpose.c
+mtx_multiplyfvec3.c
 mtx_perspstereotilt.c
-quat_crossfvec3.c
 mtx_persptilt.c
-quat_fromaxisangle.c
-quat_frommtx.c
+mtx_multiplyfvec4.c
+mtx_ortho.c
 mtx_rotate.c
-quat_frompitchyawroll.c
-quat_lookat.c
+mtx_orthotilt.c
 mtx_rotatex.c
 mtx_rotatey.c
-quat_multiply.c
+mtx_persp.c
 mtx_rotatez.c
-quat_pow.c
+mtx_perspstereo.c
 mtx_scale.c
 mtx_translate.c
-quat_rotate.c
+mtx_perspstereotilt.c
 mtx_transpose.c
-quat_rotatex.c
-quat_rotatey.c
+mtx_persptilt.c
 quat_crossfvec3.c
-quat_rotatez.c
+mtx_rotate.c
 quat_fromaxisangle.c
+mtx_rotatex.c
+mtx_rotatey.c
+mtx_rotatez.c
 quat_frommtx.c
 quat_frompitchyawroll.c
+mtx_scale.c
+quat_multiply.c
+quat_lookat.c
+mtx_translate.c
+quat_pow.c
+mtx_transpose.c
+quat_rotate.c
+quat_rotatex.c
+quat_crossfvec3.c
+quat_rotatey.c
+quat_fromaxisangle.c
+quat_rotatez.c
+quat_frommtx.c
 libcitro3dd.a
+quat_frompitchyawroll.c
 quat_lookat.c
 quat_multiply.c
 quat_pow.c
@@ -260,13 +260,13 @@ Assembler messages:
 {standard input}: Warning: end of file in comment; newline inserted
 Assembler messages:
 {standard input}: Warning: end of file in comment; newline inserted
-base.c
-base.c
 font.c
+base.c
+base.c
+spritesheet.c
 font.c
 spritesheet.c
 text.c
-spritesheet.c
 text.c
 libcitro2dd.a
 libcitro2d.a
