@@ -12,24 +12,32 @@
 #define BOT_W 320
 #define BOT_H 240
 
-#define LOG_LINE_H   14
-#define LOG_NICK_X_R 96          /* bord droit de la colonne des pseudos */
-#define LOG_BODY_X   104
-#define LOG_WRAP     44          /* caractères par ligne (approximation) */
-#define TEXT_SCALE   0.5f
-#define MAX_VLINES   2000
-#define PANEL_X      224
-#define PANEL_W      (TOP_W - PANEL_X)
-#define LIST_ROWS    UI_LIST_ROWS
-#define LIST_ROW_H   18
-#define LIST_X       8
-#define LIST_Y       36
-#define LIST_W       304
-#define LIST_H       (LIST_ROWS * LIST_ROW_H + 18)
-#define BTN_Y        (LIST_Y + LIST_H + 6)
-#define BTN_H        26
-#define INPUT_Y      (BTN_Y + BTN_H + 8)
-#define INPUT_H      38
+#define LOG_LINE_H    14
+#define LOG_NICK_X_R  96           /* bord droit de la colonne des pseudos (panneau fermé) */
+#define LOG_BODY_X    104
+#define LOG_BODY_W    (TOP_W - LOG_BODY_X - 6)
+#define LOG_NICK_X_R_P 60          /* idem, panneau ouvert : journal réduit à gauche */
+#define LOG_BODY_X_P  66
+#define LOG_BODY_W_P  (PANEL_X - LOG_BODY_X_P - 6)
+#define TEXT_SCALE    0.5f
+#define MAX_VLINES    2000
+#define PANEL_X       224
+#define PANEL_W       (TOP_W - PANEL_X)
+#define LIST_ROWS     UI_LIST_ROWS
+#define LIST_ROW_H    18
+#define LIST_X        8
+#define LIST_Y        36
+#define LIST_W        304
+#define LIST_H        (LIST_ROWS * LIST_ROW_H + 18)
+#define BTN_Y         (LIST_Y + LIST_H + 6)
+#define BTN_H         26
+#define INPUT_Y       (BTN_Y + BTN_H + 8)
+#define INPUT_H       38
+
+/* Profondeur citro2d : plus la valeur est grande, plus l'élément est au premier plan. */
+#define Z_LOG        0.5f
+#define Z_PANEL_BG   0.8f
+#define Z_PANEL_TXT  0.9f
 
 /* Couleurs (format citro2d 0xAABBGGRR) */
 #define C_WHITE      C2D_Color32(0xFF, 0xFF, 0xFF, 0xFF)
@@ -60,6 +68,8 @@ static C3D_RenderTarget *g_bot;
 static C2D_TextBuf g_tb;
 static vline g_vlines[MAX_VLINES];
 static int g_nvlines;
+static float g_z = Z_LOG;        /* profondeur courante pour texte et rectangles */
+static float g_char_w = 6.0f;    /* largeur moyenne d'un caractère à TEXT_SCALE */
 
 /* ---------- Texte ---------- */
 
@@ -67,7 +77,7 @@ static void text_draw(float x, float y, float scale, uint32_t color, const char 
 {
     C2D_Text t;
     C2D_TextParse(&t, g_tb, s);
-    C2D_DrawText(&t, C2D_WithColor, x, y, 0.5f, scale, scale, color);
+    C2D_DrawText(&t, C2D_WithColor, x, y, g_z, scale, scale, color);
 }
 
 static float text_width(float scale, const char *s)
@@ -81,7 +91,7 @@ static float text_width(float scale, const char *s)
 
 static void rect(float x, float y, float w, float h, uint32_t color)
 {
-    C2D_DrawRectSolid(x, y, 0.0f, w, h, color);
+    C2D_DrawRectSolid(x, y, g_z, w, h, color);
 }
 
 /* ---------- Mise en lignes du journal ---------- */
@@ -92,7 +102,15 @@ static void vline_push(const vline *v)
         g_vlines[g_nvlines++] = *v;
 }
 
-static void wrap_body(const hc_msg *m, const char *prefix)
+static int wrap_chars_for(int body_w)
+{
+    int n = (int)((float)body_w / g_char_w);
+    if (n < 8) n = 8;
+    if (n > 60) n = 60;      /* taille du buffer body[] */
+    return n;
+}
+
+static void wrap_body(const hc_msg *m, const char *prefix, int wrap)
 {
     const char *p = m->text;
     int first = 1;
@@ -106,7 +124,7 @@ static void wrap_body(const hc_msg *m, const char *prefix)
         snprintf(v.nick, sizeof v.nick, "%s", m->nick);
         v.nick_color = m->color;
         v.body_color = C_TEXT;
-        snprintf(v.body, sizeof v.body, "%s", prefix);
+        snprintf(v.body, sizeof v.body, "%s", prefix ? prefix : "");
         vline_push(&v);
         return;
     }
@@ -126,8 +144,8 @@ static void wrap_body(const hc_msg *m, const char *prefix)
         v.body_color = (m->kind == HC_MSG_INFO || m->kind == HC_MSG_JOIN ||
                         m->kind == HC_MSG_LEAVE) ? C_GREY : C_TEXT;
 
-        /* coupe au dernier espace avant LOG_WRAP si possible */
-        while (p[n] && n < LOG_WRAP)
+        /* coupe au dernier espace avant la largeur max si possible */
+        while (p[n] && n < (size_t)wrap)
             n++;
         if (p[n]) {
             take = n;
@@ -152,21 +170,21 @@ static void wrap_body(const hc_msg *m, const char *prefix)
     }
 }
 
-static void build_vlines(const hc_state *st)
+static void build_vlines(const hc_state *st, int wrap)
 {
     g_nvlines = 0;
     for (int i = 0; i < st->nlog; i++) {
         const hc_msg *m = &st->log[i];
         switch (m->kind) {
         case HC_MSG_CHAT:
-            wrap_body(m, NULL);
+            wrap_body(m, NULL, wrap);
             break;
         case HC_MSG_EMOTE: {
             char pre[64];
             snprintf(pre, sizeof pre, "* %s ", m->nick);
             hc_msg tmp = *m;
             tmp.nick[0] = '\0';
-            wrap_body(&tmp, pre);
+            wrap_body(&tmp, pre, wrap);
             break;
         }
         case HC_MSG_JOIN:
@@ -175,14 +193,14 @@ static void build_vlines(const hc_state *st)
             snprintf(pre, sizeof pre, "%s ", m->nick);
             hc_msg tmp = *m;
             tmp.nick[0] = '\0';
-            wrap_body(&tmp, pre);
+            wrap_body(&tmp, pre, wrap);
             break;
         }
         case HC_MSG_INFO:
         default: {
             hc_msg tmp = *m;
             tmp.nick[0] = '\0';
-            wrap_body(&tmp, NULL);
+            wrap_body(&tmp, NULL, wrap);
             break;
         }
         }
@@ -193,16 +211,20 @@ static void build_vlines(const hc_state *st)
 
 static void draw_top(const hc_state *st, const ui_view *v)
 {
-    int area_w = v->panel_open ? PANEL_X : TOP_W;
-    int total, end, start, row;
+    int panel = v->panel_open;
+    int nick_r = panel ? LOG_NICK_X_R_P : LOG_NICK_X_R;
+    int body_x = panel ? LOG_BODY_X_P : LOG_BODY_X;
+    int body_w = panel ? LOG_BODY_W_P : LOG_BODY_W;
+    int total, end, row;
 
-    build_vlines(st);
+    build_vlines(st, wrap_chars_for(body_w));
     total = g_nvlines;
 
     C2D_TargetClear(g_top, C_WHITE);
     C2D_SceneBegin(g_top);
 
     /* journal : du bas vers le haut */
+    g_z = Z_LOG;
     end = total - v->log_scroll;
     if (end < 0) end = 0;
     if (end > total) end = total;
@@ -214,42 +236,52 @@ static void draw_top(const hc_state *st, const ui_view *v)
         if (y < -LOG_LINE_H)
             break;
         if (l->first && l->nick[0] && (l->kind == HC_MSG_CHAT || l->kind == HC_MSG_EMOTE)) {
-            float w = text_width(TEXT_SCALE, l->nick);
-            float nx = (float)LOG_NICK_X_R - w;
+            char nick[32];
+            float col_w = (float)nick_r - 2.0f;
+            float nx;
+            snprintf(nick, sizeof nick, "%s", l->nick);
+            while (strlen(nick) > 1 && text_width(TEXT_SCALE, nick) > col_w)
+                nick[strlen(nick) - 1] = '\0';
+            nx = (float)nick_r - text_width(TEXT_SCALE, nick);
             if (nx < 2.0f) nx = 2.0f;
-            text_draw(nx, y, TEXT_SCALE, l->nick_color, l->nick);
+            text_draw(nx, y, TEXT_SCALE, l->nick_color, nick);
         }
-        text_draw((float)LOG_BODY_X, y, TEXT_SCALE, l->body_color, l->body);
+        text_draw((float)body_x, y, TEXT_SCALE, l->body_color, l->body);
     }
-    start = end;
-    (void)start;
-    (void)area_w;
 
-    /* panneau utilisateurs */
-    if (v->panel_open) {
+    /* panneau utilisateurs : fond devant le journal, contenu devant le fond */
+    if (panel) {
         int count = 0;
         float y = 6.0f;
         char title[64];
 
+        g_z = Z_PANEL_BG;
         rect(PANEL_X, 0, PANEL_W, TOP_H, C_PANEL);
+
+        g_z = Z_PANEL_TXT;
         for (int i = 0; i < HC_MAX_USERS; i++)
             if (st->users[i].used) count++;
         snprintf(title, sizeof title, "Utilisateurs (%d)", count);
         text_draw(PANEL_X + 8.0f, y, TEXT_SCALE, C_PANEL_TXT, title);
         y += 18.0f;
 
-        for (int i = 0; i < HC_MAX_USERS && y < TOP_H - 14; i++) {
+        for (int i = 0; i < HC_MAX_USERS && y < TOP_H - 16; i++) {
             const hc_user *u = &st->users[i];
+            char nick[32];
             if (!u->used)
                 continue;
+            snprintf(nick, sizeof nick, "%s", u->nick);
+            while (strlen(nick) > 1 && text_width(TEXT_SCALE, nick) > (float)(PANEL_W - 34))
+                nick[strlen(nick) - 1] = '\0';
             rect(PANEL_X + 8.0f, y + 2.0f, 4.0f, 8.0f, u->color);
-            text_draw(PANEL_X + 18.0f, y, TEXT_SCALE, C_PANEL_TXT, u->nick);
+            text_draw(PANEL_X + 18.0f, y, TEXT_SCALE, C_PANEL_TXT, nick);
             if (u->me)
-                text_draw(PANEL_X + PANEL_W - 30.0f, y, TEXT_SCALE, C_GREY, "moi");
+                text_draw(PANEL_X + PANEL_W - 28.0f, y, TEXT_SCALE, C_GREY, "moi");
             y += 14.0f;
         }
         text_draw(PANEL_X + 8.0f, TOP_H - 14.0f, TEXT_SCALE, C_GREY, "X : fermer");
     }
+    g_z = Z_LOG;
 }
 
 /* ---------- Écran du bas ---------- */
@@ -269,6 +301,7 @@ static void draw_bottom(const hc_state *st, const ui_view *v)
 
     C2D_TargetClear(g_bot, C_BG_BOT);
     C2D_SceneBegin(g_bot);
+    g_z = Z_LOG;
 
     /* en-tête */
     rect(0, 0, BOT_W, 28, C_HEADER);
@@ -325,7 +358,7 @@ static void draw_bottom(const hc_state *st, const ui_view *v)
               st->channel[0] ? "Écrire un message (touche A)" : "Rejoins un salon pour écrire");
 
     /* aide */
-    text_draw(4.0f, BOT_H - 12.0f, 0.4f, C_GREY,
+    text_draw(4.0f, BOT_H - 16.0f, 0.4f, C_GREY,
               "A ecrire  X utilisateurs  Y rejoindre  B quitter  START fin");
 }
 
@@ -333,9 +366,17 @@ static void draw_bottom(const hc_state *st, const ui_view *v)
 
 void ui_init(void)
 {
+    static const char ref[] =
+        "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789";
+
     g_top = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     g_bot = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
     g_tb = C2D_TextBufNew(8192);
+
+    /* largeur moyenne d'un caractère, pour couper le journal à la bonne largeur */
+    g_char_w = text_width(TEXT_SCALE, ref) / (float)(sizeof ref - 1);
+    if (g_char_w < 1.0f)
+        g_char_w = 6.0f;
 }
 
 void ui_exit(void)
