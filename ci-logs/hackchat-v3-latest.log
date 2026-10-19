@@ -1,4 +1,4 @@
-=== Run 39223394548 — statut du job : success ===
+=== Run 39224378027 — statut du job : success ===
 3ds-dev et 3ds-mbedtls déjà présents dans l'image : mise à jour ignorée
 3ds-dev et 3ds-mbedtls déjà présents : installation ignorée
 Cloning into '/tmp/citro3d'...
@@ -24,32 +24,32 @@ make: Entering directory '/tmp/citro3d'
 attribs.c
 attribs.c
 base.c
-buffers.c
-In file included from /opt/devkitpro/libctru/include/3ds.h:88,
-                 from /tmp/citro3d/include/c3d/types.h:3,
-                 from /tmp/citro3d/include/c3d/attribs.h:2,
-                 from /tmp/citro3d/source/internal.h:2,
-                 from /tmp/citro3d/source/buffers.c:1:
-/tmp/citro3d/source/buffers.c: In function 'C3Di_BufInfoBind':
-/tmp/citro3d/source/buffers.c:52:108: warning: expression does not compute the number of elements in this array; element type is 'C3D_BufCfg', not 'u32' {aka 'long unsigned int'} [-Wsizeof-array-div]
-   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
-      |                                                                                                            ^
-/opt/devkitpro/libctru/include/3ds/gpu/gpu.h:117:118: note: in definition of macro 'GPUCMD_AddMaskedIncrementalWrites'
-  117 | #define GPUCMD_AddMaskedIncrementalWrites(reg, mask, vals, num) GPUCMD_Add(GPUCMD_HEADER(1, (mask), (reg)), (vals), (num))
-      |                                                                                                                      ^~~
-/tmp/citro3d/source/buffers.c:52:9: note: in expansion of macro 'GPUCMD_AddIncrementalWrites'
-   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-/tmp/citro3d/source/buffers.c:52:108: note: add parentheses around the second 'sizeof' to silence this warning
-/opt/devkitpro/libctru/include/3ds/gpu/gpu.h:117:118: note: in definition of macro 'GPUCMD_AddMaskedIncrementalWrites'
-  117 | #define GPUCMD_AddMaskedIncrementalWrites(reg, mask, vals, num) GPUCMD_Add(GPUCMD_HEADER(1, (mask), (reg)), (vals), (num))
-      |                                                                                                                      ^~~
-/tmp/citro3d/source/buffers.c:52:9: note: in expansion of macro 'GPUCMD_AddIncrementalWrites'
-   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 base.c
-drawArrays.c
 buffers.c
+buffers.c
+drawArrays.c
+In file included from /opt/devkitpro/libctru/include/3ds.h:88,
+                 from /tmp/citro3d/include/c3d/types.h:3,
+                 from /tmp/citro3d/include/c3d/attribs.h:2,
+                 from /tmp/citro3d/source/internal.h:2,
+                 from /tmp/citro3d/source/buffers.c:1:
+/tmp/citro3d/source/buffers.c: In function 'C3Di_BufInfoBind':
+/tmp/citro3d/source/buffers.c:52:108: warning: expression does not compute the number of elements in this array; element type is 'C3D_BufCfg', not 'u32' {aka 'long unsigned int'} [-Wsizeof-array-div]
+   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
+      |                                                                                                            ^
+/opt/devkitpro/libctru/include/3ds/gpu/gpu.h:117:118: note: in definition of macro 'GPUCMD_AddMaskedIncrementalWrites'
+  117 | #define GPUCMD_AddMaskedIncrementalWrites(reg, mask, vals, num) GPUCMD_Add(GPUCMD_HEADER(1, (mask), (reg)), (vals), (num))
+      |                                                                                                                      ^~~
+/tmp/citro3d/source/buffers.c:52:9: note: in expansion of macro 'GPUCMD_AddIncrementalWrites'
+   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/tmp/citro3d/source/buffers.c:52:108: note: add parentheses around the second 'sizeof' to silence this warning
+/opt/devkitpro/libctru/include/3ds/gpu/gpu.h:117:118: note: in definition of macro 'GPUCMD_AddMaskedIncrementalWrites'
+  117 | #define GPUCMD_AddMaskedIncrementalWrites(reg, mask, vals, num) GPUCMD_Add(GPUCMD_HEADER(1, (mask), (reg)), (vals), (num))
+      |                                                                                                                      ^~~
+/tmp/citro3d/source/buffers.c:52:9: note: in expansion of macro 'GPUCMD_AddIncrementalWrites'
+   52 |         GPUCMD_AddIncrementalWrites(GPUREG_ATTRIBBUFFER0_OFFSET, (u32*)info->buffers, sizeof(info->buffers)/sizeof(u32));
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 In file included from /opt/devkitpro/libctru/include/3ds.h:88,
                  from /tmp/citro3d/include/c3d/types.h:3,
                  from /tmp/citro3d/include/c3d/attribs.h:2,
@@ -82,20 +82,22 @@ fog.c
 framebuffer.c
 framebuffer.c
 gas.c
+immediate.c
 gas.c
 immediate.c
-immediate.c
 light.c
 light.c
+lightenv.c
 lightenv.c
 lightlut.c
-lightenv.c
+mtxstack.c
 lightlut.c
 mtxstack.c
 proctex.c
-mtxstack.c
 renderqueue.c
+tex3ds.c
 proctex.c
+renderqueue.c
 /tmp/citro3d/source/renderqueue.c: In function 'onQueueFinish':
 /tmp/citro3d/source/renderqueue.c:64:25: warning: 'gfxConfigScreen' is deprecated [-Wdeprecated-declarations]
    64 |                         gfxConfigScreen(GFX_TOP, false);
@@ -115,97 +117,94 @@ In file included from /opt/devkitpro/libctru/include/3ds.h:27,
   169 | CTR_DEPRECATED void gfxConfigScreen(gfxScreen_t scr, bool immediate);
       |                     ^~~~~~~~~~~~~~~
 tex3ds.c
+/tmp/citro3d/source/renderqueue.c: In function 'onQueueFinish':
+/tmp/citro3d/source/renderqueue.c:64:25: warning: 'gfxConfigScreen' is deprecated [-Wdeprecated-declarations]
+   64 |                         gfxConfigScreen(GFX_TOP, false);
+      |                         ^~~~~~~~~~~~~~~
+In file included from /opt/devkitpro/libctru/include/3ds.h:27,
+                 from /tmp/citro3d/include/c3d/types.h:3,
+                 from /tmp/citro3d/include/c3d/attribs.h:2,
+                 from /tmp/citro3d/source/internal.h:2,
+                 from /tmp/citro3d/source/renderqueue.c:1:
+/opt/devkitpro/libctru/include/3ds/gfx.h:169:21: note: declared here
+  169 | CTR_DEPRECATED void gfxConfigScreen(gfxScreen_t scr, bool immediate);
+      |                     ^~~~~~~~~~~~~~~
+/tmp/citro3d/source/renderqueue.c:69:25: warning: 'gfxConfigScreen' is deprecated [-Wdeprecated-declarations]
+   69 |                         gfxConfigScreen(GFX_BOTTOM, false);
+      |                         ^~~~~~~~~~~~~~~
+/opt/devkitpro/libctru/include/3ds/gfx.h:169:21: note: declared here
+  169 | CTR_DEPRECATED void gfxConfigScreen(gfxScreen_t scr, bool immediate);
+      |                     ^~~~~~~~~~~~~~~
 texenv.c
-renderqueue.c
-tex3ds.c
 texture.c
-uniforms.c
-/tmp/citro3d/source/renderqueue.c: In function 'onQueueFinish':
-/tmp/citro3d/source/renderqueue.c:64:25: warning: 'gfxConfigScreen' is deprecated [-Wdeprecated-declarations]
-   64 |                         gfxConfigScreen(GFX_TOP, false);
-      |                         ^~~~~~~~~~~~~~~
-In file included from /opt/devkitpro/libctru/include/3ds.h:27,
-                 from /tmp/citro3d/include/c3d/types.h:3,
-                 from /tmp/citro3d/include/c3d/attribs.h:2,
-                 from /tmp/citro3d/source/internal.h:2,
-                 from /tmp/citro3d/source/renderqueue.c:1:
-/opt/devkitpro/libctru/include/3ds/gfx.h:169:21: note: declared here
-  169 | CTR_DEPRECATED void gfxConfigScreen(gfxScreen_t scr, bool immediate);
-      |                     ^~~~~~~~~~~~~~~
-/tmp/citro3d/source/renderqueue.c:69:25: warning: 'gfxConfigScreen' is deprecated [-Wdeprecated-declarations]
-   69 |                         gfxConfigScreen(GFX_BOTTOM, false);
-      |                         ^~~~~~~~~~~~~~~
-/opt/devkitpro/libctru/include/3ds/gfx.h:169:21: note: declared here
-  169 | CTR_DEPRECATED void gfxConfigScreen(gfxScreen_t scr, bool immediate);
-      |                     ^~~~~~~~~~~~~~~
 texenv.c
+uniforms.c
 mtx_fromquat.c
 mtx_inverse.c
-mtx_lookat.c
 texture.c
 uniforms.c
-mtx_multiply.c
 mtx_fromquat.c
+mtx_lookat.c
+mtx_multiply.c
+mtx_inverse.c
 mtx_multiplyfvec3.c
+mtx_lookat.c
 mtx_multiplyfvec4.c
 mtx_ortho.c
-mtx_inverse.c
-mtx_lookat.c
+mtx_multiply.c
 mtx_orthotilt.c
+mtx_multiplyfvec3.c
 mtx_persp.c
 mtx_perspstereo.c
-mtx_multiply.c
+mtx_multiplyfvec4.c
+mtx_ortho.c
+mtx_perspstereotilt.c
+mtx_orthotilt.c
+mtx_persptilt.c
+mtx_rotate.c
+mtx_persp.c
+mtx_rotatex.c
+mtx_perspstereo.c
+mtx_rotatey.c
 mtx_perspstereotilt.c
 mtx_persptilt.c
-mtx_multiplyfvec3.c
+mtx_rotatez.c
+mtx_scale.c
 mtx_rotate.c
+mtx_translate.c
 mtx_rotatex.c
 mtx_rotatey.c
-mtx_multiplyfvec4.c
+mtx_transpose.c
+quat_crossfvec3.c
+quat_fromaxisangle.c
 mtx_rotatez.c
-mtx_ortho.c
 mtx_scale.c
 mtx_translate.c
-mtx_transpose.c
-mtx_orthotilt.c
-quat_crossfvec3.c
-mtx_persp.c
-mtx_perspstereo.c
-quat_fromaxisangle.c
-mtx_perspstereotilt.c
 quat_frommtx.c
-mtx_persptilt.c
-mtx_rotate.c
+mtx_transpose.c
+quat_crossfvec3.c
 quat_frompitchyawroll.c
-mtx_rotatex.c
+quat_fromaxisangle.c
 quat_lookat.c
-mtx_rotatey.c
+quat_frommtx.c
+quat_frompitchyawroll.c
+quat_lookat.c
+quat_multiply.c
 quat_multiply.c
 quat_pow.c
-mtx_rotatez.c
 quat_rotate.c
-mtx_scale.c
-mtx_translate.c
+quat_pow.c
+quat_rotate.c
 quat_rotatex.c
-mtx_transpose.c
-quat_crossfvec3.c
+quat_rotatex.c
 quat_rotatey.c
 quat_rotatez.c
-quat_fromaxisangle.c
-quat_frommtx.c
-quat_frompitchyawroll.c
+quat_rotatey.c
+quat_rotatez.c
 libcitro3dd.a
-quat_lookat.c
-quat_multiply.c
-quat_pow.c
-quat_rotate.c
-quat_rotatex.c
-quat_rotatey.c
-quat_rotatez.c
 libcitro3d.a
 make: Leaving directory '/tmp/citro3d'
 make: Entering directory '/tmp/citro3d'
-make[1]: '/tmp/citro3d/lib/libcitro3d.a' is up to date.
 make[1]: '/tmp/citro3d/lib/libcitro3dd.a' is up to date.
 mkdir -p /opt/devkitpro/libctru
 bzip2 -cd citro3d-1.6.0.tar.bz2 | tar -xf - -C /opt/devkitpro/libctru
@@ -241,8 +240,8 @@ base.c
 font.c
 font.c
 spritesheet.c
-text.c
 spritesheet.c
+text.c
 text.c
 libcitro2dd.a
 libcitro2d.a
