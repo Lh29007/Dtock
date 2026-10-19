@@ -38,7 +38,7 @@ jobs:
       - name: Mettre à jour les dépôts devkitPro
         run: |
           {
-            if dkp-pacman -Q 3ds-dev 3ds-mbedtls >/dev/null 2>&1; then
+            if [ -f /opt/devkitpro/libctru/include/3ds.h ] && [ -f /opt/devkitpro/portlibs/3ds/include/mbedtls/ssl.h ]; then
               echo "3ds-dev et 3ds-mbedtls déjà présents dans l'image : mise à jour ignorée"
               exit 0
             fi
@@ -53,7 +53,7 @@ jobs:
       - name: Installer 3ds-dev et mbedTLS
         run: |
           {
-            if dkp-pacman -Q 3ds-dev 3ds-mbedtls >/dev/null 2>&1; then
+            if [ -f /opt/devkitpro/libctru/include/3ds.h ] && [ -f /opt/devkitpro/portlibs/3ds/include/mbedtls/ssl.h ]; then
               echo "3ds-dev et 3ds-mbedtls déjà présents : installation ignorée"
               exit 0
             fi
