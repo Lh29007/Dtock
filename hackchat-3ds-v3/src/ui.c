@@ -133,12 +133,22 @@ static void rect(float x, float y, float w, float h, uint32_t color)
     C2D_DrawRectSolid(x, y, g_z, w, h, color);
 }
 
-/* Pseudo tronqué pour tenir dans max_w pixels. */
+/* Largeur estimée d'un pseudo, sans mesure de texte (chaque mesure consomme des glyphes du buffer). */
+static float nick_width(const char *s)
+{
+    return (float)strlen(s) * g_char_w;
+}
+
+/* Pseudo tronqué pour tenir dans max_w pixels (estimation par caractères). */
 static void fit_nick(char *nick, size_t cap, const char *src, float max_w)
 {
+    size_t max_chars;
     snprintf(nick, cap, "%s", src);
-    while (strlen(nick) > 1 && text_width(TEXT_SCALE, nick) > max_w)
-        nick[strlen(nick) - 1] = '\0';
+    max_chars = (size_t)(max_w / g_char_w);
+    if (max_chars < 1)
+        max_chars = 1;
+    if (strlen(nick) > max_chars)
+        nick[max_chars] = '\0';
 }
 
 /* ---------- Mise en lignes du journal ---------- */
@@ -294,7 +304,7 @@ static void draw_top(const hc_state *st, const ui_view *v)
             char nick[32];
             float nx;
             fit_nick(nick, sizeof nick, l->nick, (float)nick_r - 2.0f);
-            nx = (float)nick_r - text_width(TEXT_SCALE, nick);
+            nx = (float)nick_r - nick_width(nick);
             if (nx < 2.0f) nx = 2.0f;
             text_draw(nx, y, TEXT_SCALE, l->nick_color, nick);
         }
@@ -483,7 +493,8 @@ void ui_init(void)
 
     g_top = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     g_bot = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
-    g_tb = C2D_TextBufNew(8192);
+    /* nombre de glyphes (pas d'octets) gardés par frame : marge large */
+    g_tb = C2D_TextBufNew(16384);
 
     /* largeur moyenne d'un caractère, pour couper le journal à la bonne largeur */
     g_char_w = text_width(TEXT_SCALE, ref) / (float)(sizeof ref - 1);
