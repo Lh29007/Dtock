@@ -2,48 +2,54 @@
 # AlphaCraft : prototype Nintendo 3DS
 # Produit : AlphaCraft.3dsx
 #
-# source/textures.h est généré par tools/gen_textures.py ; relancer ce script après
-# toute modification de textures/.
+# Makefile autonome (même structure que hackchat-3ds, qui compile en CI).
+# source/textures.h est généré par tools/gen_textures.py et commité.
 #---------------------------------------------------------------------------------
 ifeq ($(strip $(DEVKITPRO)),)
-$(error "DEVKITPRO doit être défini")
+$(error DEVKITPRO n'est pas défini)
 endif
 
-TOPDIR ?= $(CURDIR)
+DEVKITARM ?= $(DEVKITPRO)/devkitARM
+CTRULIB   ?= $(DEVKITPRO)/libctru
+PORTLIBS  ?= $(DEVKITPRO)/portlibs/3ds
 
-#---------------------------------------------------------------------------------
-# Cible
-#---------------------------------------------------------------------------------
-TARGET      := AlphaCraft
-BUILD       := build
-SOURCES     := source
-DATA        :=
-INCLUDES    := source
+export PATH := $(DEVKITPRO)/tools/bin:$(DEVKITARM)/bin:$(PATH)
 
+CC      := $(DEVKITARM)/bin/arm-none-eabi-gcc
+TARGET  := AlphaCraft
 APP_TITLE       := AlphaCraft
 APP_DESCRIPTION := Prototype Minecraft Alpha pour 3DS
 APP_AUTHOR      := Lh29007
 
-#---------------------------------------------------------------------------------
-# Options de compilation
-#---------------------------------------------------------------------------------
 ARCH    := -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
-
-CFLAGS  := -g -Wall -O2 -mword-relocations -ffunction-sections \
-           $(ARCH)
-
-CFLAGS  += $(INCLUDE) -DARM11 -D_3DS
-
-CXXFLAGS := $(CFLAGS) -fno-rtti -fno-exceptions
-
-ASFLAGS := -g $(ARCH)
-LDFLAGS  = -specs=3dsx.specs -g $(ARCH)
-
+INCLUDE := -Isource -I$(CTRULIB)/include -I$(PORTLIBS)/include
+CFLAGS  := -g -Wall -O2 -std=gnu11 -mword-relocations -ffunction-sections \
+           $(ARCH) $(INCLUDE) -D__3DS__ -D_3DS
+LDFLAGS := -specs=3dsx.specs -g $(ARCH) -L$(CTRULIB)/lib -L$(PORTLIBS)/lib
 LIBS    := -lctru -lm
 
-LIBDIRS := $(CTRULIB)
+SRC  := $(wildcard source/*.c)
+OBJS := $(patsubst source/%.c,build/%.o,$(SRC))
 
-#---------------------------------------------------------------------------------
-# Build standard devkitPro (source/textures.h est généré et commité)
-#---------------------------------------------------------------------------------
-include $(DEVKITARM)/3ds_rules
+.PHONY: all clean
+
+all: $(TARGET).3dsx
+
+build:
+	mkdir -p build
+
+build/%.o: source/%.c source/textures.h | build
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(TARGET).elf: $(OBJS)
+	$(CC) $(LDFLAGS) $^ $(LIBS) -o $@
+
+$(TARGET).smdh:
+	smdhtool --create "$(APP_TITLE)" "$(APP_DESCRIPTION)" "$(APP_AUTHOR)" \
+		$(CTRULIB)/default_icon.png $@
+
+$(TARGET).3dsx: $(TARGET).elf $(TARGET).smdh
+	3dsxtool $(TARGET).elf $@ --smdh=$(TARGET).smdh
+
+clean:
+	rm -rf build $(TARGET).elf $(TARGET).3dsx $(TARGET).smdh
