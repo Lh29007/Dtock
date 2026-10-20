@@ -1,4 +1,11 @@
-=== Run 39412134908 | commit 4015b879a9cae0b0391c47abf3d9ffc78dffd4e4 | statut du job : failure ===
+=== Run 39412237237 | commit 342ce47fd624fd55d013f57cbc7b30b47b306113 | statut du job : failure ===
+== sonde : dossier de logs ==
+total 12
+drwxr-xr-x 2 root root 4096 Oct 20 11:03 .
+drwxr-xr-x 6 1001 1001 4096 Oct 20 11:03 ..
+-rw-r--r-- 1 root root 3424 Oct 20 11:03 install.log
+RUNNER_TEMP=/__w/_temp
+compile step started Tue Oct 20 11:03:50 AM UTC 2026
 
 ----- install.log -----
 == Contenu initial de l'image ==
