@@ -1,10 +1,10 @@
-=== Run 39412338888 | commit 2149e79a3b4db5557987471185ce203076beffd7 | statut du job : failure ===
+=== Run 39412469359 | commit 148d7885677faddb29aa9471d61d4bcc57509a08 | statut du job : failure ===
 == sonde : dossier de logs ==
 total 16
-drwxr-xr-x 2 root root 4096 Oct 20 11:04 .
-drwxr-xr-x 6 1001 1001 4096 Oct 20 11:04 ..
--rw-r--r-- 1 root root  493 Oct 20 11:04 build.log
--rw-r--r-- 1 root root 3424 Oct 20 11:04 install.log
+drwxr-xr-x 2 root root 4096 Oct 20 11:05 .
+drwxr-xr-x 6 1001 1001 4096 Oct 20 11:05 ..
+-rw-r--r-- 1 root root 2182 Oct 20 11:05 build.log
+-rw-r--r-- 1 root root 3424 Oct 20 11:05 install.log
 RUNNER_TEMP=/__w/_temp
 (sonde compile absente)
 
@@ -116,12 +116,33 @@ libctru déjà présent, pas d'installation.
 workspace=/__w/Dtock/Dtock | DEVKITPRO=/opt/devkitpro
 dans /__w/Dtock/Dtock/alphacraft
 total 28
-drwxr-xr-x  5 root root 4096 Oct 20 11:04 .
-drwxr-xr-x 14 1001 1001 4096 Oct 20 11:04 ..
--rw-r--r--  1 root root 1657 Oct 20 11:04 Makefile
--rw-r--r--  1 root root  938 Oct 20 11:04 README.md
-drwxr-xr-x  2 root root 4096 Oct 20 11:04 source
-drwxr-xr-x  2 root root 4096 Oct 20 11:04 textures
-drwxr-xr-x  2 root root 4096 Oct 20 11:04 tools
+drwxr-xr-x  5 root root 4096 Oct 20 11:05 .
+drwxr-xr-x 14 1001 1001 4096 Oct 20 11:05 ..
+-rw-r--r--  1 root root 1724 Oct 20 11:05 Makefile
+-rw-r--r--  1 root root  938 Oct 20 11:05 README.md
+drwxr-xr-x  2 root root 4096 Oct 20 11:05 source
+drwxr-xr-x  2 root root 4096 Oct 20 11:05 textures
+drwxr-xr-x  2 root root 4096 Oct 20 11:05 tools
 == make ==
-make: *** No targets.  Stop.
+/opt/devkitpro/devkitARM/bin/arm-none-eabi-gcc -g -Wall -O2 -std=gnu11 -mword-relocations -ffunction-sections -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft -Isource -I/opt/devkitpro/libctru/include -I/opt/devkitpro/portlibs/3ds/include -D__3DS__ -D_3DS -c source/main.c -o build/main.o
+smdhtool --create "AlphaCraft" "Prototype Minecraft Alpha pour 3DS" "Lh29007" \
+	/opt/devkitpro/libctru/default_icon.png AlphaCraft.smdh
+source/main.c: In function 'render_world':
+source/main.c:236:17: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+  236 |                 if (tx < 0) tx = 0; if (tx >= TEX_SIZE) tx = TEX_SIZE - 1;
+      |                 ^~
+source/main.c:236:37: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  236 |                 if (tx < 0) tx = 0; if (tx >= TEX_SIZE) tx = TEX_SIZE - 1;
+      |                                     ^~
+source/main.c:237:17: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+  237 |                 if (ty < 0) ty = 0; if (ty >= TEX_SIZE) ty = TEX_SIZE - 1;
+      |                 ^~
+source/main.c:237:37: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  237 |                 if (ty < 0) ty = 0; if (ty >= TEX_SIZE) ty = TEX_SIZE - 1;
+      |                                     ^~
+source/main.c: In function 'run_menu':
+source/main.c:302:9: error: implicit declaration of function 'gfxWaitForVBlank'; did you mean 'gspWaitForVBlank'? [-Wimplicit-function-declaration]
+  302 |         gfxWaitForVBlank();
+      |         ^~~~~~~~~~~~~~~~
+      |         gspWaitForVBlank
+make: *** [Makefile:42: build/main.o] Error 1
