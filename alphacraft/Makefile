@@ -38,7 +38,7 @@ all: $(TARGET).3dsx
 build:
 	mkdir -p build
 
-build/%.o: source/%.c source/textures.h | build
+build/%.o: source/%.c source/textures.h source/font.h | build
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TARGET).elf: $(OBJS)
