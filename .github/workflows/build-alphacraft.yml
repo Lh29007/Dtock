@@ -47,6 +47,7 @@ jobs:
 
       - name: Compiler
         run: |
+          echo "compile step started $(date)" >> "$GITHUB_WORKSPACE/ci-probe.txt" || true
           mkdir -p "$RUNNER_TEMP/logs"
           # Tout ce que l'étape écrit (stdout et stderr) est copié dans build.log.
           exec > >(tee -a "$RUNNER_TEMP/logs/build.log") 2>&1
@@ -92,6 +93,10 @@ jobs:
           mkdir -p ci-logs
           {
             echo "=== Run ${GITHUB_RUN_ID} | commit ${GITHUB_SHA} | statut du job : ${{ job.status }} ==="
+            echo "== sonde : dossier de logs =="
+            ls -la "$RUNNER_TEMP/logs" 2>&1 || true
+            echo "RUNNER_TEMP=$RUNNER_TEMP"
+            cat "$GITHUB_WORKSPACE/ci-probe.txt" 2>/dev/null || echo "(sonde compile absente)"
             for f in "$RUNNER_TEMP/logs/install.log" "$RUNNER_TEMP/logs/build.log"; do
               echo ""
               echo "----- $(basename "$f") -----"
