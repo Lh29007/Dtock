@@ -48,9 +48,16 @@ jobs:
       - name: Compiler
         working-directory: alphacraft
         run: |
-          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/logs"
+          # Tout ce que l'étape écrit (stdout et stderr) est copié dans build.log.
+          exec > >(tee -a "$RUNNER_TEMP/logs/build.log") 2>&1
+          echo "== Diagnostic =="
+          echo "pwd=$(pwd) | RUNNER_TEMP=$RUNNER_TEMP | DEVKITPRO=${DEVKITPRO:-vide} | DEVKITARM=${DEVKITARM:-vide}"
+          ls -la
+          command -v make gcc arm-none-eabi-gcc 2>&1 || true
+          echo "== make =="
           mkdir -p build
-          make -j"$(nproc)" 2>&1 | tee "$RUNNER_TEMP/logs/build.log"
+          make -j"$(nproc)"
 
       - name: Vérifier le résultat
         working-directory: alphacraft
