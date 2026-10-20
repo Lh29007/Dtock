@@ -1,11 +1,12 @@
-=== Run 39412237237 | commit 342ce47fd624fd55d013f57cbc7b30b47b306113 | statut du job : failure ===
+=== Run 39412338888 | commit 2149e79a3b4db5557987471185ce203076beffd7 | statut du job : failure ===
 == sonde : dossier de logs ==
-total 12
-drwxr-xr-x 2 root root 4096 Oct 20 11:03 .
-drwxr-xr-x 6 1001 1001 4096 Oct 20 11:03 ..
--rw-r--r-- 1 root root 3424 Oct 20 11:03 install.log
+total 16
+drwxr-xr-x 2 root root 4096 Oct 20 11:04 .
+drwxr-xr-x 6 1001 1001 4096 Oct 20 11:04 ..
+-rw-r--r-- 1 root root  493 Oct 20 11:04 build.log
+-rw-r--r-- 1 root root 3424 Oct 20 11:04 install.log
 RUNNER_TEMP=/__w/_temp
-compile step started Tue Oct 20 11:03:50 AM UTC 2026
+(sonde compile absente)
 
 ----- install.log -----
 == Contenu initial de l'image ==
@@ -111,4 +112,16 @@ tex3ds 2.3.0-4
 libctru déjà présent, pas d'installation.
 
 ----- build.log -----
-(absent)
+== Diagnostic ==
+workspace=/__w/Dtock/Dtock | DEVKITPRO=/opt/devkitpro
+dans /__w/Dtock/Dtock/alphacraft
+total 28
+drwxr-xr-x  5 root root 4096 Oct 20 11:04 .
+drwxr-xr-x 14 1001 1001 4096 Oct 20 11:04 ..
+-rw-r--r--  1 root root 1657 Oct 20 11:04 Makefile
+-rw-r--r--  1 root root  938 Oct 20 11:04 README.md
+drwxr-xr-x  2 root root 4096 Oct 20 11:04 source
+drwxr-xr-x  2 root root 4096 Oct 20 11:04 textures
+drwxr-xr-x  2 root root 4096 Oct 20 11:04 tools
+== make ==
+make: *** No targets.  Stop.
