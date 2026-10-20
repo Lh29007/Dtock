@@ -79,9 +79,12 @@ jobs:
         if: always() && github.ref == 'refs/heads/main'
         continue-on-error: true
         run: |
+          # Le conteneur devkitPro n'a pas forcément git, et son utilisateur n'est pas propriétaire du dépôt.
+          command -v git >/dev/null 2>&1 || (apt-get update -qq && apt-get install -y -qq git >/dev/null)
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           mkdir -p ci-logs
           {
-            echo "=== Run ${GITHUB_RUN_ID} | commit ${GITHUB_SHA} | résultat job : ${JOB_STATUS:-inconnu} ==="
+            echo "=== Run ${GITHUB_RUN_ID} | commit ${GITHUB_SHA} | statut du job : ${{ job.status }} ==="
             for f in "$RUNNER_TEMP/logs/install.log" "$RUNNER_TEMP/logs/build.log"; do
               echo ""
               echo "----- $(basename "$f") -----"
@@ -96,8 +99,8 @@ jobs:
             exit 0
           fi
           git commit -q -m "Log CI AlphaCraft (run ${GITHUB_RUN_ID})"
-          git pull -q --rebase origin main
-          git push -q origin HEAD:main
+          git pull -q --rebase origin main || true
+          git push origin HEAD:main
 
       - name: Résumé des erreurs dans la page du run
         if: failure()
