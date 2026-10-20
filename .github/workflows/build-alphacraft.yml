@@ -47,18 +47,21 @@ jobs:
 
       - name: Compiler
         run: |
-          echo "compile step started $(date)" >> "$GITHUB_WORKSPACE/ci-probe.txt" || true
           mkdir -p "$RUNNER_TEMP/logs"
-          # Tout ce que l'étape écrit (stdout et stderr) est copié dans build.log.
-          exec > >(tee -a "$RUNNER_TEMP/logs/build.log") 2>&1
-          echo "== Diagnostic =="
-          echo "pwd=$(pwd) | workspace=$GITHUB_WORKSPACE | DEVKITPRO=${DEVKITPRO:-vide}"
-          cd "$GITHUB_WORKSPACE/alphacraft"
-          echo "dans $(pwd)"
-          ls -la
-          echo "== make =="
-          mkdir -p build
-          make -j"$(nproc)"
+          LOG="$RUNNER_TEMP/logs/build.log"
+          {
+            echo "== Diagnostic =="
+            echo "workspace=$GITHUB_WORKSPACE | DEVKITPRO=${DEVKITPRO:-vide}"
+            cd "$GITHUB_WORKSPACE/alphacraft"
+            echo "dans $(pwd)"
+            ls -la
+            echo "== make =="
+            mkdir -p build
+            make -j"$(nproc)"
+          } > "$LOG" 2>&1
+          rc=$?
+          cat "$LOG"
+          exit $rc
 
       - name: Vérifier le résultat
         run: |
