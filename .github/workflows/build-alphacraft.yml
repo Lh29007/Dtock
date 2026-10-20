@@ -26,11 +26,14 @@ jobs:
       - name: Préparer le dossier de logs
         run: mkdir -p "$RUNNER_TEMP/logs"
 
-      - name: Installer libctru (devkitPro)
+      - name: Installer libctru et mbedTLS (devkitPro)
         run: |
+          # Même séquence que les autres workflows du repo (qui fonctionnent).
+          # Tout est écrit dans install.log, même en cas d'échec.
           set -o pipefail
           for attempt in 1 2 3; do
-            if dkp-pacman -Syu --noconfirm && dkp-pacman -S --needed --noconfirm 3ds-dev 2>&1 | tee -a "$RUNNER_TEMP/logs/install.log"; then
+            if dkp-pacman -Syu --noconfirm 2>&1 | tee -a "$RUNNER_TEMP/logs/install.log" \
+               && dkp-pacman -S --needed --noconfirm 3ds-dev 3ds-mbedtls 2>&1 | tee -a "$RUNNER_TEMP/logs/install.log"; then
               break
             fi
             echo "Tentative $attempt échouée, nouvel essai dans 20 s…" | tee -a "$RUNNER_TEMP/logs/install.log"
@@ -74,10 +77,16 @@ jobs:
           {
             echo "## Échec du build AlphaCraft"
             echo ""
-            echo "Dernières lignes du log de compilation :"
+            echo "### Installation devkitPro (fin du log)"
             echo ""
             echo '```'
-            tail -n 80 "$RUNNER_TEMP/logs/build.log" 2>/dev/null || echo "(pas de log de compilation)"
+            tail -n 40 "$RUNNER_TEMP/logs/install.log" 2>/dev/null || echo "(pas de log d'installation)"
+            echo '```'
+            echo ""
+            echo "### Compilation (fin du log)"
+            echo ""
+            echo '```'
+            tail -n 80 "$RUNNER_TEMP/logs/build.log" 2>/dev/null || echo "(compilation non lancée)"
             echo '```'
             echo ""
             echo "Log complet : artefact **AlphaCraft-logs** en bas de cette page."
