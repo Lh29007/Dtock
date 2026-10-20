@@ -46,22 +46,22 @@ jobs:
           test -f /opt/devkitpro/libctru/lib/libctru.a
 
       - name: Compiler
-        working-directory: alphacraft
         run: |
           mkdir -p "$RUNNER_TEMP/logs"
           # Tout ce que l'étape écrit (stdout et stderr) est copié dans build.log.
           exec > >(tee -a "$RUNNER_TEMP/logs/build.log") 2>&1
           echo "== Diagnostic =="
-          echo "pwd=$(pwd) | RUNNER_TEMP=$RUNNER_TEMP | DEVKITPRO=${DEVKITPRO:-vide} | DEVKITARM=${DEVKITARM:-vide}"
+          echo "pwd=$(pwd) | workspace=$GITHUB_WORKSPACE | DEVKITPRO=${DEVKITPRO:-vide}"
+          cd "$GITHUB_WORKSPACE/alphacraft"
+          echo "dans $(pwd)"
           ls -la
-          command -v make gcc arm-none-eabi-gcc 2>&1 || true
           echo "== make =="
           mkdir -p build
           make -j"$(nproc)"
 
       - name: Vérifier le résultat
-        working-directory: alphacraft
         run: |
+          cd "$GITHUB_WORKSPACE/alphacraft"
           test -f AlphaCraft.3dsx || { echo "AlphaCraft.3dsx absent après compilation" | tee -a "$RUNNER_TEMP/logs/build.log"; exit 1; }
           ls -la AlphaCraft.3dsx
 
