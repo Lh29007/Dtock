@@ -233,8 +233,10 @@ static void render_world(u8 *fb)
             if (h.hit) {
                 int tx = (int)(h.u * TEX_SIZE);
                 int ty = (int)(h.v * TEX_SIZE);
-                if (tx < 0) tx = 0; if (tx >= TEX_SIZE) tx = TEX_SIZE - 1;
-                if (ty < 0) ty = 0; if (ty >= TEX_SIZE) ty = TEX_SIZE - 1;
+                if (tx < 0) tx = 0;
+                if (tx >= TEX_SIZE) tx = TEX_SIZE - 1;
+                if (ty < 0) ty = 0;
+                if (ty >= TEX_SIZE) ty = TEX_SIZE - 1;
                 const unsigned char *tex = block_textures[h.block];
                 const unsigned char *c = tex + (ty * TEX_SIZE + tx) * 3;
                 // Ombrage par face
@@ -299,7 +301,7 @@ static int run_menu(void)
 
         gfxFlushBuffers();
         gfxSwapBuffers();
-        gfxWaitForVBlank();
+        gspWaitForVBlank();
     }
     return 0;
 }
@@ -423,7 +425,7 @@ static int run_game(void)
 
         gfxFlushBuffers();
         gfxSwapBuffers();
-        gfxWaitForVBlank();
+        gspWaitForVBlank();
     }
     return 1;
 }
