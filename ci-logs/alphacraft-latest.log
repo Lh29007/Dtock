@@ -1,10 +1,10 @@
-=== Run 39412566518 | commit 28dbad57a6d9385fe43ed067dabd918a18712e50 | statut du job : success ===
+=== Run 39417996398 | commit ace3c2978bd83c5ef053fd2e3403f54563e89007 | statut du job : success ===
 == sonde : dossier de logs ==
 total 16
-drwxr-xr-x 2 root root 4096 Oct 20 11:06 .
-drwxr-xr-x 6 1001 1001 4096 Oct 20 11:06 ..
--rw-r--r-- 1 root root 1187 Oct 20 11:06 build.log
--rw-r--r-- 1 root root 3424 Oct 20 11:06 install.log
+drwxr-xr-x 2 root root 4096 Oct 20 11:52 .
+drwxr-xr-x 6 1001 1001 4096 Oct 20 11:52 ..
+-rw-r--r-- 1 root root 1187 Oct 20 11:52 build.log
+-rw-r--r-- 1 root root 3424 Oct 20 11:52 install.log
 RUNNER_TEMP=/__w/_temp
 (sonde compile absente)
 
@@ -116,13 +116,13 @@ libctru déjà présent, pas d'installation.
 workspace=/__w/Dtock/Dtock | DEVKITPRO=/opt/devkitpro
 dans /__w/Dtock/Dtock/alphacraft
 total 28
-drwxr-xr-x  5 root root 4096 Oct 20 11:06 .
-drwxr-xr-x 14 1001 1001 4096 Oct 20 11:06 ..
--rw-r--r--  1 root root 1724 Oct 20 11:06 Makefile
--rw-r--r--  1 root root  938 Oct 20 11:06 README.md
-drwxr-xr-x  2 root root 4096 Oct 20 11:06 source
-drwxr-xr-x  2 root root 4096 Oct 20 11:06 textures
-drwxr-xr-x  2 root root 4096 Oct 20 11:06 tools
+drwxr-xr-x  5 root root 4096 Oct 20 11:52 .
+drwxr-xr-x 14 1001 1001 4096 Oct 20 11:52 ..
+-rw-r--r--  1 root root 1738 Oct 20 11:52 Makefile
+-rw-r--r--  1 root root  938 Oct 20 11:52 README.md
+drwxr-xr-x  2 root root 4096 Oct 20 11:52 source
+drwxr-xr-x  2 root root 4096 Oct 20 11:52 textures
+drwxr-xr-x  2 root root 4096 Oct 20 11:52 tools
 == make ==
 /opt/devkitpro/devkitARM/bin/arm-none-eabi-gcc -g -Wall -O2 -std=gnu11 -mword-relocations -ffunction-sections -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft -Isource -I/opt/devkitpro/libctru/include -I/opt/devkitpro/portlibs/3ds/include -D__3DS__ -D_3DS -c source/main.c -o build/main.o
 smdhtool --create "AlphaCraft" "Prototype Minecraft Alpha pour 3DS" "Lh29007" \
