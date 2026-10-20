@@ -75,6 +75,30 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+      - name: Publier le log dans la repo (ci-logs/alphacraft-latest.log)
+        if: always() && github.ref == 'refs/heads/main'
+        continue-on-error: true
+        run: |
+          mkdir -p ci-logs
+          {
+            echo "=== Run ${GITHUB_RUN_ID} | commit ${GITHUB_SHA} | résultat job : ${JOB_STATUS:-inconnu} ==="
+            for f in "$RUNNER_TEMP/logs/install.log" "$RUNNER_TEMP/logs/build.log"; do
+              echo ""
+              echo "----- $(basename "$f") -----"
+              cat "$f" 2>/dev/null || echo "(absent)"
+            done
+          } > ci-logs/alphacraft-latest.log
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ci-logs/alphacraft-latest.log
+          if git diff --cached --quiet; then
+            echo "Log inchangé."
+            exit 0
+          fi
+          git commit -q -m "Log CI AlphaCraft (run ${GITHUB_RUN_ID})"
+          git pull -q --rebase origin main
+          git push -q origin HEAD:main
+
       - name: Résumé des erreurs dans la page du run
         if: failure()
         run: |
