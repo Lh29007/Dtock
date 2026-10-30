@@ -39,12 +39,17 @@ jobs:
       - name: Installer les composants Android (plateforme 36.1, CMake 3.22.1)
         run: |
           LOG="$RUNNER_TEMP/logs/sdk.log"
+          SDKM=$(find "$ANDROID_HOME" -path "*cmdline-tools*" -name sdkmanager -type f 2>/dev/null | head -n1)
           {
             echo "ANDROID_HOME=$ANDROID_HOME"
-            yes | sdkmanager --licenses >/dev/null || true
-            sdkmanager "platforms;android-36.1" "cmake;3.22.1"
+            echo "sdkmanager=$SDKM"
+            test -n "$SDKM" || { echo "sdkmanager introuvable dans ANDROID_HOME"; exit 1; }
+            yes 2>/dev/null | "$SDKM" --licenses >/dev/null || true
+            "$SDKM" "platforms;android-36.1" "cmake;3.22.1"
           } > "$LOG" 2>&1
+          rc=$?
           cat "$LOG"
+          exit $rc
 
       - name: Restreindre l'ABI à armeabi-v7a
         run: |
