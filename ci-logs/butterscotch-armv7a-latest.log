@@ -1,0 +1,13 @@
+=== Run 41049908834 | commit 232237b3ab6acc33b9ffd7e486b2b2c358f72297 | statut du job : failure ===
+
+----- sdk.log -----
+ANDROID_HOME=/usr/local/lib/android/sdk
+/home/runner/work/_temp/99df61c9-dcd7-4732-89af-b285c8b2b86b.sh: line 4: sdkmanager: command not found
+yes: standard output: Broken pipe
+/home/runner/work/_temp/99df61c9-dcd7-4732-89af-b285c8b2b86b.sh: line 5: sdkmanager: command not found
+
+----- patch.log -----
+(absent)
+
+----- build.log -----
+(absent)
