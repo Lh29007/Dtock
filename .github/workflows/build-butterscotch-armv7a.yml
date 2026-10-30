@@ -1,0 +1,126 @@
+name: Build Butterscotch Android (armv7a)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-butterscotch-armv7a.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Compiler l'APK Butterscotch (armeabi-v7a)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Récupérer Dtock
+        uses: actions/checkout@v4
+
+      - name: Récupérer Butterscotch
+        uses: actions/checkout@v4
+        with:
+          repository: MrPowerGamerBR/Butterscotch
+          path: butterscotch
+          fetch-depth: 0   # le build lit l'historique git (liste des contributeurs)
+
+      - name: Préparer le dossier de logs
+        run: mkdir -p "$RUNNER_TEMP/logs"
+
+      - name: Installer Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Installer les composants Android (plateforme 36.1, CMake 3.22.1)
+        run: |
+          LOG="$RUNNER_TEMP/logs/sdk.log"
+          {
+            echo "ANDROID_HOME=$ANDROID_HOME"
+            yes | sdkmanager --licenses >/dev/null || true
+            sdkmanager "platforms;android-36.1" "cmake;3.22.1"
+          } > "$LOG" 2>&1
+          cat "$LOG"
+
+      - name: Restreindre l'ABI à armeabi-v7a
+        run: |
+          F=butterscotch/src/android/frontend/app/build.gradle.kts
+          sed -i 's/abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64")/abiFilters += listOf("armeabi-v7a")/' "$F"
+          grep -n "abiFilters" "$F" | tee "$RUNNER_TEMP/logs/patch.log"
+
+      - name: Compiler l'APK release
+        working-directory: butterscotch/src/android/frontend
+        run: |
+          chmod +x gradlew
+          rc=0
+          ./gradlew :app:assembleRelease --stacktrace > "$RUNNER_TEMP/logs/build.log" 2>&1 || rc=$?
+          tail -n 300 "$RUNNER_TEMP/logs/build.log"
+          exit $rc
+
+      - name: Vérifier l'APK et les ABI
+        if: success()
+        run: |
+          APK=$(find butterscotch/src/android/frontend/app/build/outputs/apk/release -name "*.apk" | head -n1)
+          test -n "$APK" || { echo "APK introuvable" | tee -a "$RUNNER_TEMP/logs/build.log"; exit 1; }
+          ls -la "$APK" | tee -a "$RUNNER_TEMP/logs/build.log"
+          unzip -l "$APK" | grep "lib/" | tee -a "$RUNNER_TEMP/logs/build.log"
+
+      - name: Garder l'APK en artefact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: butterscotch-armv7a
+          path: butterscotch/src/android/frontend/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+
+      - name: Publier les logs (toujours, y compris en cas d'échec)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: butterscotch-armv7a-logs
+          path: ${{ runner.temp }}/logs/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publier le log dans la repo (ci-logs/butterscotch-armv7a-latest.log)
+        if: always() && github.ref == 'refs/heads/main'
+        continue-on-error: true
+        run: |
+          mkdir -p ci-logs
+          {
+            echo "=== Run ${GITHUB_RUN_ID} | commit ${GITHUB_SHA} | statut du job : ${{ job.status }} ==="
+            for f in "$RUNNER_TEMP/logs/sdk.log" "$RUNNER_TEMP/logs/patch.log" "$RUNNER_TEMP/logs/build.log"; do
+              echo ""
+              echo "----- $(basename "$f") -----"
+              cat "$f" 2>/dev/null || echo "(absent)"
+            done
+          } > ci-logs/butterscotch-armv7a-latest.log
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ci-logs/butterscotch-armv7a-latest.log
+          if git diff --cached --quiet; then
+            echo "Log inchangé."
+            exit 0
+          fi
+          git commit -q -m "Log CI Butterscotch armv7a (run ${GITHUB_RUN_ID})"
+          git pull -q --rebase origin main || true
+          git push origin HEAD:main
+
+      - name: Résumé des erreurs dans la page du run
+        if: failure()
+        run: |
+          {
+            echo "## Échec du build Butterscotch armv7a"
+            echo ""
+            echo "### Fin du log Gradle"
+            echo ""
+            echo '```'
+            tail -n 120 "$RUNNER_TEMP/logs/build.log" 2>/dev/null || echo "(pas de log de build)"
+            echo '```'
+            echo ""
+            echo "Log complet : artefact **butterscotch-armv7a-logs** en bas de cette page, et ci-logs/butterscotch-armv7a-latest.log dans la repo."
+          } >> "$GITHUB_STEP_SUMMARY"
