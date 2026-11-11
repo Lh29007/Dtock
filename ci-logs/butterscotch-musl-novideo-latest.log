@@ -1,0 +1,236 @@
+=== Run 43018195421 | commit 957ac7381b653a796066db20e0e96aea7fe009d0 | variante novideo | statut : success ===
+
+----- apk-novideo.log -----
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.20/main/x86_64/APKINDEX.tar.gz
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.20/community/x86_64/APKINDEX.tar.gz
+(1/99) Upgrading musl (1.2.5-r3 -> 1.2.5-r4)
+(2/99) Installing libgcc (13.2.1_git20240309-r1)
+(3/99) Installing jansson (2.14-r4)
+(4/99) Installing libstdc++ (13.2.1_git20240309-r1)
+(5/99) Installing zstd-libs (1.5.6-r0)
+(6/99) Installing binutils (2.42-r1)
+(7/99) Installing libmagic (5.45-r1)
+(8/99) Installing file (5.45-r1)
+(9/99) Installing libgomp (13.2.1_git20240309-r1)
+(10/99) Installing libatomic (13.2.1_git20240309-r1)
+(11/99) Installing gmp (6.3.0-r1)
+(12/99) Installing isl26 (0.26-r1)
+(13/99) Installing mpfr4 (4.2.1-r0)
+(14/99) Installing mpc1 (1.3.1-r1)
+(15/99) Installing gcc (13.2.1_git20240309-r1)
+(16/99) Installing libstdc++-dev (13.2.1_git20240309-r1)
+(17/99) Installing musl-dev (1.2.5-r4)
+(18/99) Installing g++ (13.2.1_git20240309-r1)
+(19/99) Installing make (4.4.1-r2)
+(20/99) Installing fortify-headers (1.1-r3)
+(21/99) Installing patch (2.7.6-r10)
+(22/99) Installing build-base (0.5-r3)
+(23/99) Installing libacl (2.3.2-r0)
+(24/99) Installing libbz2 (1.0.8-r6)
+(25/99) Installing libexpat (2.8.1-r0)
+(26/99) Installing lz4-libs (1.9.4-r5)
+(27/99) Installing xz-libs (5.8.3-r0)
+(28/99) Installing libarchive (3.8.3-r0)
+(29/99) Installing rhash-libs (1.4.4-r0)
+(30/99) Installing libuv (1.48.0-r0)
+(31/99) Installing cmake (3.29.3-r0)
+(32/99) Installing libxau (1.0.11-r4)
+(33/99) Installing libmd (1.1.0-r0)
+(34/99) Installing libbsd (0.12.2-r0)
+(35/99) Installing libxdmcp (1.1.5-r1)
+(36/99) Installing libxcb (1.16.1-r0)
+(37/99) Installing libx11 (1.8.9-r1)
+(38/99) Installing libxext (1.3.6-r2)
+(39/99) Installing libxinerama (1.1.5-r4)
+(40/99) Installing pkgconf (2.2.0-r0)
+(41/99) Installing xorgproto (2024.1-r0)
+(42/99) Installing libxau-dev (1.0.11-r4)
+(43/99) Installing libffi (3.4.6-r0)
+(44/99) Installing gdbm (1.23-r1)
+(45/99) Installing mpdecimal (4.0.0-r0)
+(46/99) Installing ncurses-terminfo-base (6.4_p20240420-r2)
+(47/99) Installing libncursesw (6.4_p20240420-r2)
+(48/99) Installing libpanelw (6.4_p20240420-r2)
+(49/99) Installing readline (8.2.10-r0)
+(50/99) Installing sqlite-libs (3.45.3-r3)
+(51/99) Installing python3 (3.12.13-r0)
+(52/99) Installing python3-pycache-pyc0 (3.12.13-r0)
+(53/99) Installing pyc (3.12.13-r0)
+(54/99) Installing xcb-proto-pyc (1.16.0-r1)
+(55/99) Installing python3-pyc (3.12.13-r0)
+(56/99) Installing xcb-proto (1.16.0-r1)
+(57/99) Installing libxdmcp-dev (1.1.5-r1)
+(58/99) Installing libxcb-dev (1.16.1-r0)
+(59/99) Installing xtrans (1.5.0-r0)
+(60/99) Installing libx11-dev (1.8.9-r1)
+(61/99) Installing libxext-dev (1.3.6-r2)
+(62/99) Installing libxinerama-dev (1.1.5-r4)
+(63/99) Installing linux-headers (6.6-r0)
+(64/99) Installing hwdata-pci (0.382-r0)
+(65/99) Installing libpciaccess (0.18.1-r0)
+(66/99) Installing libdrm (2.4.120-r0)
+(67/99) Installing libpciaccess-dev (0.18.1-r0)
+(68/99) Installing libdrm-dev (2.4.120-r0)
+(69/99) Installing libxdamage (1.1.6-r5)
+(70/99) Installing libxfixes (6.0.1-r4)
+(71/99) Installing libxfixes-dev (6.0.1-r4)
+(72/99) Installing libxdamage-dev (1.1.6-r5)
+(73/99) Installing libxshmfence (1.3.2-r6)
+(74/99) Installing libxshmfence-dev (1.3.2-r6)
+(75/99) Installing mesa (24.0.9-r1)
+(76/99) Installing wayland-libs-server (1.22.0-r4)
+(77/99) Installing mesa-gbm (24.0.9-r1)
+(78/99) Installing mesa-glapi (24.0.9-r1)
+(79/99) Installing wayland-libs-client (1.22.0-r4)
+(80/99) Installing mesa-egl (24.0.9-r1)
+(81/99) Installing libxxf86vm (1.1.5-r6)
+(82/99) Installing mesa-gl (24.0.9-r1)
+(83/99) Installing mesa-gles (24.0.9-r1)
+(84/99) Installing libxml2 (2.12.10-r0)
+(85/99) Installing llvm17-libs (17.0.6-r2)
+(86/99) Installing mesa-osmesa (24.0.9-r1)
+(87/99) Installing clang17-headers (17.0.6-r1)
+(88/99) Installing libclc (17.0.6-r0)
+(89/99) Installing spirv-llvm-translator-libs (17.0.0-r0)
+(90/99) Installing spirv-tools (1.3.261.1-r0)
+(91/99) Installing clang17-libs (17.0.6-r1)
+(92/99) Installing libelf (0.191-r0)
+(93/99) Installing mesa-rusticl (24.0.9-r1)
+(94/99) Installing mesa-xatracker (24.0.9-r1)
+(95/99) Installing libxxf86vm-dev (1.1.5-r6)
+(96/99) Installing mesa-dev (24.0.9-r1)
+(97/99) Installing glfw (3.3.9-r0)
+(98/99) Installing glfw-dev (3.3.9-r0)
+(99/99) Installing samurai (1.2-r5)
+Executing busybox-1.36.1-r31.trigger
+OK: 718 MiB in 112 packages
+
+----- build-novideo.log -----
+[1/65] Building C object CMakeFiles/glad.dir/vendor/glad/src/glad.c.o
+[2/65] Building C object CMakeFiles/sha1.dir/vendor/sha1/sha1.c.o
+[3/65] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/randtable.c.o
+[4/65] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/huffman.c.o
+[5/65] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/decompress.c.o
+[6/65] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/crctable.c.o
+[7/65] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/bzlib.c.o
+[8/65] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/bz_internal_error.c.o
+[9/65] Building C object CMakeFiles/butterscotch.dir/src/backends/glfw3.c.o
+[10/65] Building C object CMakeFiles/butterscotch.dir/vendor/tinyfd/tinyfiledialogs.c.o
+[11/65] Linking C static library libsha1.a
+[12/65] Building C object CMakeFiles/butterscotch.dir/src/image/image_decoder.c.o
+[13/65] Building C object CMakeFiles/butterscotch.dir/src/gl_legacy/gl_legacy_renderer.c.o
+[14/65] Linking C static library libglad.a
+[15/65] Building C object CMakeFiles/butterscotch.dir/src/gl_common/gl_common.c.o
+[16/65] Building C object CMakeFiles/butterscotch.dir/src/video/null_video.c.o
+[17/65] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz_tinfl.c.o
+[18/65] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz_tdef.c.o
+[19/65] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz.c.o
+[20/65] Linking C static library libbzip2.a
+[21/65] Building C object CMakeFiles/butterscotch.dir/vendor/base64/base64.c.o
+[22/65] Building C object CMakeFiles/butterscotch.dir/vendor/md5/md5.c.o
+[23/65] Building C object CMakeFiles/butterscotch.dir/src/default_font/jetbrains_mono_extrabold_font.c.o
+[24/65] Building C object CMakeFiles/butterscotch.dir/src/default_font/default_font.c.o
+[25/65] Building C object CMakeFiles/butterscotch.dir/src/audio/miniaudio/ma_audio_system.c.o
+[26/65] Building C object CMakeFiles/butterscotch.dir/src/cli/stb_impl.c.o
+[27/65] Building C object CMakeFiles/butterscotch.dir/src/cli/menu.c.o
+[28/65] Building C object CMakeFiles/butterscotch.dir/src/cli/main.c.o
+[29/65] Building C object CMakeFiles/butterscotch.dir/src/cli/args.c.o
+[30/65] Building C object CMakeFiles/butterscotch.dir/src/physics/disabled/physics_disabled.c.o
+[31/65] Building C object CMakeFiles/butterscotch.dir/src/physics/physics.c.o
+[32/65] Building C object CMakeFiles/butterscotch.dir/src/vm_builtins.c.o
+[33/65] Building C object CMakeFiles/butterscotch.dir/src/vm.c.o
+[34/65] Building C object CMakeFiles/butterscotch.dir/src/string_builder.c.o
+[35/65] Building C object CMakeFiles/butterscotch.dir/src/stb_ds.c.o
+[36/65] Building C object CMakeFiles/butterscotch.dir/src/spatial_grid.c.o
+[37/65] Building C object CMakeFiles/butterscotch.dir/src/sequence.c.o
+[38/65] Building C object CMakeFiles/butterscotch.dir/src/runner_mouse.c.o
+[39/65] Building C object CMakeFiles/butterscotch.dir/src/runner_keyboard.c.o
+[40/65] Building C object CMakeFiles/butterscotch.dir/src/runner_gamepad.c.o
+[41/65] Building C object CMakeFiles/butterscotch.dir/src/runner.c.o
+[42/65] Building C object CMakeFiles/butterscotch.dir/src/random.c.o
+[43/65] Building C object CMakeFiles/butterscotch.dir/src/profiler.c.o
+[44/65] Building C object CMakeFiles/butterscotch.dir/src/overlay_file_system.c.o
+[45/65] Building C object CMakeFiles/butterscotch.dir/src/noop_renderer.c.o
+[46/65] Building C object CMakeFiles/butterscotch.dir/src/noop_file_system.c.o
+[47/65] Building C object CMakeFiles/butterscotch.dir/src/noop_audio_system.c.o
+[48/65] Building C object CMakeFiles/butterscotch.dir/src/loop.c.o
+[49/65] Building C object CMakeFiles/butterscotch.dir/src/log.c.o
+[50/65] Building C object CMakeFiles/butterscotch.dir/src/json_writer.c.o
+[51/65] Building C object CMakeFiles/butterscotch.dir/src/json_reader.c.o
+[52/65] Building C object CMakeFiles/butterscotch.dir/src/int_rvalue_hashmap.c.o
+[53/65] Building C object CMakeFiles/butterscotch.dir/src/int_int_hashmap.c.o
+[54/65] Building C object CMakeFiles/butterscotch.dir/src/instance.c.o
+[55/65] Building C object CMakeFiles/butterscotch.dir/src/input_recording.c.o
+[56/65] Building C object CMakeFiles/butterscotch.dir/src/ini.c.o
+[57/65] Building C object CMakeFiles/butterscotch.dir/src/gml_method.c.o
+[58/65] Building C object CMakeFiles/butterscotch.dir/src/gml_array.c.o
+[59/65] Building C object CMakeFiles/butterscotch.dir/src/gettime.c.o
+[60/65] Building C object CMakeFiles/butterscotch.dir/src/event_table.c.o
+[61/65] Building C object CMakeFiles/butterscotch.dir/src/debug_overlay.c.o
+[62/65] Building C object CMakeFiles/butterscotch.dir/src/data_win_print.c.o
+[63/65] Building C object CMakeFiles/butterscotch.dir/src/data_win.c.o
+[64/65] Building C object CMakeFiles/butterscotch.dir/src/binary_reader.c.o
+[65/65] Linking C executable butterscotch
+
+----- check-novideo.log -----
+/out/butterscotch-musl-novideo: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-musl-x86_64.so.1, BuildID[sha1]=7cb2396ff1f9e496c14bd5080e7c571ed887f58d, stripped
+	/lib/ld-musl-x86_64.so.1 (0x7f8dc69c7000)
+Error loading shared library libglfw.so.3: No such file or directory (needed by /out/butterscotch-musl-novideo)
+	libc.musl-x86_64.so.1 => /lib/ld-musl-x86_64.so.1 (0x7f8dc69c7000)
+Error relocating /out/butterscotch-musl-novideo: glfwInit: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwSetCharCallback: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwSetWindowTitle: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwSetScrollCallback: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwWindowHint: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwGetGamepadState: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwDestroyWindow: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwSwapBuffers: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwGetFramebufferSize: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwGetWindowAttrib: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwSetInputMode: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwGetProcAddress: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwGetVideoMode: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwSetWindowSize: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwSwapInterval: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwGetJoystickGUID: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwJoystickPresent: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwJoystickIsGamepad: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwSetWindowPos: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwCreateWindow: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwSetErrorCallback: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwSetMouseButtonCallback: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwUpdateGamepadMappings: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwGetCursorPos: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwSetKeyCallback: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwDefaultWindowHints: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwGetWindowPos: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwSetCursor: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwGetJoystickName: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwCreateStandardCursor: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwGetWindowContentScale: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwTerminate: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwGetWindowSize: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwWindowShouldClose: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwGetPrimaryMonitor: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwMakeContextCurrent: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwPollEvents: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwSetWindowMonitor: symbol not found
+Error relocating /out/butterscotch-musl-novideo: glfwGetWindowMonitor: symbol not found
+
+----- cmake-novideo.log -----
+-- The C compiler identification is GNU 13.2.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Performing Test HAS_FOMIT_FRAME_POINTER
+-- Performing Test HAS_FOMIT_FRAME_POINTER - Success
+-- Performing Test HAS_ICF_ALL
+-- Performing Test HAS_ICF_ALL - Failed
+-- Found PkgConfig: /usr/bin/pkg-config (found version "2.2.0")
+-- Checking for module 'glfw3'
+--   Found glfw3, version 3.3.9
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /src/build-novideo
