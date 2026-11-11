@@ -1,4 +1,4 @@
-=== Run 43018195421 | commit 957ac7381b653a796066db20e0e96aea7fe009d0 | variante video | statut : success ===
+=== Run 43018448373 | commit 544e4a660e72e1213aefa45f9f8dcde7182786db | variante video | statut : success ===
 
 ----- apk-video.log -----
 fetch https://dl-cdn.alpinelinux.org/alpine/v3.20/main/x86_64/APKINDEX.tar.gz
@@ -209,16 +209,16 @@ OK: 828 MiB in 200 packages
 [8/65] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/bz_internal_error.c.o
 [9/65] Building C object CMakeFiles/butterscotch.dir/src/backends/glfw3.c.o
 [10/65] Building C object CMakeFiles/butterscotch.dir/vendor/tinyfd/tinyfiledialogs.c.o
-[11/65] Linking C static library libsha1.a
-[12/65] Building C object CMakeFiles/butterscotch.dir/src/image/image_decoder.c.o
+[11/65] Building C object CMakeFiles/butterscotch.dir/src/image/image_decoder.c.o
+[12/65] Linking C static library libsha1.a
 [13/65] Building C object CMakeFiles/butterscotch.dir/src/gl_legacy/gl_legacy_renderer.c.o
 [14/65] Building C object CMakeFiles/butterscotch.dir/src/gl_common/gl_common.c.o
-[15/65] Building C object CMakeFiles/butterscotch.dir/src/video/ffmpeg/ffmpeg.c.o
-[16/65] Linking C static library libglad.a
+[15/65] Linking C static library libglad.a
+[16/65] Building C object CMakeFiles/butterscotch.dir/src/video/ffmpeg/ffmpeg.c.o
 [17/65] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz_tinfl.c.o
-[18/65] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz_tdef.c.o
-[19/65] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz.c.o
-[20/65] Linking C static library libbzip2.a
+[18/65] Linking C static library libbzip2.a
+[19/65] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz_tdef.c.o
+[20/65] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz.c.o
 [21/65] Building C object CMakeFiles/butterscotch.dir/vendor/base64/base64.c.o
 [22/65] Building C object CMakeFiles/butterscotch.dir/vendor/md5/md5.c.o
 [23/65] Building C object CMakeFiles/butterscotch.dir/src/default_font/jetbrains_mono_extrabold_font.c.o
@@ -266,81 +266,15 @@ OK: 828 MiB in 200 packages
 [65/65] Linking C executable butterscotch
 
 ----- check-video.log -----
-/out/butterscotch-musl-video: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-musl-x86_64.so.1, BuildID[sha1]=059477730743af3b6c9790abe701f67e41234458, stripped
-	/lib/ld-musl-x86_64.so.1 (0x7f3970cf3000)
-Error loading shared library libglfw.so.3: No such file or directory (needed by /out/butterscotch-musl-video)
-Error loading shared library libavformat.so.60: No such file or directory (needed by /out/butterscotch-musl-video)
-Error loading shared library libavcodec.so.60: No such file or directory (needed by /out/butterscotch-musl-video)
-Error loading shared library libavutil.so.58: No such file or directory (needed by /out/butterscotch-musl-video)
-Error loading shared library libswscale.so.7: No such file or directory (needed by /out/butterscotch-musl-video)
-Error loading shared library libswresample.so.4: No such file or directory (needed by /out/butterscotch-musl-video)
-	libc.musl-x86_64.so.1 => /lib/ld-musl-x86_64.so.1 (0x7f3970cf3000)
-Error relocating /out/butterscotch-musl-video: avformat_open_input: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwCreateWindow: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwGetWindowSize: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwGetWindowMonitor: symbol not found
-Error relocating /out/butterscotch-musl-video: av_packet_unref: symbol not found
-Error relocating /out/butterscotch-musl-video: avformat_seek_file: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwSetCharCallback: symbol not found
-Error relocating /out/butterscotch-musl-video: swr_convert: symbol not found
-Error relocating /out/butterscotch-musl-video: avcodec_parameters_to_context: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwSetWindowSize: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwJoystickIsGamepad: symbol not found
-Error relocating /out/butterscotch-musl-video: av_read_frame: symbol not found
-Error relocating /out/butterscotch-musl-video: avcodec_open2: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwJoystickPresent: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwCreateStandardCursor: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwSetMouseButtonCallback: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwUpdateGamepadMappings: symbol not found
-Error relocating /out/butterscotch-musl-video: avformat_find_stream_info: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwSwapInterval: symbol not found
-Error relocating /out/butterscotch-musl-video: swr_alloc_set_opts2: symbol not found
-Error relocating /out/butterscotch-musl-video: avcodec_flush_buffers: symbol not found
-Error relocating /out/butterscotch-musl-video: avcodec_receive_frame: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwDestroyWindow: symbol not found
-Error relocating /out/butterscotch-musl-video: avcodec_free_context: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwGetJoystickName: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwGetProcAddress: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwGetGamepadState: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwSetInputMode: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwGetWindowAttrib: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwGetPrimaryMonitor: symbol not found
-Error relocating /out/butterscotch-musl-video: sws_scale: symbol not found
-Error relocating /out/butterscotch-musl-video: av_frame_unref: symbol not found
-Error relocating /out/butterscotch-musl-video: av_frame_free: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwMakeContextCurrent: symbol not found
-Error relocating /out/butterscotch-musl-video: av_frame_alloc: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwWindowShouldClose: symbol not found
-Error relocating /out/butterscotch-musl-video: av_image_alloc: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwSetWindowMonitor: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwSetWindowTitle: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwSetKeyCallback: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwSetErrorCallback: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwSwapBuffers: symbol not found
-Error relocating /out/butterscotch-musl-video: swr_get_out_samples: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwTerminate: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwInit: symbol not found
-Error relocating /out/butterscotch-musl-video: avcodec_send_packet: symbol not found
-Error relocating /out/butterscotch-musl-video: sws_freeContext: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwPollEvents: symbol not found
-Error relocating /out/butterscotch-musl-video: avformat_close_input: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwGetCursorPos: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwDefaultWindowHints: symbol not found
-Error relocating /out/butterscotch-musl-video: swr_free: symbol not found
-Error relocating /out/butterscotch-musl-video: sws_getContext: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwGetWindowContentScale: symbol not found
-Error relocating /out/butterscotch-musl-video: av_freep: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwGetFramebufferSize: symbol not found
-Error relocating /out/butterscotch-musl-video: swr_init: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwGetVideoMode: symbol not found
-Error relocating /out/butterscotch-musl-video: av_find_best_stream: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwSetScrollCallback: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwWindowHint: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwGetWindowPos: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwSetWindowPos: symbol not found
-Error relocating /out/butterscotch-musl-video: avcodec_alloc_context3: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwSetCursor: symbol not found
-Error relocating /out/butterscotch-musl-video: glfwGetJoystickGUID: symbol not found
+Taille : 2851056 octets
+Dépendances dynamiques (DT_NEEDED) :
+ 0x0000000000000001 (NEEDED)             Shared library: [libglfw.so.3]
+ 0x0000000000000001 (NEEDED)             Shared library: [libavformat.so.60]
+ 0x0000000000000001 (NEEDED)             Shared library: [libavcodec.so.60]
+ 0x0000000000000001 (NEEDED)             Shared library: [libavutil.so.58]
+ 0x0000000000000001 (NEEDED)             Shared library: [libswscale.so.7]
+ 0x0000000000000001 (NEEDED)             Shared library: [libswresample.so.4]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.musl-x86_64.so.1]
 
 ----- cmake-video.log -----
 -- The C compiler identification is GNU 13.2.1
