@@ -1,0 +1,120 @@
+name: Build Butterscotch Alpine (musl)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-butterscotch-musl.yml'
+      - 'scripts/build-butterscotch-musl.sh'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Butterscotch musl (${{ matrix.variant }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [novideo, video]
+
+    steps:
+      - name: Récupérer Dtock
+        uses: actions/checkout@v4
+
+      - name: Récupérer Butterscotch
+        uses: actions/checkout@v4
+        with:
+          repository: MrPowerGamerBR/Butterscotch
+          path: butterscotch
+          fetch-depth: 0
+
+      - name: Préparer les dossiers de sortie
+        run: mkdir -p "$RUNNER_TEMP/out/logs"
+
+      - name: Compiler dans Alpine (musl)
+        id: build
+        run: |
+          rc=0
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE/butterscotch:/src" \
+            -v "$GITHUB_WORKSPACE/scripts:/scripts:ro" \
+            -v "$RUNNER_TEMP/out:/out" \
+            alpine:3.20 \
+            sh /scripts/build-butterscotch-musl.sh "${{ matrix.variant }}" /src /out \
+            || rc=$?
+          echo "rc=$rc" >> "$GITHUB_OUTPUT"
+          # Le log est toujours affiché, même en cas d'échec
+          for f in "$RUNNER_TEMP/out/logs/"*.log; do
+            [ -f "$f" ] && { echo "===== $(basename "$f") ====="; tail -n 200 "$f"; }
+          done
+          exit $rc
+
+      - name: Vérifier le binaire et sa linkage
+        if: success()
+        run: |
+          BIN="$RUNNER_TEMP/out/butterscotch-musl-${{ matrix.variant }}"
+          ls -la "$BIN"
+          docker run --rm -v "$RUNNER_TEMP/out:/out:ro" alpine:3.20 \
+            sh -c "apk add --no-cache file >/dev/null 2>&1; file /out/butterscotch-musl-${{ matrix.variant }}; \
+                   ldd /out/butterscotch-musl-${{ matrix.variant }} 2>&1 || true" \
+            | tee -a "$RUNNER_TEMP/out/logs/check-${{ matrix.variant }}.log"
+
+      - name: Garder le binaire en artefact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: butterscotch-musl-${{ matrix.variant }}
+          path: ${{ runner.temp }}/out/butterscotch-musl-${{ matrix.variant }}
+          if-no-files-found: error
+
+      - name: Publier les logs (toujours, y compris en cas d'échec)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: butterscotch-musl-${{ matrix.variant }}-logs
+          path: ${{ runner.temp }}/out/logs/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publier le log dans la repo (ci-logs/)
+        if: always() && github.ref == 'refs/heads/main'
+        continue-on-error: true
+        run: |
+          mkdir -p ci-logs
+          LOG="ci-logs/butterscotch-musl-${{ matrix.variant }}-latest.log"
+          {
+            echo "=== Run ${GITHUB_RUN_ID} | commit ${GITHUB_SHA} | variante ${{ matrix.variant }} | statut : ${{ job.status }} ==="
+            for f in "$RUNNER_TEMP/out/logs/"*.log; do
+              [ -f "$f" ] || continue
+              echo ""
+              echo "----- $(basename "$f") -----"
+              cat "$f"
+            done
+          } > "$LOG"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$LOG"
+          if git diff --cached --quiet; then
+            echo "Log inchangé."
+            exit 0
+          fi
+          git commit -q -m "Log CI Butterscotch musl ${{ matrix.variant }} (run ${GITHUB_RUN_ID})"
+          git pull -q --rebase origin main || true
+          git push origin HEAD:main
+
+      - name: Résumé des erreurs dans la page du run
+        if: failure()
+        run: |
+          {
+            echo "## Échec du build Butterscotch musl (${{ matrix.variant }})"
+            echo ""
+            echo '```'
+            for f in "$RUNNER_TEMP/out/logs/"build-*.log "$RUNNER_TEMP/out/logs/cmake-*.log"; do
+              [ -f "$f" ] && { echo "--- $(basename "$f") ---"; tail -n 80 "$f"; }
+            done
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
