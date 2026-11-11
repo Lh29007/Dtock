@@ -1,4 +1,4 @@
-=== Run 43018195421 | commit 957ac7381b653a796066db20e0e96aea7fe009d0 | variante novideo | statut : success ===
+=== Run 43018448373 | commit 544e4a660e72e1213aefa45f9f8dcde7182786db | variante novideo | statut : success ===
 
 ----- apk-novideo.log -----
 fetch https://dl-cdn.alpinelinux.org/alpine/v3.20/main/x86_64/APKINDEX.tar.gz
@@ -119,10 +119,10 @@ OK: 718 MiB in 112 packages
 [11/65] Linking C static library libsha1.a
 [12/65] Building C object CMakeFiles/butterscotch.dir/src/image/image_decoder.c.o
 [13/65] Building C object CMakeFiles/butterscotch.dir/src/gl_legacy/gl_legacy_renderer.c.o
-[14/65] Linking C static library libglad.a
-[15/65] Building C object CMakeFiles/butterscotch.dir/src/gl_common/gl_common.c.o
-[16/65] Building C object CMakeFiles/butterscotch.dir/src/video/null_video.c.o
-[17/65] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz_tinfl.c.o
+[14/65] Building C object CMakeFiles/butterscotch.dir/src/gl_common/gl_common.c.o
+[15/65] Building C object CMakeFiles/butterscotch.dir/src/video/null_video.c.o
+[16/65] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz_tinfl.c.o
+[17/65] Linking C static library libglad.a
 [18/65] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz_tdef.c.o
 [19/65] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz.c.o
 [20/65] Linking C static library libbzip2.a
@@ -173,49 +173,10 @@ OK: 718 MiB in 112 packages
 [65/65] Linking C executable butterscotch
 
 ----- check-novideo.log -----
-/out/butterscotch-musl-novideo: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-musl-x86_64.so.1, BuildID[sha1]=7cb2396ff1f9e496c14bd5080e7c571ed887f58d, stripped
-	/lib/ld-musl-x86_64.so.1 (0x7f8dc69c7000)
-Error loading shared library libglfw.so.3: No such file or directory (needed by /out/butterscotch-musl-novideo)
-	libc.musl-x86_64.so.1 => /lib/ld-musl-x86_64.so.1 (0x7f8dc69c7000)
-Error relocating /out/butterscotch-musl-novideo: glfwInit: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwSetCharCallback: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwSetWindowTitle: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwSetScrollCallback: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwWindowHint: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwGetGamepadState: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwDestroyWindow: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwSwapBuffers: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwGetFramebufferSize: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwGetWindowAttrib: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwSetInputMode: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwGetProcAddress: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwGetVideoMode: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwSetWindowSize: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwSwapInterval: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwGetJoystickGUID: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwJoystickPresent: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwJoystickIsGamepad: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwSetWindowPos: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwCreateWindow: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwSetErrorCallback: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwSetMouseButtonCallback: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwUpdateGamepadMappings: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwGetCursorPos: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwSetKeyCallback: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwDefaultWindowHints: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwGetWindowPos: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwSetCursor: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwGetJoystickName: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwCreateStandardCursor: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwGetWindowContentScale: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwTerminate: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwGetWindowSize: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwWindowShouldClose: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwGetPrimaryMonitor: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwMakeContextCurrent: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwPollEvents: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwSetWindowMonitor: symbol not found
-Error relocating /out/butterscotch-musl-novideo: glfwGetWindowMonitor: symbol not found
+Taille : 2838616 octets
+Dépendances dynamiques (DT_NEEDED) :
+ 0x0000000000000001 (NEEDED)             Shared library: [libglfw.so.3]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.musl-x86_64.so.1]
 
 ----- cmake-novideo.log -----
 -- The C compiler identification is GNU 13.2.1
