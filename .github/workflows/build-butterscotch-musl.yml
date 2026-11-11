@@ -53,15 +53,17 @@ jobs:
           done
           exit $rc
 
-      - name: Vérifier le binaire et sa linkage
+      - name: Vérifier le binaire et ses dépendances
         if: success()
         run: |
-          BIN="$RUNNER_TEMP/out/butterscotch-musl-${{ matrix.variant }}"
-          ls -la "$BIN"
-          docker run --rm -v "$RUNNER_TEMP/out:/out:ro" alpine:3.20 \
-            sh -c "apk add --no-cache file >/dev/null 2>&1; file /out/butterscotch-musl-${{ matrix.variant }}; \
-                   ldd /out/butterscotch-musl-${{ matrix.variant }} 2>&1 || true" \
-            | tee -a "$RUNNER_TEMP/out/logs/check-${{ matrix.variant }}.log"
+          V=${{ matrix.variant }}
+          LOG="$RUNNER_TEMP/out/logs/check-$V.log"
+          docker run --rm -v "$RUNNER_TEMP/out:/out:ro" alpine:3.20 sh -c "
+            apk add --no-cache binutils >/dev/null 2>&1
+            echo 'Taille :' \$(stat -c %s /out/butterscotch-musl-$V) 'octets'
+            echo 'Dépendances dynamiques (DT_NEEDED) :'
+            readelf -d /out/butterscotch-musl-$V | grep NEEDED || true
+          " | tee "$LOG"
 
       - name: Garder le binaire en artefact
         if: success()
