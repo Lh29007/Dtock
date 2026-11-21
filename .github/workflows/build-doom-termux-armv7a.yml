@@ -55,7 +55,15 @@ jobs:
                 | grep -oE "href=\"$2_[^\"]*_arm\.deb\"" | head -n1 | sed -E 's/href="//; s/"$//') || true
               if [ -n "$url" ]; then base="$r"; break; fi
             done
-            test -n "$url" || { echo "paquet $2 introuvable dans $1"; exit 1; }
+            if [ -z "$url" ]; then
+              echo "paquet $2 introuvable dans $1 ; diagnostic :"
+              for r in $TERMUX_X11_REPOS; do
+                echo "== $r/$1/"
+                curl -sS -o "$SYS/dl/listing.html" -w 'HTTP %{http_code}\n' "$r/$1/" || true
+                head -c 600 "$SYS/dl/listing.html" 2>/dev/null; echo
+              done
+              exit 1
+            fi
             curl -fsSL -o "$SYS/dl/$2.deb" "$base/$1/$url"
             dpkg-deb -x "$SYS/dl/$2.deb" "$SYS/usr"
             echo "ok $url"
