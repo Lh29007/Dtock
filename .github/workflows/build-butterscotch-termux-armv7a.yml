@@ -45,13 +45,13 @@ jobs:
           tail -n 5 "$LOG"
           exit $rc
 
-      - name: Configurer CMake (armeabi-v7a, bionic API 24, backend noop)
+      - name: Configurer CMake (armeabi-v7a, bionic API 28, backend noop)
         run: |
           NDK="$ANDROID_HOME/ndk/28.2.13676358"
           cmake -S butterscotch -B build-armv7a -G "Unix Makefiles" \
             -DCMAKE_TOOLCHAIN_FILE="$NDK/build/cmake/android.toolchain.cmake" \
             -DANDROID_ABI=armeabi-v7a \
-            -DANDROID_PLATFORM=android-24 \
+            -DANDROID_PLATFORM=android-28 \
             -DANDROID_ARM_NEON=ON \
             -DCMAKE_BUILD_TYPE=Release \
             -DPLATFORM=cli \
