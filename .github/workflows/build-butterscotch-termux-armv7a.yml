@@ -45,6 +45,16 @@ jobs:
           tail -n 5 "$LOG"
           exit $rc
 
+      - name: Créer une libpthread vide (sous bionic, pthread est dans libc)
+        run: |
+          STUBS="$RUNNER_TEMP/stubs"
+          mkdir -p "$STUBS"
+          NDK_BIN="$ANDROID_HOME/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          printf 'int dtock_pthread_stub_unused;\n' > "$STUBS/stub.c"
+          "$NDK_BIN/clang" --target=armv7a-linux-androideabi28 -c "$STUBS/stub.c" -o "$STUBS/stub.o"
+          "$NDK_BIN/llvm-ar" rcs "$STUBS/libpthread.a" "$STUBS/stub.o"
+          ls -la "$STUBS/libpthread.a" | tee "$RUNNER_TEMP/logs/stub.log"
+
       - name: Configurer CMake (armeabi-v7a, bionic API 28, backend noop)
         run: |
           NDK="$ANDROID_HOME/ndk/28.2.13676358"
@@ -56,6 +66,8 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release \
             -DPLATFORM=cli \
             -DBACKEND=noop \
+            -DCMAKE_EXE_LINKER_FLAGS="-L$RUNNER_TEMP/stubs" \
+            -DCMAKE_SHARED_LINKER_FLAGS="-L$RUNNER_TEMP/stubs" \
             -DAUDIO_BACKEND=miniaudio \
             -DVIDEO_BACKEND=none \
             -DENABLE_PHYSICS=OFF \
