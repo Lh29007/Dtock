@@ -1,0 +1,26 @@
+--- a/doomgeneric/doomgeneric_xlib.c
++++ b/doomgeneric/doomgeneric_xlib.c
+@@ -54,6 +54,23 @@
+     case XK_space:
+ 		key = KEY_USE;
+ 		break;
++    /* AZERTY : Z Q S D = haut gauche bas droite */
++    case XK_z:
++    case XK_Z:
++		key = KEY_UPARROW;
++		break;
++    case XK_q:
++    case XK_Q:
++		key = KEY_LEFTARROW;
++		break;
++    case XK_s:
++    case XK_S:
++		key = KEY_DOWNARROW;
++		break;
++    case XK_d:
++    case XK_D:
++		key = KEY_RIGHTARROW;
++		break;
+     case XK_Shift_L:
+     case XK_Shift_R:
+ 		key = KEY_RSHIFT;
