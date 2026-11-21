@@ -1,0 +1,86 @@
+=== Run 44897661584 | commit b401d54a34210b734dc849371977903d0d4f5790 | statut : failure ===
+
+----- build.log -----
+[  1%] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/bz_internal_error.c.o
+[  7%] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/crctable.c.o
+[  6%] Building C object CMakeFiles/sha1.dir/vendor/sha1/sha1.c.o
+[ 10%] Linking C static library libsha1.a
+[  3%] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/bzlib.c.o
+[ 12%] Built target sha1
+[ 13%] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/randtable.c.o
+[ 12%] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/huffman.c.o
+[  9%] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/decompress.c.o
+[ 15%] Linking C static library libbzip2.a
+[ 15%] Built target bzip2
+[  6%] Building C object CMakeFiles/glad.dir/vendor/glad/src/glad.c.o
+[ 16%] Linking C static library libglad.a
+[ 16%] Built target glad
+[ 18%] Building C object CMakeFiles/butterscotch.dir/src/binary_reader.c.o
+[ 21%] Building C object CMakeFiles/butterscotch.dir/src/data_win_print.c.o
+[ 23%] Building C object CMakeFiles/butterscotch.dir/src/debug_overlay.c.o
+[ 26%] Building C object CMakeFiles/butterscotch.dir/src/gettime.c.o
+[ 29%] Building C object CMakeFiles/butterscotch.dir/src/gml_method.c.o
+[ 24%] Building C object CMakeFiles/butterscotch.dir/src/event_table.c.o
+[ 27%] Building C object CMakeFiles/butterscotch.dir/src/gml_array.c.o
+[ 32%] Building C object CMakeFiles/butterscotch.dir/src/input_recording.c.o
+[ 30%] Building C object CMakeFiles/butterscotch.dir/src/ini.c.o
+[ 35%] Building C object CMakeFiles/butterscotch.dir/src/int_int_hashmap.c.o
+[ 33%] Building C object CMakeFiles/butterscotch.dir/src/instance.c.o
+[ 36%] Building C object CMakeFiles/butterscotch.dir/src/int_rvalue_hashmap.c.o
+[ 41%] Building C object CMakeFiles/butterscotch.dir/src/log.c.o
+[ 40%] Building C object CMakeFiles/butterscotch.dir/src/json_writer.c.o
+[ 38%] Building C object CMakeFiles/butterscotch.dir/src/json_reader.c.o
+[ 44%] Building C object CMakeFiles/butterscotch.dir/src/noop_audio_system.c.o
+[ 46%] Building C object CMakeFiles/butterscotch.dir/src/noop_file_system.c.o
+[ 47%] Building C object CMakeFiles/butterscotch.dir/src/noop_renderer.c.o
+[ 49%] Building C object CMakeFiles/butterscotch.dir/src/overlay_file_system.c.o
+[ 50%] Building C object CMakeFiles/butterscotch.dir/src/profiler.c.o
+[ 52%] Building C object CMakeFiles/butterscotch.dir/src/random.c.o
+[ 43%] Building C object CMakeFiles/butterscotch.dir/src/loop.c.o
+[ 55%] Building C object CMakeFiles/butterscotch.dir/src/runner_gamepad.c.o
+[ 58%] Building C object CMakeFiles/butterscotch.dir/src/runner_mouse.c.o
+[ 56%] Building C object CMakeFiles/butterscotch.dir/src/runner_keyboard.c.o
+[ 61%] Building C object CMakeFiles/butterscotch.dir/src/spatial_grid.c.o
+[ 20%] Building C object CMakeFiles/butterscotch.dir/src/data_win.c.o
+[ 64%] Building C object CMakeFiles/butterscotch.dir/src/string_builder.c.o
+[ 63%] Building C object CMakeFiles/butterscotch.dir/src/stb_ds.c.o
+[ 60%] Building C object CMakeFiles/butterscotch.dir/src/sequence.c.o
+[ 69%] Building C object CMakeFiles/butterscotch.dir/src/physics/physics.c.o
+[ 70%] Building C object CMakeFiles/butterscotch.dir/src/physics/disabled/physics_disabled.c.o
+[ 72%] Building C object CMakeFiles/butterscotch.dir/src/cli/args.c.o
+[ 73%] Building C object CMakeFiles/butterscotch.dir/src/cli/main.c.o
+/home/runner/work/Dtock/Dtock/butterscotch/src/cli/main.c:77:13: error: call to undeclared function 'posix_spawnp'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   77 |         if (posix_spawnp(&process, terminals[i].name, NULL, NULL, arguments, environ) == 0) return true;
+      |             ^
+/home/runner/work/Dtock/Dtock/butterscotch/src/cli/main.c:77:13: note: did you mean 'posix_openpt'?
+/usr/local/lib/android/sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/stdlib.h:170:5: note: 'posix_openpt' declared here
+  170 | int posix_openpt(int __flags);
+      |     ^
+1 error generated.
+gmake[2]: *** [CMakeFiles/butterscotch.dir/build.make:586: CMakeFiles/butterscotch.dir/src/cli/main.c.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+[ 66%] Building C object CMakeFiles/butterscotch.dir/src/vm.c.o
+[ 53%] Building C object CMakeFiles/butterscotch.dir/src/runner.c.o
+[ 67%] Building C object CMakeFiles/butterscotch.dir/src/vm_builtins.c.o
+gmake[1]: *** [CMakeFiles/Makefile2:101: CMakeFiles/butterscotch.dir/all] Error 2
+gmake: *** [Makefile:94: all] Error 2
+
+----- cmake.log -----
+-- The C compiler identification is Clang 19.0.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/local/lib/android/sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/clang - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Performing Test HAS_FOMIT_FRAME_POINTER
+-- Performing Test HAS_FOMIT_FRAME_POINTER - Success
+-- Performing Test HAS_ICF_ALL
+-- Performing Test HAS_ICF_ALL - Success
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/runner/work/Dtock/Dtock/build-armv7a
+
+----- ndk.log -----
+Loading package information...                                                  Loading local repository...                                                     [                                       ] 3% Loading local repository...        [                                       ] 3% Fetch remote repository...         [=                                      ] 3% Fetch remote repository...         [=                                      ] 4% Fetch remote repository...         [=                                      ] 5% Fetch remote repository...         [==                                     ] 5% Fetch remote repository...         [==                                     ] 6% Fetch remote repository...         [==                                     ] 7% Fetch remote repository...         [==                                     ] 7% Computing updates...               [===                                    ] 8% Computing updates...               [===                                    ] 10% Computing updates...              [===                                    ] 10% Installing NDK (Side by side) 28.2[===                                    ] 10% Downloading android-ndk-r28c-linux[====                                   ] 10% Downloading android-ndk-r28c-linux[====                                   ] 11% Downloading android-ndk-r28c-linux[====                                   ] 12% Downloading android-ndk-r28c-linux[=====                                  ] 13% Downloading android-ndk-r28c-linux[=====                                  ] 14% Downloading android-ndk-r28c-linux[=====                                  ] 15% Downloading android-ndk-r28c-linux[======                                 ] 15% Downloading android-ndk-r28c-linux[======                                 ] 16% Downloading android-ndk-r28c-linux[======                                 ] 17% Downloading android-ndk-r28c-linux[=======                                ] 18% Downloading android-ndk-r28c-linux[=======                                ] 19% Downloading android-ndk-r28c-linux[=======                                ] 20% Downloading android-ndk-r28c-linux[========                               ] 20% Downloading android-ndk-r28c-linux[========                               ] 21% Downloading android-ndk-r28c-linux[========                               ] 22% Downloading android-ndk-r28c-linux[=========                              ] 23% Downloading android-ndk-r28c-linux[=========                              ] 24% Downloading android-ndk-r28c-linux[=========                              ] 25% Downloading android-ndk-r28c-linux[==========                             ] 25% Downloading android-ndk-r28c-linux[==========                             ] 26% Downloading android-ndk-r28c-linux[==========                             ] 27% Downloading android-ndk-r28c-linux[===========                            ] 28% Downloading android-ndk-r28c-linux[===========                            ] 29% Downloading android-ndk-r28c-linux[===========                            ] 30% Downloading android-ndk-r28c-linux[============                           ] 30% Downloading android-ndk-r28c-linux[============                           ] 31% Downloading android-ndk-r28c-linux[============                           ] 32% Downloading android-ndk-r28c-linux[============                           ] 33% Downloading android-ndk-r28c-linux[============                           ] 33% Unzipping...                      [============                           ] 33% Unzipping... android-ndk-r28c/    [============                           ] 33% Unzipping... android-ndk-r28c/READ[=============                          ] 33% Unzipping... android-ndk-r28c/READ[=============                          ] 33% Unzipping... android-ndk-r28c/meta[=============                          ] 33% Unzipping... android-ndk-r28c/shad[=============                          ] 33% Unzipping... android-ndk-r28c/ndk-[=============                          ] 33% Unzipping... android-ndk-r28c/wrap[=============                          ] 33% Unzipping... android-ndk-r28c/ndk-[=============                          ] 33% Unzipping... android-ndk-r28c/tool[=============                          ] 34% Unzipping... android-ndk-r28c/tool[=============                          ] 35% Unzipping... android-ndk-r28c/tool[==============                         ] 35% Unzipping... android-ndk-r28c/tool[==============                         ] 36% Unzipping... android-ndk-r28c/tool[==============                         ] 37% Unzipping... android-ndk-r28c/tool[===============                        ] 38% Unzipping... android-ndk-r28c/tool[===============                        ] 39% Unzipping... android-ndk-r28c/tool[===============                        ] 40% Unzipping... android-ndk-r28c/tool[================                       ] 40% Unzipping... android-ndk-r28c/tool[================                       ] 41% Unzipping... android-ndk-r28c/tool[================                       ] 42% Unzipping... android-ndk-r28c/tool[=================                      ] 43% Unzipping... android-ndk-r28c/tool[=================                      ] 44% Unzipping... android-ndk-r28c/tool[=================                      ] 45% Unzipping... android-ndk-r28c/tool[==================                     ] 45% Unzipping... android-ndk-r28c/tool[==================                     ] 46% Unzipping... android-ndk-r28c/tool[==================                     ] 47% Unzipping... android-ndk-r28c/tool[===================                    ] 48% Unzipping... android-ndk-r28c/tool[===================                    ] 49% Unzipping... android-ndk-r28c/tool[===================                    ] 50% Unzipping... android-ndk-r28c/tool[====================                   ] 50% Unzipping... android-ndk-r28c/tool[====================                   ] 51% Unzipping... android-ndk-r28c/tool[====================                   ] 52% Unzipping... android-ndk-r28c/tool[=====================                  ] 53% Unzipping... android-ndk-r28c/tool[=====================                  ] 54% Unzipping... android-ndk-r28c/tool[=====================                  ] 54% Unzipping... android-ndk-r28c/buil[=====================                  ] 54% Unzipping... android-ndk-r28c/sour[=====================                  ] 54% Unzipping... android-ndk-r28c/NOTI[=====================                  ] 54% Unzipping... android-ndk-r28c/ndk-[=====================                  ] 54% Unzipping... android-ndk-r28c/NOTI[=====================                  ] 54% Unzipping... android-ndk-r28c/pyth[=====================                  ] 54% Unzipping... android-ndk-r28c/preb[=====================                  ] 54% Unzipping... android-ndk-r28c/ndk-[=====================                  ] 54% Unzipping... android-ndk-r28c/sour[=====================                  ] 54% Unzipping... android-ndk-r28c/simp[=====================                  ] 55% Unzipping... android-ndk-r28c/simp[=====================                  ] 55% Unzipping... android-ndk-r28c/CHAN[=======================================] 100% Unzipping... android-ndk-r28c/CHA
+
+/usr/local/lib/android/sdk/ndk/28.2.13676358/build/cmake/android.toolchain.cmake
