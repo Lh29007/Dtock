@@ -19,7 +19,7 @@ jobs:
 
     env:
       NDK_VER: 28.2.13676358
-      TERMUX_X11_REPOS: "https://plug-mirror.rcac.purdue.edu/termux/apt/termux-x11/pool/main https://packages.termux.dev/apt/termux-x11/pool/main"
+      TERMUX_X11_REPOS: "https://plug-mirror.rcac.purdue.edu/termux/apt/termux-main/pool/main https://packages.termux.dev/apt/termux-main/pool/main https://packages.termux.dev/apt/termux-x11/pool/main"
 
     steps:
       - name: Récupérer Dtock
