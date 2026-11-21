@@ -92,7 +92,12 @@ jobs:
           SYS="$RUNNER_TEMP/termux-sysroot/data/data/com.termux/files/usr"
           TGT="--target=armv7a-linux-androideabi28 --sysroot=$SYSROOT -mfpu=neon -mfloat-abi=softfp"
           # Noms réels (SONAME) des libs Termux : libX11.so.6, libxcb.so.1, ...
-          so_name() { basename "$(ls "$SYS/lib/$1".so.* | head -n1)"; }
+          echo "contenu de lib/ :"; ls -la "$SYS/lib" | head -n 60
+          so_name() {
+            f=$(find "$SYS/lib" -maxdepth 1 -name "$1.so.*" \( -type f -o -type l \) | sort | head -n1)
+            [ -n "$f" ] || { echo "introuvable : $1" >&2; exit 1; }
+            basename "$f"
+          }
           X11L=$(so_name libX11); XCBL=$(so_name libxcb); XAUL=$(so_name libXau); XDML=$(so_name libXdmcp)
           echo "libs : $X11L $XCBL $XAUL $XDML"
           LIBS="-lm -lc -l:$X11L -l:$XCBL -l:$XAUL -l:$XDML"
