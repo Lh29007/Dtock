@@ -91,13 +91,21 @@ jobs:
           SYSROOT="$NDK/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
           SYS="$RUNNER_TEMP/termux-sysroot/data/data/com.termux/files/usr"
           TGT="--target=armv7a-linux-androideabi28 --sysroot=$SYSROOT -mfpu=neon -mfloat-abi=softfp"
+          # Noms réels (SONAME) des libs Termux : libX11.so.6, libxcb.so.1, ...
+          so_name() { basename "$(ls "$SYS/lib/$1".so.* | head -n1)"; }
+          X11L=$(so_name libX11); XCBL=$(so_name libxcb); XAUL=$(so_name libXau); XDML=$(so_name libXdmcp)
+          echo "libs : $X11L $XCBL $XAUL $XDML"
+          LIBS="-lm -lc -l:$X11L -l:$XCBL -l:$XAUL -l:$XDML"
+          # RUNPATH vers le préfixe Termux : le linker Android ne le cherche pas tout seul
+          RPATH="-Wl,-rpath,/data/data/com.termux/files/usr/lib"
           cd doomgeneric-src/doomgeneric
+          set -o pipefail
           make -f Makefile clean || true
           make -f Makefile \
             CC="$BIN/clang" \
             CFLAGS="$TGT -I$SYS/include -Os -Wall -DNORMALUNIX -DLINUX -DSNDSERV -D_DEFAULT_SOURCE" \
-            LDFLAGS="$TGT -L$SYS/lib -Wl,--gc-sections" \
-            LIBS="-lm -lc -lX11 -lxcb -lXau -lXdmcp" \
+            LDFLAGS="$TGT -L$SYS/lib $RPATH -Wl,--gc-sections" \
+            LIBS="$LIBS" \
             2>&1 | tee "$RUNNER_TEMP/build.log" | tail -n 60
           test -f doomgeneric
 
@@ -107,7 +115,10 @@ jobs:
           NDK_BIN="$ANDROID_HOME/ndk/$NDK_VER/toolchains/llvm/prebuilt/linux-x86_64/bin"
           "$NDK_BIN/llvm-strip" "$BIN"
           readelf -h "$BIN" | grep -E 'Machine|Type'
-          readelf -d "$BIN" | grep NEEDED
+          readelf -d "$BIN" | grep -E 'NEEDED|RUNPATH|RPATH'
+          # garde-fou : pas de nom sans version, RUNPATH Termux présent
+          if readelf -d "$BIN" | grep -E 'NEEDED.*\[libX11\.so\]'; then echo "NEEDED sans version"; exit 1; fi
+          readelf -d "$BIN" | grep -q 'com.termux/files/usr/lib' || { echo "RUNPATH Termux absent"; exit 1; }
           cp "$BIN" "$RUNNER_TEMP/doomgeneric-termux-armv7a"
 
       - name: Publier le binaire
