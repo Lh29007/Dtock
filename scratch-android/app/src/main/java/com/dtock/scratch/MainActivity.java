@@ -128,13 +128,21 @@ public class MainActivity extends Activity {
             + "  run: function(){ var g = document.querySelector('[class*=\"green-flag_green-flag\"]'); if (g) g.click(); },"
             + "  stop: function(){ var s = document.querySelector('[class*=\"stop-all\"]'); if (s) s.click(); },"
             + "  open: function(){ fileMenuItem(['Charger depuis votre ordinateur', 'Load from your computer']); },"
-            + "  save: function(){ fileMenuItem(['Enregistrer sur votre ordinateur', 'Save to your computer']); }"
+            + "  save: function(){ fileMenuItem(['Enregistrer sur votre ordinateur', 'Save to your computer']); },"
+            + "  newProject: function(){ fileMenuItem(['Nouveau', 'New']); },"
+            + "  stage: function(large){"
+            + "    var toggles = document.querySelectorAll('[class*=\"stage-size-toggle\"]');"
+            + "    var t = toggles[large ? 1 : 0];"
+            + "    if (t) t.click();"
+            + "  }"
             + "};"
             + "})();";
 
     private WebView webView;
     private WebViewAssetLoader assetLoader;
     private ValueCallback<Uri[]> pendingFileCallback;
+    private TextView stageButton;
+    private boolean stageLarge = false;
 
     private int dp(int value) {
         return Math.round(value * getResources().getDisplayMetrics().density);
@@ -156,8 +164,17 @@ public class MainActivity extends Activity {
         title.setPadding(dp(16), 0, dp(8), 0);
         bar.addView(title, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f));
 
+        bar.addView(barButton("Nouveau", () -> runJs("window.dtock && dtock.newProject();")));
         bar.addView(barButton("Ouvrir", () -> runJs("window.dtock && dtock.open();")));
         bar.addView(barButton("Enregistrer", () -> runJs("window.dtock && dtock.save();")));
+
+        // Bascule scène petite / grande (plein écran de la scène, blocs masqués).
+        stageButton = barButton(stageLarge ? "Petite scène" : "Grande scène", () -> {
+            stageLarge = !stageLarge;
+            stageButton.setText(stageLarge ? "Petite scène" : "Grande scène");
+            runJs("window.dtock && dtock.stage(" + stageLarge + ");");
+        });
+        bar.addView(stageButton);
         bar.addView(barButton("▶", () -> runJs("window.dtock && dtock.run();")));
         bar.addView(barButton("■", () -> runJs("window.dtock && dtock.stop();")));
         return bar;
