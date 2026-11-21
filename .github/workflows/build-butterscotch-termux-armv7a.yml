@@ -1,0 +1,132 @@
+name: Build Butterscotch Termux (armv7a)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-butterscotch-termux-armv7a.yml'
+      - 'scripts/termux-build-butterscotch.sh'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Binaire ARMv7 natif (headless, pour Termux)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Récupérer Dtock
+        uses: actions/checkout@v4
+
+      - name: Récupérer Butterscotch
+        uses: actions/checkout@v4
+        with:
+          repository: MrPowerGamerBR/Butterscotch
+          path: butterscotch
+          fetch-depth: 0
+
+      - name: Préparer le dossier de logs
+        run: mkdir -p "$RUNNER_TEMP/logs"
+
+      - name: Installer le NDK 28.2 (même version que l'APK armv7a)
+        run: |
+          LOG="$RUNNER_TEMP/logs/ndk.log"
+          SDKM=$(find "$ANDROID_HOME" -path "*cmdline-tools*" -name sdkmanager -type f 2>/dev/null | head -n1)
+          {
+            test -n "$SDKM" || { echo "sdkmanager introuvable"; exit 1; }
+            yes 2>/dev/null | "$SDKM" --licenses >/dev/null || true
+            "$SDKM" "ndk;28.2.13676358"
+            ls "$ANDROID_HOME/ndk/28.2.13676358/build/cmake/android.toolchain.cmake"
+          } > "$LOG" 2>&1
+          rc=$?
+          tail -n 5 "$LOG"
+          exit $rc
+
+      - name: Configurer CMake (armeabi-v7a, bionic API 24, backend noop)
+        run: |
+          NDK="$ANDROID_HOME/ndk/28.2.13676358"
+          cmake -S butterscotch -B build-armv7a -G "Unix Makefiles" \
+            -DCMAKE_TOOLCHAIN_FILE="$NDK/build/cmake/android.toolchain.cmake" \
+            -DANDROID_ABI=armeabi-v7a \
+            -DANDROID_PLATFORM=android-24 \
+            -DANDROID_ARM_NEON=ON \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DPLATFORM=cli \
+            -DBACKEND=noop \
+            -DAUDIO_BACKEND=miniaudio \
+            -DVIDEO_BACKEND=none \
+            -DENABLE_PHYSICS=OFF \
+            -DENABLE_FMOD=OFF \
+            > "$RUNNER_TEMP/logs/cmake.log" 2>&1
+          rc=$?
+          tail -n 40 "$RUNNER_TEMP/logs/cmake.log"
+          exit $rc
+
+      - name: Compiler
+        run: |
+          rc=0
+          cmake --build build-armv7a -j"$(nproc)" > "$RUNNER_TEMP/logs/build.log" 2>&1 || rc=$?
+          tail -n 60 "$RUNNER_TEMP/logs/build.log"
+          exit $rc
+
+      - name: Vérifier le binaire (ELF ARM, dépendances)
+        if: success()
+        run: |
+          BIN=build-armv7a/butterscotch
+          test -f "$BIN" || { echo "binaire absent" | tee -a "$RUNNER_TEMP/logs/check.log"; exit 1; }
+          NDK="$ANDROID_HOME/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          "$NDK/llvm-strip" "$BIN"
+          cp "$BIN" "$RUNNER_TEMP/butterscotch-termux-armv7a"
+          {
+            echo "Taille : $(stat -c %s "$BIN") octets"
+            readelf -h "$BIN" | grep -E 'Machine|Type'
+            readelf -A "$BIN" | grep -E 'Tag_CPU_arch|Tag_ABI_VFP' || true
+            echo "Dépendances dynamiques :"
+            readelf -d "$BIN" | grep NEEDED || true
+          } | tee "$RUNNER_TEMP/logs/check.log"
+
+      - name: Garder le binaire en artefact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: butterscotch-termux-armv7a
+          path: ${{ runner.temp }}/butterscotch-termux-armv7a
+          if-no-files-found: error
+
+      - name: Publier les logs (toujours)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: butterscotch-termux-armv7a-logs
+          path: ${{ runner.temp }}/logs/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publier le log dans la repo (ci-logs/)
+        if: always() && github.ref == 'refs/heads/main'
+        continue-on-error: true
+        run: |
+          mkdir -p ci-logs
+          LOG=ci-logs/butterscotch-termux-armv7a-latest.log
+          {
+            echo "=== Run ${GITHUB_RUN_ID} | commit ${GITHUB_SHA} | statut : ${{ job.status }} ==="
+            for f in "$RUNNER_TEMP/logs/"*.log; do
+              [ -f "$f" ] || continue
+              echo ""
+              echo "----- $(basename "$f") -----"
+              cat "$f"
+            done
+          } > "$LOG"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$LOG"
+          if git diff --cached --quiet; then
+            echo "Log inchangé."
+            exit 0
+          fi
+          git commit -q -m "Log CI Butterscotch Termux armv7a (run ${GITHUB_RUN_ID})"
+          git pull -q --rebase origin main || true
+          git push origin HEAD:main
