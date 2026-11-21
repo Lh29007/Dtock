@@ -1,0 +1,106 @@
+name: Build Doom Termux (armv7a, X11 + ZQSD)
+
+on:
+  push:
+    branches: [doom-termux-zqsd]
+    paths:
+      - '.github/workflows/build-doom-termux-armv7a.yml'
+      - 'scripts/doom-azerty-zqsd.patch'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: doomgeneric ARMv7 natif (bionic, Termux:X11)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    env:
+      NDK_VER: 28.2.13676358
+      TERMUX_X11_REPO: https://packages.termux.dev/apt/termux-x11/pool/main
+
+    steps:
+      - name: Récupérer Dtock
+        uses: actions/checkout@v4
+
+      - name: Récupérer doomgeneric
+        uses: actions/checkout@v4
+        with:
+          repository: ozkl/doomgeneric
+          path: doomgeneric-src
+          fetch-depth: 1
+
+      - name: Appliquer le patch ZQSD (AZERTY)
+        run: |
+          git -C doomgeneric-src apply "$GITHUB_WORKSPACE/scripts/doom-azerty-zqsd.patch"
+          grep -q 'XK_z' doomgeneric-src/doomgeneric/doomgeneric_xlib.c
+
+      - name: Installer le NDK
+        run: |
+          SDKM=$(find "$ANDROID_HOME" -path "*cmdline-tools*" -name sdkmanager -type f 2>/dev/null | head -n1)
+          test -n "$SDKM" || { echo "sdkmanager introuvable"; exit 1; }
+          yes 2>/dev/null | "$SDKM" --licenses >/dev/null || true
+          "$SDKM" "ndk;$NDK_VER"
+
+      - name: Récupérer les paquets Termux (libX11, xorgproto, xcb)
+        run: |
+          SYS="$RUNNER_TEMP/termux-sysroot"
+          mkdir -p "$SYS/dl" "$SYS/usr"
+          fetch_pkg() {  # $1 = dossier pool (ex: libx/libx11), $2 = nom du paquet
+            url=$(curl -fsSL "$TERMUX_X11_REPO/$1/" \
+              | grep -oE "href=\"$2_[^\"]*_arm\.deb\"" | head -n1 | sed -E 's/href="//; s/"$//')
+            test -n "$url" || { echo "paquet $2 introuvable dans $1"; exit 1; }
+            curl -fsSL -o "$SYS/dl/$2.deb" "$TERMUX_X11_REPO/$1/$url"
+            dpkg-deb -x "$SYS/dl/$2.deb" "$SYS/usr"
+            echo "ok $url"
+          }
+          fetch_pkg libx/libx11 libx11
+          fetch_pkg libx/libxcb libxcb
+          fetch_pkg libx/libxau libxau
+          fetch_pkg libx/libxdmcp libxdmcp
+          fetch_pkg x/xorgproto xorgproto
+          # liens .so de développement si absents
+          cd "$SYS/usr/lib" 2>/dev/null || { echo "pas de lib/"; find "$SYS/usr" -maxdepth 3 | head -n 40; exit 1; }
+          for f in libX11 libxcb libXau libXdmcp; do
+            for so in "$f".so.*; do
+              [ -e "$so" ] || continue
+              base="${so%%.so.*}"
+              [ -e "$base.so" ] || ln -s "$so" "$base.so"
+            done
+          done
+          ls "$SYS/usr/include/X11/Xlib.h" "$SYS/usr/include/X11/keysym.h" "$SYS/usr/include/X11/XKBlib.h"
+
+      - name: Compiler (cible armv7a-linux-androideabi, API 28)
+        run: |
+          NDK="$ANDROID_HOME/ndk/$NDK_VER"
+          BIN="$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          SYSROOT="$NDK/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
+          SYS="$RUNNER_TEMP/termux-sysroot/usr"
+          TGT="--target=armv7a-linux-androideabi28 --sysroot=$SYSROOT -mfpu=neon -mfloat-abi=softfp"
+          cd doomgeneric-src/doomgeneric
+          make -f Makefile clean || true
+          make -f Makefile \
+            CC="$BIN/clang" \
+            CFLAGS="$TGT -I$SYS/include -Os -Wall -DNORMALUNIX -DLINUX -DSNDSERV -D_DEFAULT_SOURCE" \
+            LDFLAGS="$TGT -L$SYS/lib -Wl,--gc-sections" \
+            LIBS="-lm -lc -lX11 -lxcb -lXau -lXdmcp" \
+            2>&1 | tee "$RUNNER_TEMP/build.log" | tail -n 60
+          test -f doomgeneric
+
+      - name: Vérifier le binaire
+        run: |
+          BIN=doomgeneric-src/doomgeneric/doomgeneric
+          NDK_BIN="$ANDROID_HOME/ndk/$NDK_VER/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          "$NDK_BIN/llvm-strip" "$BIN"
+          readelf -h "$BIN" | grep -E 'Machine|Type'
+          readelf -d "$BIN" | grep NEEDED
+          cp "$BIN" "$RUNNER_TEMP/doomgeneric-termux-armv7a"
+
+      - name: Publier le binaire
+        uses: actions/upload-artifact@v4
+        with:
+          name: doomgeneric-termux-armv7a
+          path: ${{ runner.temp }}/doomgeneric-termux-armv7a
+          if-no-files-found: error
