@@ -47,6 +47,7 @@ public class MainActivity extends Activity {
 
     private static final String START_URL = "https://appassets.androidplatform.net/index.html";
     private static final int REQUEST_OPEN_FILE = 1001;
+    private static final int REQUEST_NATIVE_OPEN = 1002;
     private static final String SB3_MIME = "application/x.scratch.sb3";
 
     /**
@@ -127,18 +128,40 @@ public class MainActivity extends Activity {
             + "  }"
             + "  return null;"
             + "}"
+            + "function clickEl(el){"
+            + "  var o = {bubbles: true, cancelable: true, view: window};"
+            + "  ['pointerdown','mousedown','pointerup','mouseup','click'].forEach(function(t){"
+            + "    el.dispatchEvent(new MouseEvent(t, o));"
+            + "  });"
+            + "}"
+            + "function notify(msg){ if (window.AndroidSave && AndroidSave.toast) AndroidSave.toast(msg); }"
             + "function fileMenuItem(labels){"
             + "  var file = byText('[class*=\"menu-bar_menu-bar-item\"]', ['Fichier', 'File']);"
-            + "  if (file) file.click();"
-            + "  setTimeout(function(){"
+            + "  if (!file) { notify('Menu Fichier introuvable'); return; }"
+            + "  clickEl(file);"
+            + "  var tries = 0;"
+            + "  (function wait(){"
             + "    var it = byText('[class*=\"menu-bar_menu-item\"]', labels);"
-            + "    if (it) it.click();"
-            + "  }, 150);"
+            + "    if (it) { clickEl(it); return; }"
+            + "    if (++tries > 30) { notify('Option de menu introuvable'); return; }"
+            + "    setTimeout(wait, 50);"
+            + "  })();"
             + "}"
             + "window.dtock = {"
             + "  run: function(){ var g = document.querySelector('[class*=\"green-flag_green-flag\"]'); if (g) g.click(); },"
             + "  stop: function(){ var s = document.querySelector('[class*=\"stop-all\"]'); if (s) s.click(); },"
-            + "  open: function(){ fileMenuItem(['Charger depuis votre ordinateur', 'Load from your computer']); },"
+            + "  loadFile: function(name, b64){"
+            + "    var bin = atob(b64);"
+            + "    var bytes = new Uint8Array(bin.length);"
+            + "    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);"
+            + "    var file = new File([bytes], name, {type: 'application/x.scratch.sb3'});"
+            + "    var input = document.querySelector('input[type=\"file\"]');"
+            + "    if (!input) { notify('Chargeur de fichier introuvable'); return; }"
+            + "    var dt = new DataTransfer();"
+            + "    dt.items.add(file);"
+            + "    input.files = dt.files;"
+            + "    input.dispatchEvent(new Event('change', {bubbles: true}));"
+            + "  },"
             + "  save: function(){ fileMenuItem(['Enregistrer sur votre ordinateur', 'Save to your computer']); },"
             + "  newProject: function(){ fileMenuItem(['Nouveau', 'New']); },"
             + "  stage: function(large){"
@@ -176,7 +199,7 @@ public class MainActivity extends Activity {
         bar.addView(title, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f));
 
         bar.addView(barButton("Nouveau", () -> runJs("window.dtock && dtock.newProject();")));
-        bar.addView(barButton("Ouvrir", () -> runJs("window.dtock && dtock.open();")));
+        bar.addView(barButton("Ouvrir", this::openNativeFile));
         bar.addView(barButton("Enregistrer", () -> runJs("window.dtock && dtock.save();")));
 
         // Bascule scène petite / grande (plein écran de la scène, blocs masqués).
@@ -202,6 +225,49 @@ public class MainActivity extends Activity {
         b.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
         return b;
+    }
+
+    /** Ouvre le sélecteur Android côté natif, puis transmet le .sb3 à l'éditeur. */
+    private void openNativeFile() {
+        Intent pick = new Intent(Intent.ACTION_GET_CONTENT);
+        pick.addCategory(Intent.CATEGORY_OPENABLE);
+        pick.setType("*/*");
+        try {
+            startActivityForResult(Intent.createChooser(pick, "Ouvrir un projet"), REQUEST_NATIVE_OPEN);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "Aucun gestionnaire de fichiers", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadProjectFromUri(Uri uri) {
+        new Thread(() -> {
+            try {
+                String name = "projet.sb3";
+                try (android.database.Cursor c = getContentResolver().query(uri, null, null, null, null)) {
+                    if (c != null && c.moveToFirst()) {
+                        int idx = c.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME);
+                        if (idx >= 0 && c.getString(idx) != null) {
+                            name = c.getString(idx);
+                        }
+                    }
+                }
+                byte[] bytes;
+                try (java.io.InputStream in = getContentResolver().openInputStream(uri)) {
+                    if (in == null) throw new Exception("lecture impossible");
+                    java.io.ByteArrayOutputStream buf = new java.io.ByteArrayOutputStream();
+                    byte[] chunk = new byte[16384];
+                    int n;
+                    while ((n = in.read(chunk)) != -1) buf.write(chunk, 0, n);
+                    bytes = buf.toByteArray();
+                }
+                String b64 = Base64.encodeToString(bytes, Base64.NO_WRAP);
+                final String js = "window.dtock && dtock.loadFile("
+                        + org.json.JSONObject.quote(name) + ", '" + b64 + "');";
+                runOnUiThread(() -> runJs(js));
+            } catch (Exception e) {
+                showToast("Échec de l'ouverture : " + e.getMessage());
+            }
+        }).start();
     }
 
     private void runJs(String code) {
@@ -304,6 +370,12 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_NATIVE_OPEN) {
+            if (resultCode == RESULT_OK && data != null && data.getData() != null) {
+                loadProjectFromUri(data.getData());
+            }
+            return;
+        }
         if (requestCode != REQUEST_OPEN_FILE || pendingFileCallback == null) {
             return;
         }
@@ -370,6 +442,11 @@ public class MainActivity extends Activity {
 
     /** Pont JavaScript → natif appelé par SAVE_HOOK_JS (thread d'arrière-plan). */
     private class SaveBridge {
+        @JavascriptInterface
+        public void toast(String message) {
+            showToast(message);
+        }
+
         @JavascriptInterface
         public void saveFile(String name, String dataUrl) {
             try {
