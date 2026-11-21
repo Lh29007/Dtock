@@ -92,15 +92,8 @@ jobs:
           SYS="$RUNNER_TEMP/termux-sysroot/data/data/com.termux/files/usr"
           TGT="--target=armv7a-linux-androideabi28 --sysroot=$SYSROOT -mfpu=neon -mfloat-abi=softfp"
           # Noms réels (SONAME) des libs Termux : libX11.so.6, libxcb.so.1, ...
-          echo "contenu de lib/ :"; ls -la "$SYS/lib" | head -n 60
-          so_name() {
-            f=$(find "$SYS/lib" -maxdepth 1 -name "$1.so.*" \( -type f -o -type l \) | sort | head -n1)
-            [ -n "$f" ] || { echo "introuvable : $1" >&2; exit 1; }
-            basename "$f"
-          }
-          X11L=$(so_name libX11); XCBL=$(so_name libxcb); XAUL=$(so_name libXau); XDML=$(so_name libXdmcp)
-          echo "libs : $X11L $XCBL $XAUL $XDML"
-          LIBS="-lm -lc -l:$X11L -l:$XCBL -l:$XAUL -l:$XDML"
+          # Termux livre des .so sans SONAME : on lie par nom (libX11.so, ...), trouvés via RUNPATH
+          LIBS="-lm -lc -lX11 -lxcb -lXau -lXdmcp"
           # RUNPATH vers le préfixe Termux : le linker Android ne le cherche pas tout seul
           RPATH="-Wl,-rpath,/data/data/com.termux/files/usr/lib"
           cd doomgeneric-src/doomgeneric
@@ -121,8 +114,7 @@ jobs:
           "$NDK_BIN/llvm-strip" "$BIN"
           readelf -h "$BIN" | grep -E 'Machine|Type'
           readelf -d "$BIN" | grep -E 'NEEDED|RUNPATH|RPATH'
-          # garde-fou : pas de nom sans version, RUNPATH Termux présent
-          if readelf -d "$BIN" | grep -E 'NEEDED.*\[libX11\.so\]'; then echo "NEEDED sans version"; exit 1; fi
+          # garde-fou : RUNPATH Termux présent
           readelf -d "$BIN" | grep -q 'com.termux/files/usr/lib' || { echo "RUNPATH Termux absent"; exit 1; }
           cp "$BIN" "$RUNNER_TEMP/doomgeneric-termux-armv7a"
 
