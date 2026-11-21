@@ -30,4 +30,10 @@ Télécharger l'artefact, puis installer l'APK sur le téléphone (autoriser les
 - Non testé sur un appareil physique depuis cette première version : le premier build CI sert de validation.
 - L'interface de scratch-gui est conçue pour le bureau ; sur petit écran elle reste dense. Les ajustements d'interface mobile (barre d'outils, taille des blocs) sont l'étape suivante.
 - Les costumes et sons de la bibliothèque Scratch nécessitent une connexion Internet.
-- Les projets sont sauvegardés dans le stockage local de la WebView : pas encore d'export/import de fichier `.sb3` dans le système Android.
+- Les projets ouverts et enregistrés en `.sb3` passent par la mémoire : les très gros projets (plusieurs dizaines de Mo, avec beaucoup de médias) peuvent être lents ou échouer sur les téléphones modestes.
+- Les projets de l'éditeur restent aussi dans le stockage local de la WebView (reprise automatique de la session).
+
+## Fichiers `.sb3`
+
+- **Ouvrir** : menu Fichier → *Charger depuis votre ordinateur*. Le sélecteur Android permet de choisir un `.sb3` (Téléchargements, Drive, etc.).
+- **Enregistrer** : menu Fichier → *Enregistrer sur votre ordinateur*. Sur Android 10+, le fichier va dans **Téléchargements** ; sur Android 9 et avant, dans le dossier de l'app (`Android/data/com.dtock.scratch/files/Download`).
