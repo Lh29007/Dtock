@@ -67,6 +67,26 @@ public class MainActivity extends Activity {
             + "};"
             + "})();";
 
+    /**
+     * scratch-gui est dessiné pour une largeur de bureau (~1100 px). Sur téléphone, on réduit
+     * l'affichage avec CSS zoom pour que la scène et les blocs tiennent dans l'écran.
+     * Recalculé au chargement et à chaque redimensionnement (rotation).
+     */
+    private static final String FIT_JS =
+            "(function(){"
+            + "var BASE_WIDTH = 1100;"
+            + "function fit(){"
+            + "  var z = Math.min(1, window.innerWidth / BASE_WIDTH);"
+            + "  var h = document.documentElement;"
+            + "  h.style.zoom = z.toFixed(3);"
+            + "  h.style.width = (window.innerWidth / z) + 'px';"
+            + "  h.style.height = (window.innerHeight / z) + 'px';"
+            + "  h.style.overflow = 'hidden';"
+            + "}"
+            + "if (!window.__dtockFit) { window.__dtockFit = true; window.addEventListener('resize', fit); }"
+            + "fit();"
+            + "})();";
+
     private WebView webView;
     private WebViewAssetLoader assetLoader;
     private ValueCallback<Uri[]> pendingFileCallback;
@@ -143,6 +163,7 @@ public class MainActivity extends Activity {
             public void onPageFinished(WebView v, String url) {
                 super.onPageFinished(v, url);
                 v.evaluateJavascript(SAVE_HOOK_JS, null);
+                v.evaluateJavascript(FIT_JS, null);
             }
         });
     }
