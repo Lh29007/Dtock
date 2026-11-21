@@ -24,3 +24,76 @@
      case XK_Shift_L:
      case XK_Shift_R:
  		key = KEY_RSHIFT;
+@@ -77,6 +94,48 @@
+ 	s_KeyQueueWriteIndex %= KEYQUEUE_SIZE;
+ }
+ 
++/* Écran tactile / souris (Termux:X11) :
++   gauche 1/4 = Q, droite 1/4 = D, haut centre = Z (avancer), bas centre = Ctrl (tirer),
++   clic droit = Espace (ouvrir), clic milieu = Entrée. */
++static unsigned int s_btnKey[8];
++
++static unsigned int touchKeysym(int x, int y, int w, int h)
++{
++	if (x < w / 4) return XK_q;
++	if (x > (w * 3) / 4) return XK_d;
++	if (y < h / 2) return XK_z;
++	return XK_Control_L;
++}
++
++static void handleButton(int pressed, unsigned int button, int x, int y)
++{
++	unsigned int ks = 0;
++
++	if (button == Button1)
++	{
++		if (pressed)
++		{
++			XWindowAttributes wa;
++			XGetWindowAttributes(s_Display, s_Window, &wa);
++			s_btnKey[button] = touchKeysym(x, y, wa.width, wa.height);
++		}
++		ks = s_btnKey[button];
++	}
++	else if (button == Button2)
++	{
++		ks = XK_Return;
++	}
++	else if (button == Button3)
++	{
++		ks = XK_space;
++	}
++
++	if (ks)
++	{
++		addKeyToQueue(pressed, ks);
++	}
++}
++
+ void DG_Init()
+ {
+ 	memset(s_KeyQueue, 0, KEYQUEUE_SIZE * sizeof(unsigned short));
+@@ -99,7 +158,7 @@
+ 
+     s_Window = XCreateSimpleWindow(s_Display, DefaultRootWindow(s_Display), 0, 0, DOOMGENERIC_RESX, DOOMGENERIC_RESY, 0, blackColor, blackColor);
+ 
+-    XSelectInput(s_Display, s_Window, StructureNotifyMask | KeyPressMask | KeyReleaseMask);
++    XSelectInput(s_Display, s_Window, StructureNotifyMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask);
+ 
+     XMapWindow(s_Display, s_Window);
+ 
+@@ -146,6 +205,14 @@
+                 //printf("KeyRelease:%d sym:%d\n", e.xkey.keycode, sym);
+                 addKeyToQueue(0, sym);
+             }
++            else if (e.type == ButtonPress)
++            {
++                handleButton(1, e.xbutton.button, e.xbutton.x, e.xbutton.y);
++            }
++            else if (e.type == ButtonRelease)
++            {
++                handleButton(0, e.xbutton.button, e.xbutton.x, e.xbutton.y);
++            }
+         }
+ 
+         XPutImage(s_Display, s_Window, s_Gc, s_Image, 0, 0, 0, 0, DOOMGENERIC_RESX, DOOMGENERIC_RESY);
