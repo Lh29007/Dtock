@@ -65,7 +65,7 @@ jobs:
               exit 1
             fi
             curl -fsSL -o "$SYS/dl/$2.deb" "$base/$1/$url"
-            dpkg-deb -x "$SYS/dl/$2.deb" "$SYS/usr"
+            dpkg-deb -x "$SYS/dl/$2.deb" "$SYS"
             echo "ok $url"
           }
           fetch_pkg libx/libx11 libx11
@@ -74,7 +74,7 @@ jobs:
           fetch_pkg libx/libxdmcp libxdmcp
           fetch_pkg x/xorgproto xorgproto
           # liens .so de développement si absents
-          cd "$SYS/usr/lib" 2>/dev/null || { echo "pas de lib/"; find "$SYS/usr" -maxdepth 3 | head -n 40; exit 1; }
+          cd "$SYS/data/data/com.termux/files/usr/lib" 2>/dev/null || { echo "pas de lib/"; find "$SYS" -maxdepth 6 | head -n 60; exit 1; }
           for f in libX11 libxcb libXau libXdmcp; do
             for so in "$f".so.*; do
               [ -e "$so" ] || continue
@@ -82,14 +82,14 @@ jobs:
               [ -e "$base.so" ] || ln -s "$so" "$base.so"
             done
           done
-          ls "$SYS/usr/include/X11/Xlib.h" "$SYS/usr/include/X11/keysym.h" "$SYS/usr/include/X11/XKBlib.h"
+          ls "$SYS/data/data/com.termux/files/usr/include/X11/Xlib.h" "$SYS/data/data/com.termux/files/usr/include/X11/keysym.h" "$SYS/data/data/com.termux/files/usr/include/X11/XKBlib.h"
 
       - name: Compiler (cible armv7a-linux-androideabi, API 28)
         run: |
           NDK="$ANDROID_HOME/ndk/$NDK_VER"
           BIN="$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin"
           SYSROOT="$NDK/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
-          SYS="$RUNNER_TEMP/termux-sysroot/usr"
+          SYS="$RUNNER_TEMP/termux-sysroot/data/data/com.termux/files/usr"
           TGT="--target=armv7a-linux-androideabi28 --sysroot=$SYSROOT -mfpu=neon -mfloat-abi=softfp"
           cd doomgeneric-src/doomgeneric
           make -f Makefile clean || true
