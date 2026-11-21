@@ -24,7 +24,7 @@
      case XK_Shift_L:
      case XK_Shift_R:
  		key = KEY_RSHIFT;
-@@ -77,6 +94,48 @@
+@@ -77,6 +94,170 @@
  	s_KeyQueueWriteIndex %= KEYQUEUE_SIZE;
  }
  
@@ -32,6 +32,124 @@
 +   gauche 1/4 = Q, droite 1/4 = D, haut centre = Z (avancer), bas centre = Ctrl (tirer),
 +   clic droit = Espace (ouvrir), clic milieu = Entrée. */
 +static unsigned int s_btnKey[8];
++
++/* Boutons visibles dessinés sur l'image (coordonnées 320x200). */
++typedef struct
++{
++	int x, y, w, h;
++	int kind;          /* 0 haut, 1 bas, 2 gauche, 3 droite, 4 bouton plein */
++	unsigned int ks;
++	unsigned int color;
++} OvBtn;
++
++#define OV_UP 0
++#define OV_DOWN 1
++#define OV_LEFT 2
++#define OV_RIGHT 3
++#define OV_FILL 4
++
++static const OvBtn s_ovBtns[] = {
++	{40, 104, 28, 28, OV_UP,    XK_z,         0xFFFFFF},
++	{8,  136, 28, 28, OV_LEFT,  XK_q,         0xFFFFFF},
++	{72, 136, 28, 28, OV_RIGHT, XK_d,         0xFFFFFF},
++	{40, 168, 28, 28, OV_DOWN,  XK_s,         0xFFFFFF},
++	{248, 136, 56, 56, OV_FILL, XK_Control_L, 0xE03030},
++	{200, 160, 40, 32, OV_FILL, XK_space,     0x30B040},
++};
++#define OV_COUNT (sizeof(s_ovBtns) / sizeof(s_ovBtns[0]))
++
++static void ovBlend(int x, int y, unsigned int color, int alpha)
++{
++	unsigned int *px;
++	unsigned int bg, out;
++	int shift;
++
++	if (x < 0 || y < 0 || x >= DOOMGENERIC_RESX || y >= DOOMGENERIC_RESY) return;
++	px = &DG_ScreenBuffer[y * DOOMGENERIC_RESX + x];
++	bg = *px;
++	out = 0;
++	for (shift = 0; shift <= 16; shift += 8)
++	{
++		unsigned int c = (color >> shift) & 0xFF;
++		unsigned int b = (bg >> shift) & 0xFF;
++		out |= ((c * alpha + b * (255 - alpha)) / 255) << shift;
++	}
++	*px = out;
++}
++
++static void ovArrow(const OvBtn *b, int dir)
++{
++	int cx = b->x + b->w / 2, cy = b->y + b->h / 2;
++	int L = b->h / 3, t, i;
++
++	for (t = 0; t <= L; t++)
++	{
++		for (i = -t; i <= t; i++)
++		{
++			int x, y;
++			switch (dir)
++			{
++			case OV_UP:    x = cx + i; y = cy - L + t; break;
++			case OV_DOWN:  x = cx + i; y = cy + L - t; break;
++			case OV_LEFT:  x = cx - L + t; y = cy + i; break;
++			default:       x = cx + L - t; y = cy + i; break;
++			}
++			ovBlend(x, y, b->color, 255);
++		}
++	}
++}
++
++static void drawOverlay(void)
++{
++	unsigned int i;
++
++	if (!DG_ScreenBuffer) return;
++	for (i = 0; i < OV_COUNT; i++)
++	{
++		const OvBtn *b = &s_ovBtns[i];
++		int x, y;
++
++		/* fond semi-transparent avec bordure */
++		for (y = b->y; y < b->y + b->h; y++)
++		{
++			for (x = b->x; x < b->x + b->w; x++)
++			{
++				int border = (x == b->x || x == b->x + b->w - 1 || y == b->y || y == b->y + b->h - 1);
++				ovBlend(x, y, border ? 0xFFFFFF : 0x000000, border ? 200 : 110);
++			}
++		}
++		if (b->kind == OV_FILL)
++		{
++			for (y = b->y + 4; y < b->y + b->h - 4; y++)
++			{
++				for (x = b->x + 4; x < b->x + b->w - 4; x++)
++				{
++					ovBlend(x, y, b->color, 150);
++				}
++			}
++		}
++		else
++		{
++			ovArrow(b, b->kind);
++		}
++	}
++}
++
++/* Renvoie la touche d'un bouton visible sous (gx, gy) en coordonnées 320x200, sinon 0. */
++static unsigned int hitOverlay(int gx, int gy)
++{
++	unsigned int i;
++
++	for (i = 0; i < OV_COUNT; i++)
++	{
++		const OvBtn *b = &s_ovBtns[i];
++		if (gx >= b->x && gx < b->x + b->w && gy >= b->y && gy < b->y + b->h)
++		{
++			return b->ks;
++		}
++	}
++	return 0;
++}
 +
 +static unsigned int touchKeysym(int x, int y, int w, int h)
 +{
@@ -51,7 +169,11 @@
 +		{
 +			XWindowAttributes wa;
 +			XGetWindowAttributes(s_Display, s_Window, &wa);
-+			s_btnKey[button] = touchKeysym(x, y, wa.width, wa.height);
++			s_btnKey[button] = hitOverlay(x * DOOMGENERIC_RESX / wa.width, y * DOOMGENERIC_RESY / wa.height);
++			if (!s_btnKey[button])
++			{
++				s_btnKey[button] = touchKeysym(x, y, wa.width, wa.height);
++			}
 +		}
 +		ks = s_btnKey[button];
 +	}
@@ -73,7 +195,7 @@
  void DG_Init()
  {
  	memset(s_KeyQueue, 0, KEYQUEUE_SIZE * sizeof(unsigned short));
-@@ -99,7 +158,7 @@
+@@ -99,7 +280,7 @@
  
      s_Window = XCreateSimpleWindow(s_Display, DefaultRootWindow(s_Display), 0, 0, DOOMGENERIC_RESX, DOOMGENERIC_RESY, 0, blackColor, blackColor);
  
@@ -82,7 +204,7 @@
  
      XMapWindow(s_Display, s_Window);
  
-@@ -146,6 +205,14 @@
+@@ -146,8 +327,18 @@
                  //printf("KeyRelease:%d sym:%d\n", e.xkey.keycode, sym);
                  addKeyToQueue(0, sym);
              }
@@ -96,4 +218,8 @@
 +            }
          }
  
++        drawOverlay();
++
          XPutImage(s_Display, s_Window, s_Gc, s_Image, 0, 0, 0, 0, DOOMGENERIC_RESX, DOOMGENERIC_RESY);
+ 
+         //XFlush(s_Display);
