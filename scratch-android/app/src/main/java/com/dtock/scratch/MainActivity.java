@@ -253,6 +253,13 @@ public class MainActivity extends Activity {
 
         view.addJavascriptInterface(new SaveBridge(), "AndroidSave");
 
+        // Fluidité : rendu matériel de la vue, pas d'effet de rebond ni de barres de défilement
+        // qui gênent le glisser-déposer des blocs et de la scène.
+        view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        view.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        view.setVerticalScrollBarEnabled(false);
+        view.setHorizontalScrollBarEnabled(false);
+
         view.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onShowFileChooser(WebView w, ValueCallback<Uri[]> callback,
