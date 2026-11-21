@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Color;
+import android.view.Gravity;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -87,9 +91,94 @@ public class MainActivity extends Activity {
             + "fit();"
             + "})();";
 
+    /** Masque la barre de menus web : elle est remplacée par la barre native. */
+    private static final String HIDE_WEB_CHROME_JS =
+            "(function(){"
+            + "if (document.getElementById('dtock-hide')) return;"
+            + "var s = document.createElement('style'); s.id = 'dtock-hide';"
+            + "s.textContent = '[class*=\"menu-bar_menu-bar\"]{display:none!important}';"
+            + "document.head.appendChild(s);"
+            + "})();";
+
+    /**
+     * Pilote l'éditeur depuis la barre native : lit les boutons existants de scratch-gui
+     * (drapeau vert, stop, menu Fichier). Les libellés sont testés en français et en anglais.
+     */
+    private static final String NATIVE_ACTIONS_JS =
+            "(function(){"
+            + "function byText(sel, texts){"
+            + "  var els = document.querySelectorAll(sel);"
+            + "  for (var i = 0; i < els.length; i++) {"
+            + "    var t = (els[i].textContent || '').trim();"
+            + "    for (var j = 0; j < texts.length; j++) {"
+            + "      if (t.indexOf(texts[j]) === 0) return els[i];"
+            + "    }"
+            + "  }"
+            + "  return null;"
+            + "}"
+            + "function fileMenuItem(labels){"
+            + "  var file = byText('[class*=\"menu-bar_menu-bar-item\"]', ['Fichier', 'File']);"
+            + "  if (file) file.click();"
+            + "  setTimeout(function(){"
+            + "    var it = byText('[class*=\"menu-bar_menu-item\"]', labels);"
+            + "    if (it) it.click();"
+            + "  }, 150);"
+            + "}"
+            + "window.dtock = {"
+            + "  run: function(){ var g = document.querySelector('[class*=\"green-flag_green-flag\"]'); if (g) g.click(); },"
+            + "  stop: function(){ var s = document.querySelector('[class*=\"stop-all\"]'); if (s) s.click(); },"
+            + "  open: function(){ fileMenuItem(['Charger depuis votre ordinateur', 'Load from your computer']); },"
+            + "  save: function(){ fileMenuItem(['Enregistrer sur votre ordinateur', 'Save to your computer']); }"
+            + "};"
+            + "})();";
+
     private WebView webView;
     private WebViewAssetLoader assetLoader;
     private ValueCallback<Uri[]> pendingFileCallback;
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    /** Barre d'outils Android native : titre, Ouvrir, Enregistrer, Lecture, Stop. */
+    private LinearLayout buildNativeTopBar() {
+        LinearLayout bar = new LinearLayout(this);
+        bar.setOrientation(LinearLayout.HORIZONTAL);
+        bar.setGravity(Gravity.CENTER_VERTICAL);
+        bar.setBackgroundColor(Color.rgb(0x85, 0x5C, 0xD6)); // violet Scratch
+        bar.setElevation(dp(4));
+
+        TextView title = new TextView(this);
+        title.setText("Scratch");
+        title.setTextColor(Color.WHITE);
+        title.setTextSize(20);
+        title.setTypeface(null, android.graphics.Typeface.BOLD);
+        title.setPadding(dp(16), 0, dp(8), 0);
+        bar.addView(title, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f));
+
+        bar.addView(barButton("Ouvrir", () -> runJs("window.dtock && dtock.open();")));
+        bar.addView(barButton("Enregistrer", () -> runJs("window.dtock && dtock.save();")));
+        bar.addView(barButton("▶", () -> runJs("window.dtock && dtock.run();")));
+        bar.addView(barButton("■", () -> runJs("window.dtock && dtock.stop();")));
+        return bar;
+    }
+
+    private TextView barButton(String label, Runnable action) {
+        TextView b = new TextView(this);
+        b.setText(label);
+        b.setTextColor(Color.WHITE);
+        b.setTextSize(16);
+        b.setGravity(Gravity.CENTER);
+        b.setPadding(dp(12), 0, dp(12), 0);
+        b.setOnClickListener(v -> action.run());
+        b.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        return b;
+    }
+
+    private void runJs(String code) {
+        webView.evaluateJavascript("(function(){ try { " + code + " } catch (e) {} })();", null);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +192,14 @@ public class MainActivity extends Activity {
 
         webView = new WebView(this);
         configureWebView(webView);
-        setContentView(webView);
+
+        LinearLayout root = new LinearLayout(this);
+        root.setOrientation(LinearLayout.VERTICAL);
+        root.addView(buildNativeTopBar(), new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, dp(52)));
+        root.addView(webView, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
+        setContentView(root);
 
         if (savedInstanceState != null) {
             webView.restoreState(savedInstanceState);
@@ -162,6 +258,8 @@ public class MainActivity extends Activity {
             @Override
             public void onPageFinished(WebView v, String url) {
                 super.onPageFinished(v, url);
+                v.evaluateJavascript(HIDE_WEB_CHROME_JS, null);
+                v.evaluateJavascript(NATIVE_ACTIONS_JS, null);
                 v.evaluateJavascript(SAVE_HOOK_JS, null);
                 v.evaluateJavascript(FIT_JS, null);
             }
