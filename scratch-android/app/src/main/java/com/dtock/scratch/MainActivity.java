@@ -91,6 +91,17 @@ public class MainActivity extends Activity {
             + "fit();"
             + "})();";
 
+    /**
+     * Fixe la largeur de mise en page à 1100 px : la WebView réduit alors la page entière
+     * pour qu'elle tienne dans l'écran (scène et blocs visibles), au lieu de la couper.
+     */
+    private static final String FIXED_VIEWPORT_JS =
+            "(function(){"
+            + "var m = document.querySelector('meta[name=\"viewport\"]');"
+            + "if (!m) { m = document.createElement('meta'); m.name = 'viewport'; document.head.appendChild(m); }"
+            + "m.content = 'width=1100, user-scalable=no';"
+            + "})();";
+
     /** Masque la barre de menus web : elle est remplacée par la barre native. */
     private static final String HIDE_WEB_CHROME_JS =
             "(function(){"
@@ -278,7 +289,7 @@ public class MainActivity extends Activity {
                 v.evaluateJavascript(HIDE_WEB_CHROME_JS, null);
                 v.evaluateJavascript(NATIVE_ACTIONS_JS, null);
                 v.evaluateJavascript(SAVE_HOOK_JS, null);
-                v.evaluateJavascript(FIT_JS, null);
+                v.evaluateJavascript(FIXED_VIEWPORT_JS, null);
             }
         });
     }
