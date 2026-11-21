@@ -1,22 +1,22 @@
-=== Run 44897661584 | commit b401d54a34210b734dc849371977903d0d4f5790 | statut : failure ===
+=== Run 44897876099 | commit 2495c52b8804be5a59b37a2a89ff274bd634da31 | statut : failure ===
 
 ----- build.log -----
-[  1%] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/bz_internal_error.c.o
+[  4%] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/bz_internal_error.c.o
 [  7%] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/crctable.c.o
-[  6%] Building C object CMakeFiles/sha1.dir/vendor/sha1/sha1.c.o
+[  4%] Building C object CMakeFiles/sha1.dir/vendor/sha1/sha1.c.o
 [ 10%] Linking C static library libsha1.a
-[  3%] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/bzlib.c.o
-[ 12%] Built target sha1
+[ 10%] Built target sha1
+[  6%] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/bzlib.c.o
 [ 13%] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/randtable.c.o
 [ 12%] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/huffman.c.o
 [  9%] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/decompress.c.o
 [ 15%] Linking C static library libbzip2.a
 [ 15%] Built target bzip2
-[  6%] Building C object CMakeFiles/glad.dir/vendor/glad/src/glad.c.o
+[  1%] Building C object CMakeFiles/glad.dir/vendor/glad/src/glad.c.o
 [ 16%] Linking C static library libglad.a
 [ 16%] Built target glad
 [ 18%] Building C object CMakeFiles/butterscotch.dir/src/binary_reader.c.o
-[ 21%] Building C object CMakeFiles/butterscotch.dir/src/data_win_print.c.o
+[ 23%] Building C object CMakeFiles/butterscotch.dir/src/data_win_print.c.o
 [ 23%] Building C object CMakeFiles/butterscotch.dir/src/debug_overlay.c.o
 [ 26%] Building C object CMakeFiles/butterscotch.dir/src/gettime.c.o
 [ 29%] Building C object CMakeFiles/butterscotch.dir/src/gml_method.c.o
@@ -25,8 +25,8 @@
 [ 32%] Building C object CMakeFiles/butterscotch.dir/src/input_recording.c.o
 [ 30%] Building C object CMakeFiles/butterscotch.dir/src/ini.c.o
 [ 35%] Building C object CMakeFiles/butterscotch.dir/src/int_int_hashmap.c.o
-[ 33%] Building C object CMakeFiles/butterscotch.dir/src/instance.c.o
 [ 36%] Building C object CMakeFiles/butterscotch.dir/src/int_rvalue_hashmap.c.o
+[ 33%] Building C object CMakeFiles/butterscotch.dir/src/instance.c.o
 [ 41%] Building C object CMakeFiles/butterscotch.dir/src/log.c.o
 [ 40%] Building C object CMakeFiles/butterscotch.dir/src/json_writer.c.o
 [ 38%] Building C object CMakeFiles/butterscotch.dir/src/json_reader.c.o
@@ -36,32 +36,42 @@
 [ 49%] Building C object CMakeFiles/butterscotch.dir/src/overlay_file_system.c.o
 [ 50%] Building C object CMakeFiles/butterscotch.dir/src/profiler.c.o
 [ 52%] Building C object CMakeFiles/butterscotch.dir/src/random.c.o
-[ 43%] Building C object CMakeFiles/butterscotch.dir/src/loop.c.o
 [ 55%] Building C object CMakeFiles/butterscotch.dir/src/runner_gamepad.c.o
-[ 58%] Building C object CMakeFiles/butterscotch.dir/src/runner_mouse.c.o
+[ 43%] Building C object CMakeFiles/butterscotch.dir/src/loop.c.o
 [ 56%] Building C object CMakeFiles/butterscotch.dir/src/runner_keyboard.c.o
+[ 58%] Building C object CMakeFiles/butterscotch.dir/src/runner_mouse.c.o
 [ 61%] Building C object CMakeFiles/butterscotch.dir/src/spatial_grid.c.o
 [ 20%] Building C object CMakeFiles/butterscotch.dir/src/data_win.c.o
-[ 64%] Building C object CMakeFiles/butterscotch.dir/src/string_builder.c.o
 [ 63%] Building C object CMakeFiles/butterscotch.dir/src/stb_ds.c.o
+[ 64%] Building C object CMakeFiles/butterscotch.dir/src/string_builder.c.o
 [ 60%] Building C object CMakeFiles/butterscotch.dir/src/sequence.c.o
 [ 69%] Building C object CMakeFiles/butterscotch.dir/src/physics/physics.c.o
 [ 70%] Building C object CMakeFiles/butterscotch.dir/src/physics/disabled/physics_disabled.c.o
 [ 72%] Building C object CMakeFiles/butterscotch.dir/src/cli/args.c.o
 [ 73%] Building C object CMakeFiles/butterscotch.dir/src/cli/main.c.o
-/home/runner/work/Dtock/Dtock/butterscotch/src/cli/main.c:77:13: error: call to undeclared function 'posix_spawnp'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-   77 |         if (posix_spawnp(&process, terminals[i].name, NULL, NULL, arguments, environ) == 0) return true;
-      |             ^
-/home/runner/work/Dtock/Dtock/butterscotch/src/cli/main.c:77:13: note: did you mean 'posix_openpt'?
-/usr/local/lib/android/sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/stdlib.h:170:5: note: 'posix_openpt' declared here
-  170 | int posix_openpt(int __flags);
-      |     ^
-1 error generated.
-gmake[2]: *** [CMakeFiles/butterscotch.dir/build.make:586: CMakeFiles/butterscotch.dir/src/cli/main.c.o] Error 1
-gmake[2]: *** Waiting for unfinished jobs....
+[ 75%] Building C object CMakeFiles/butterscotch.dir/src/cli/menu.c.o
 [ 66%] Building C object CMakeFiles/butterscotch.dir/src/vm.c.o
 [ 53%] Building C object CMakeFiles/butterscotch.dir/src/runner.c.o
+[ 80%] Building C object CMakeFiles/butterscotch.dir/src/default_font/default_font.c.o
+[ 81%] Building C object CMakeFiles/butterscotch.dir/src/default_font/jetbrains_mono_extrabold_font.c.o
+[ 83%] Building C object CMakeFiles/butterscotch.dir/vendor/md5/md5.c.o
+[ 84%] Building C object CMakeFiles/butterscotch.dir/vendor/base64/base64.c.o
+[ 86%] Building C object CMakeFiles/butterscotch.dir/vendor/wuffs/wuffs-v0.4.c.o
+[ 87%] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz.c.o
+[ 89%] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz_tdef.c.o
+[ 90%] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz_tinfl.c.o
+[ 76%] Building C object CMakeFiles/butterscotch.dir/src/cli/stb_impl.c.o
+[ 92%] Building C object CMakeFiles/butterscotch.dir/src/video/null_video.c.o
+[ 93%] Building C object CMakeFiles/butterscotch.dir/src/gl_common/gl_common.c.o
+[ 96%] Building C object CMakeFiles/butterscotch.dir/vendor/tinyfd/tinyfiledialogs.c.o
+[ 98%] Building C object CMakeFiles/butterscotch.dir/src/backends/noop.c.o
+[ 95%] Building C object CMakeFiles/butterscotch.dir/src/image/image_decoder.c.o
 [ 67%] Building C object CMakeFiles/butterscotch.dir/src/vm_builtins.c.o
+[ 78%] Building C object CMakeFiles/butterscotch.dir/src/audio/miniaudio/ma_audio_system.c.o
+[100%] Linking C executable butterscotch
+ld.lld: error: unable to find library -lpthread
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+gmake[2]: *** [CMakeFiles/butterscotch.dir/build.make:939: butterscotch] Error 1
 gmake[1]: *** [CMakeFiles/Makefile2:101: CMakeFiles/butterscotch.dir/all] Error 2
 gmake: *** [Makefile:94: all] Error 2
 
@@ -76,7 +86,7 @@ gmake: *** [Makefile:94: all] Error 2
 -- Performing Test HAS_FOMIT_FRAME_POINTER - Success
 -- Performing Test HAS_ICF_ALL
 -- Performing Test HAS_ICF_ALL - Success
--- Configuring done (0.3s)
+-- Configuring done (0.7s)
 -- Generating done (0.0s)
 -- Build files have been written to: /home/runner/work/Dtock/Dtock/build-armv7a
 
