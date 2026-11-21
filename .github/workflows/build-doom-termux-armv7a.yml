@@ -19,7 +19,7 @@ jobs:
 
     env:
       NDK_VER: 28.2.13676358
-      TERMUX_X11_REPO: https://packages.termux.dev/apt/termux-x11/pool/main
+      TERMUX_X11_REPOS: "https://plug-mirror.rcac.purdue.edu/termux/apt/termux-x11/pool/main https://packages.termux.dev/apt/termux-x11/pool/main"
 
     steps:
       - name: Récupérer Dtock
@@ -49,10 +49,14 @@ jobs:
           SYS="$RUNNER_TEMP/termux-sysroot"
           mkdir -p "$SYS/dl" "$SYS/usr"
           fetch_pkg() {  # $1 = dossier pool (ex: libx/libx11), $2 = nom du paquet
-            url=$(curl -fsSL "$TERMUX_X11_REPO/$1/" \
-              | grep -oE "href=\"$2_[^\"]*_arm\.deb\"" | head -n1 | sed -E 's/href="//; s/"$//')
+            url=""; base=""
+            for r in $TERMUX_X11_REPOS; do
+              url=$(curl -fsSL "$r/$1/" 2>/dev/null \
+                | grep -oE "href=\"$2_[^\"]*_arm\.deb\"" | head -n1 | sed -E 's/href="//; s/"$//') || true
+              if [ -n "$url" ]; then base="$r"; break; fi
+            done
             test -n "$url" || { echo "paquet $2 introuvable dans $1"; exit 1; }
-            curl -fsSL -o "$SYS/dl/$2.deb" "$TERMUX_X11_REPO/$1/$url"
+            curl -fsSL -o "$SYS/dl/$2.deb" "$base/$1/$url"
             dpkg-deb -x "$SYS/dl/$2.deb" "$SYS/usr"
             echo "ok $url"
           }
