@@ -34,6 +34,7 @@ jobs:
           mkdir -p build
           javac -d build $(find src -name '*.java')
           java -cp build lh2.SettingsCheck
+          java -cp build lh2.installer.InstallerCheck
 
   build:
     name: Compiler le JAR et l'installeur
@@ -57,6 +58,8 @@ jobs:
           javac -d build/classes $(find src/main -name '*.java')
           printf 'Manifest-Version: 1.0\n' > build/manifest.txt
           jar cfm build/jar/lh2-loader-1.0.0.jar build/manifest.txt -C build/classes .
+          printf 'Manifest-Version: 1.0\nMain-Class: lh2.installer.Main\n' > build/installer-manifest.txt
+          jar cfm build/jar/lh2-installer.jar build/installer-manifest.txt -C build/classes .
 
       - name: Compiler l'installeur (Windows, Linux, macOS)
         working-directory: lh2-loader/installer
@@ -70,6 +73,7 @@ jobs:
         run: |
           mkdir -p android/lh2
           cp lh2-loader/mod/build/jar/lh2-loader-1.0.0.jar android/lh2/
+          cp lh2-loader/mod/build/jar/lh2-installer.jar android/lh2/
           cp lh2-loader/README.md android/lh2/
           cd android && zip -r ../lh2-loader-amethyst.zip lh2
 
@@ -79,4 +83,5 @@ jobs:
           path: |
             lh2-loader/installer/dist/*
             lh2-loader/mod/build/jar/*.jar
+            lh2-loader/mod/build/jar/lh2-installer.jar
             lh2-loader-amethyst.zip
