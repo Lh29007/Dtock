@@ -56,7 +56,8 @@ particles=reduced
 entity_distance=96
 periodic_gc=false
 reduce_allocations=true
-`)
+`
+)
 
 // Library décrit une entrée "libraries" d'un profil de version Minecraft.
 type Library struct {
