@@ -1,0 +1,80 @@
+name: Build LH2 Loader
+
+on:
+  push:
+    branches: [lh2-loader]
+    paths:
+      - 'lh2-loader/**'
+      - '.github/workflows/build-lh2-loader.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Tests Go (installeur)
+        working-directory: lh2-loader/installer
+        run: go vet ./... && go test ./...
+      - name: Tests Java (réglages)
+        working-directory: lh2-loader/mod
+        run: |
+          mkdir -p build
+          javac -d build src/main/java/lh2/LH2Settings.java src/test/java/lh2/SettingsCheck.java
+          java -cp build lh2.SettingsCheck
+
+  build:
+    name: Compiler le JAR et l'installeur
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Compiler le JAR LH2
+        working-directory: lh2-loader/mod
+        run: |
+          mkdir -p build/classes build/jar
+          javac -d build/classes src/main/java/lh2/LH2Settings.java
+          printf 'Manifest-Version: 1.0\n' > build/manifest.txt
+          jar cfm build/jar/lh2-loader-1.0.0.jar build/manifest.txt -C build/classes .
+
+      - name: Compiler l'installeur (Windows, Linux, macOS)
+        working-directory: lh2-loader/installer
+        run: |
+          mkdir -p dist
+          GOOS=windows GOARCH=amd64 go build -trimpath -o dist/lh2installer-windows.exe .
+          GOOS=linux   GOARCH=amd64 go build -trimpath -o dist/lh2installer-linux .
+          GOOS=darwin  GOARCH=arm64 go build -trimpath -o dist/lh2installer-macos .
+
+      - name: Paquet Android (Amethyst)
+        run: |
+          mkdir -p android/lh2
+          cp lh2-loader/mod/build/jar/lh2-loader-1.0.0.jar android/lh2/
+          cp lh2-loader/README.md android/lh2/
+          cd android && zip -r ../lh2-loader-amethyst.zip lh2
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lh2-loader
+          path: |
+            lh2-loader/installer/dist/*
+            lh2-loader/mod/build/jar/*.jar
+            lh2-loader-amethyst.zip
