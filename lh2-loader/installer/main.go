@@ -28,16 +28,35 @@ const (
 	mavenArtif  = "lh2-loader"
 	mavenVer    = "1.0.0"
 	defaultConf = `# LH2 Loader : réglages
-# culling        : cache les chunks hors du champ de vision
-# max_chunks     : limite de chunks gardés en mémoire
-# vsync          : true ou false
-# gl_profile     : gl21 (compatibilité, défaut) ou gl33 (optionnel)
-culling=true
+# culling          : off | normal | aggressive (cache les chunks hors vue)
+# render_distance  : 2-32 chunks
+# max_chunks       : 64-4096 chunks gardés en mémoire
+# texture_cache_mb : 16-1024 Mo pour l'atlas de textures
+# vsync            : true | false
+# fps_limit        : 0 (illimité) ou 1-1000
+# gl_profile       : gl21 (compatibilité) | gl33 (optionnel, non encore actif)
+# fast_graphics    : true | false (désactive les effets coûteux)
+# smooth_lighting  : true | false
+# clouds           : true | false
+# particles        : off | reduced | full
+# entity_distance  : 16-256 blocs
+# periodic_gc      : true | false (GC forcé périodiquement ; utile seulement si la mémoire monte)
+# reduce_allocations : true | false (réutilise les objets dans les boucles de rendu)
+culling=normal
+render_distance=8
 max_chunks=512
+texture_cache_mb=128
 vsync=false
+fps_limit=0
 gl_profile=gl21
-`
-)
+fast_graphics=true
+smooth_lighting=false
+clouds=false
+particles=reduced
+entity_distance=96
+periodic_gc=false
+reduce_allocations=true
+`)
 
 // Library décrit une entrée "libraries" d'un profil de version Minecraft.
 type Library struct {

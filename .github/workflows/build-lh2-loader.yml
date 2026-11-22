@@ -20,6 +20,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: '1.24'
+          cache: false
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -31,7 +32,7 @@ jobs:
         working-directory: lh2-loader/mod
         run: |
           mkdir -p build
-          javac -d build src/main/java/lh2/LH2Settings.java src/test/java/lh2/SettingsCheck.java
+          javac -d build $(find src -name '*.java')
           java -cp build lh2.SettingsCheck
 
   build:
@@ -43,6 +44,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: '1.24'
+          cache: false
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -52,7 +54,7 @@ jobs:
         working-directory: lh2-loader/mod
         run: |
           mkdir -p build/classes build/jar
-          javac -d build/classes src/main/java/lh2/LH2Settings.java
+          javac -d build/classes $(find src/main -name '*.java')
           printf 'Manifest-Version: 1.0\n' > build/manifest.txt
           jar cfm build/jar/lh2-loader-1.0.0.jar build/manifest.txt -C build/classes .
 
