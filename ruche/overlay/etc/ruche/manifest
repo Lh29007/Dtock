@@ -1,5 +1,4 @@
 # Paquets voulus par Ruche. Un par ligne. Appliquer avec : ruche sync
-doas
 htop
 ripgrep
 fd
