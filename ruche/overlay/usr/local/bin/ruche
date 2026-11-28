@@ -135,6 +135,10 @@ cmd_doctor() {
             fi
         done < "$MANIFEST"
     fi
+    if [ ! -w /lib/apk/db ]; then
+        echo "impossible d'écrire dans /lib/apk/db (corriger : chmod -R u+rwX /lib/apk /var/cache/apk)"
+        problemes=$((problemes + 1))
+    fi
     # Information seulement : os-release est modifié volontairement par Ruche.
     apk audit >/dev/null 2>&1 || echo "info : apk audit signale des fichiers modifiés (voir 'apk audit')"
     if [ "$problemes" -eq 0 ]; then

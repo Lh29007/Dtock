@@ -26,6 +26,7 @@ jobs:
           sh -n ruche/overlay/usr/local/bin/ruche
           sh -n ruche/overlay/etc/profile.d/ruche.sh
           sh -n ruche/scripts/build-rootfs.sh
+          sh -n ruche/scripts/test-rootfs.sh
 
       - name: Installer qemu (binfmt armv7)
         run: |
@@ -46,9 +47,37 @@ jobs:
             ruche/dist/ruche-rootfs-3.24.4-armv7.tar.gz.sha256
           if-no-files-found: error
 
+  test:
+    name: Tester le rootfs (fzf, ruche) puis supprimer
+    needs: build
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Récupérer le code (scripts de test)
+        uses: actions/checkout@v4
+
+      - name: Installer qemu (binfmt armv7)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq qemu-user-static binfmt-support
+          test -e /proc/sys/fs/binfmt_misc/qemu-arm
+
+      - name: Récupérer le rootfs depuis l'artefact
+        uses: actions/download-artifact@v4
+        with:
+          name: ruche-rootfs-armv7
+          path: ${{ runner.temp }}/ruche-artifact
+
+      - name: Tester fzf et ruche dans le rootfs
+        run: sudo sh ruche/scripts/test-rootfs.sh "${{ runner.temp }}/ruche-artifact/ruche-rootfs-3.24.4-armv7.tar.gz"
+
+      - name: Supprimer la copie téléchargée (même si le test échoue)
+        if: always()
+        run: rm -rf "${{ runner.temp }}/ruche-artifact"
+
   release:
     name: Publier la release
-    needs: build
+    needs: [build, test]
     runs-on: ubuntu-24.04
     if: startsWith(github.ref, 'refs/tags/ruche-v')
 
