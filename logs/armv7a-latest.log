@@ -1,0 +1,248 @@
+=== Run 46141670393 | commit 49a254cbfea8e5cab416498f3741671c4ba40853 | statut : success ===
+
+----- apt.log -----
+Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+Hit:2 http://azure.archive.ubuntu.com/ubuntu resolute InRelease
+Get:3 http://azure.archive.ubuntu.com/ubuntu resolute-updates InRelease [137 kB]
+Get:4 http://azure.archive.ubuntu.com/ubuntu resolute-backports InRelease [137 kB]
+Get:5 http://azure.archive.ubuntu.com/ubuntu resolute-security InRelease [137 kB]
+Get:6 https://packages.microsoft.com/ubuntu/26.04/prod resolute InRelease [3964 B]
+Get:7 http://azure.archive.ubuntu.com/ubuntu resolute-updates/main amd64v3 Packages [928 kB]
+Get:8 http://azure.archive.ubuntu.com/ubuntu resolute-updates/main Translation-en [205 kB]
+Get:9 http://azure.archive.ubuntu.com/ubuntu resolute-updates/universe amd64v3 Packages [402 kB]
+Get:10 http://azure.archive.ubuntu.com/ubuntu resolute-updates/universe Translation-en [127 kB]
+Get:11 http://azure.archive.ubuntu.com/ubuntu resolute-updates/restricted amd64v3 Packages [640 kB]
+Get:12 http://azure.archive.ubuntu.com/ubuntu resolute-updates/restricted Translation-en [132 kB]
+Get:13 http://azure.archive.ubuntu.com/ubuntu resolute-security/main amd64v3 Packages [765 kB]
+Get:14 http://azure.archive.ubuntu.com/ubuntu resolute-security/main Translation-en [165 kB]
+Get:15 http://azure.archive.ubuntu.com/ubuntu resolute-security/universe amd64v3 Packages [229 kB]
+Get:16 http://azure.archive.ubuntu.com/ubuntu resolute-security/universe Translation-en [74.4 kB]
+Get:19 https://packages.microsoft.com/ubuntu/26.04/prod resolute/main amd64 Packages [192 kB]
+Get:20 https://packages.microsoft.com/ubuntu/26.04/prod resolute/main arm64 Packages [178 kB]
+Get:17 http://azure.archive.ubuntu.com/ubuntu resolute-security/restricted amd64v3 Packages [618 kB]
+Get:18 http://azure.archive.ubuntu.com/ubuntu resolute-security/restricted Translation-en [128 kB]
+Fetched 5199 kB in 0s (11.6 MB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+zip is already the newest version (3.0-15ubuntu3).
+Solving dependencies...
+The following NEW packages will be installed:
+  ninja-build
+0 upgraded, 1 newly installed, 0 to remove and 38 not upgraded.
+Need to get 173 kB of archives.
+After this operation, 466 kB of additional disk space will be used.
+Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+Get:2 http://azure.archive.ubuntu.com/ubuntu resolute/universe amd64v3 ninja-build amd64 1.13.2-1 [173 kB]
+Fetched 173 kB in 0s (1057 kB/s)
+Selecting previously unselected package ninja-build.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 214389 files and directories currently installed.)
+Preparing to unpack .../ninja-build_1.13.2-1_amd64v3.deb ...
+Unpacking ninja-build (1.13.2-1) ...
+Setting up ninja-build (1.13.2-1) ...
+Processing triggers for man-db (2.13.1-1build1) ...
+Not building database; man-db/auto-update is not 'true'.
+
+Running kernel seems to be up-to-date.
+
+Restarting services...
+
+Service restarts being deferred:
+ systemctl restart hosted-compute-agent.service
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+1.13.2
+
+----- build.log -----
+[0/2] Re-checking globbed directories...
+[1/102] Building C object CMakeFiles/butterscotch.dir/src/binary_reader.c.o
+[2/102] Building C object CMakeFiles/butterscotch.dir/src/data_win_print.c.o
+[3/102] Building C object CMakeFiles/butterscotch.dir/src/debug_overlay.c.o
+[4/102] Building C object CMakeFiles/butterscotch.dir/src/gettime.c.o
+[5/102] Building C object CMakeFiles/butterscotch.dir/src/gml_method.c.o
+[6/102] Building C object CMakeFiles/butterscotch.dir/src/event_table.c.o
+[7/102] Building C object CMakeFiles/butterscotch.dir/src/gml_array.c.o
+[8/102] Building C object CMakeFiles/butterscotch.dir/src/ini.c.o
+[9/102] Building C object CMakeFiles/butterscotch.dir/src/instance.c.o
+[10/102] Building C object CMakeFiles/butterscotch.dir/src/input_recording.c.o
+[11/102] Building C object CMakeFiles/butterscotch.dir/src/int_int_hashmap.c.o
+[12/102] Building C object CMakeFiles/butterscotch.dir/src/int_rvalue_hashmap.c.o
+[13/102] Building C object CMakeFiles/butterscotch.dir/src/json_writer.c.o
+[14/102] Building C object CMakeFiles/butterscotch.dir/src/json_reader.c.o
+[15/102] Building C object CMakeFiles/butterscotch.dir/src/log.c.o
+[16/102] Building C object CMakeFiles/butterscotch.dir/src/noop_audio_system.c.o
+[17/102] Building C object CMakeFiles/butterscotch.dir/src/noop_renderer.c.o
+[18/102] Building C object CMakeFiles/butterscotch.dir/src/profiler.c.o
+[19/102] Building C object CMakeFiles/butterscotch.dir/src/noop_file_system.c.o
+[20/102] Building C object CMakeFiles/butterscotch.dir/src/random.c.o
+[21/102] Building C object CMakeFiles/butterscotch.dir/src/overlay_file_system.c.o
+[22/102] Building C object CMakeFiles/butterscotch.dir/src/runner_mouse.c.o
+[23/102] Building C object CMakeFiles/butterscotch.dir/src/runner_gamepad.c.o
+[24/102] Building C object CMakeFiles/butterscotch.dir/src/runner_keyboard.c.o
+[25/102] Building C object CMakeFiles/butterscotch.dir/src/spatial_grid.c.o
+[26/102] Building C object CMakeFiles/butterscotch.dir/src/stb_ds.c.o
+[27/102] Building C object CMakeFiles/butterscotch.dir/src/data_win.c.o
+[28/102] Building C object CMakeFiles/butterscotch.dir/src/string_builder.c.o
+[29/102] Building C object CMakeFiles/butterscotch.dir/src/sequence.c.o
+[30/102] Building C object CMakeFiles/butterscotch.dir/src/fmod/fmod.c.o
+[31/102] Building C object CMakeFiles/butterscotch.dir/src/fmod/fmod_bank.c.o
+[32/102] Building C object CMakeFiles/butterscotch.dir/src/fmod/fsb.c.o
+[33/102] Building C object CMakeFiles/butterscotch.dir/src/fmod/fmod_dsp.c.o
+[34/102] Building C object CMakeFiles/butterscotch.dir/src/android/main.c.o
+[35/102] Building C object CMakeFiles/butterscotch.dir/src/vm.c.o
+[36/102] Building C object CMakeFiles/butterscotch.dir/src/physics/physics.c.o
+[37/102] Building C object CMakeFiles/butterscotch.dir/src/physics/physics_box2d_timer.c.o
+[38/102] Building C object CMakeFiles/butterscotch.dir/src/runner.c.o
+[39/102] Building C object CMakeFiles/butterscotch.dir/src/physics/physics_joints.c.o
+[40/102] Building C object CMakeFiles/butterscotch.dir/src/physics/physics_engine.c.o
+[41/102] Building C object CMakeFiles/butterscotch.dir/vendor/md5/md5.c.o
+[42/102] Building C object CMakeFiles/butterscotch.dir/src/physics/physics_particles.c.o
+[43/102] Building C object CMakeFiles/butterscotch.dir/src/default_font/default_font.c.o
+[44/102] Building C object CMakeFiles/butterscotch.dir/src/default_font/jetbrains_mono_extrabold_font.c.o
+[45/102] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz.c.o
+[46/102] Building C object CMakeFiles/butterscotch.dir/vendor/base64/base64.c.o
+[47/102] Building C object CMakeFiles/butterscotch.dir/vendor/wuffs/wuffs-v0.4.c.o
+[48/102] Building C object CMakeFiles/butterscotch.dir/src/gl/gl_renderer.c.o
+[49/102] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz_tdef.c.o
+[50/102] Building C object CMakeFiles/butterscotch.dir/src/android/stb_impl.c.o
+[51/102] Building C object CMakeFiles/butterscotch.dir/src/video/null_video.c.o
+[52/102] Building C object CMakeFiles/butterscotch.dir/src/libretro/main.c.o
+[53/102] Building C object CMakeFiles/butterscotch.dir/vendor/miniz/miniz_tinfl.c.o
+[54/102] Building C object CMakeFiles/butterscotch.dir/src/gl_common/gl_common.c.o
+[55/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/array.c.o
+[56/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/arena_allocator.c.o
+[57/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/core.c.o
+[58/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/aabb.c.o
+[59/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/bitset.c.o
+[60/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/body.c.o
+[61/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/contact.c.o
+[62/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/broad_phase.c.o
+[63/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/constraint_graph.c.o
+[64/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/mover.c.o
+[65/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/contact_solver.c.o
+[66/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/distance.c.o
+[67/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/geometry.c.o
+[68/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/distance_joint.c.o
+[69/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/dynamic_tree.c.o
+[70/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/hull.c.o
+[71/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/id_pool.c.o
+[72/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/island.c.o
+[73/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/joint.c.o
+[74/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/manifold.c.o
+[75/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/table.c.o
+[76/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/math_functions.c.o
+[77/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/motor_joint.c.o
+[78/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/mouse_joint.c.o
+[79/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/sensor.c.o
+[80/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/prismatic_joint.c.o
+[81/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/revolute_joint.c.o
+[82/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/shape.c.o
+[83/102] Building C object CMakeFiles/butterscotch.dir/src/image/image_decoder.c.o
+[84/102] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/randtable.c.o
+[85/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/solver.c.o
+[86/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/solver_set.c.o
+[87/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/types.c.o
+[88/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/weld_joint.c.o
+[89/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/wheel_joint.c.o
+[90/102] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/huffman.c.o
+[91/102] Building C object CMakeFiles/butterscotch_box2d.dir/vendor/box2d/src/world.c.o
+[92/102] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/crctable.c.o
+[93/102] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/bz_internal_error.c.o
+[94/102] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/bzlib.c.o
+[95/102] Building C object CMakeFiles/sha1.dir/vendor/sha1/sha1.c.o
+[96/102] Linking C static library libsha1.a
+[97/102] Linking C static library libbutterscotch_box2d.a
+[98/102] Building C object CMakeFiles/bzip2.dir/vendor/bzip2/decompress.c.o
+[99/102] Linking C static library libbzip2.a
+[100/102] Building C object CMakeFiles/butterscotch.dir/src/audio/miniaudio/ma_audio_system.c.o
+[101/102] Building C object CMakeFiles/butterscotch.dir/src/vm_builtins.c.o
+[102/102] Linking C shared library butterscotch_libretro_android.so
+
+----- check.log -----
+Taille : 2212164 octets
+dist/butterscotch_libretro_android.so: ELF 32-bit LSB shared object, ARM, EABI5 version 1 (SYSV), dynamically linked, for Android 21, built by NDK r26d (11579264), BuildID[sha1]=b4c77adc546be1d8e9e1a657e20151f6e28d5235, stripped
+  Class:                             ELF32
+  Type:                              DYN (Shared object file)
+  Machine:                           ARM
+  Tag_CPU_arch: v7
+  Tag_CPU_arch_profile: Application
+Symboles retro_* exportés :
+000a84fc T retro_api_version
+000a8444 T retro_cheat_reset
+000a8444 T retro_cheat_set
+001e6b94 T retro_deinit
+000a8446 T retro_get_memory_data
+000a8446 T retro_get_memory_size
+000a8446 T retro_get_region
+001e6c10 T retro_get_system_av_info
+001e6bdc T retro_get_system_info
+001e6ae0 T retro_init
+001e7760 T retro_load_game
+001e78f0 T retro_load_game_special
+001e6c68 T retro_reset
+001e6e20 T retro_run
+000a8446 T retro_serialize
+000a8446 T retro_serialize_size
+000a8444 T retro_set_audio_sample
+000a8444 T retro_set_audio_sample_batch
+000a8444 T retro_set_controller_port_device
+001e6a5c T retro_set_environment
+001e6ac8 T retro_set_input_poll
+001e6ad4 T retro_set_input_state
+001e6abc T retro_set_video_refresh
+001e6b94 T retro_unload_game
+000a8446 T retro_unserialize
+
+----- cmake.log -----
+-- The C compiler identification is Clang 17.0.2
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/local/lib/android/sdk/ndk/26.3.11579264/toolchains/llvm/prebuilt/linux-x86_64/bin/clang - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Performing Test HAS_FOMIT_FRAME_POINTER
+-- Performing Test HAS_FOMIT_FRAME_POINTER - Success
+-- Performing Test HAS_ICF_ALL
+-- Performing Test HAS_ICF_ALL - Success
+-- Found PkgConfig: /usr/bin/pkg-config (found version "2.5.1") 
+-- Checking for modules 'libavformat;libavcodec;libavutil;libswscale;libswresample'
+--   Package 'libavformat' not found
+--   Package 'libavcodec' not found
+--   Package 'libavutil' not found
+--   Package 'libswscale' not found
+--   Package 'libswresample' not found
+CMake Warning at CMakeLists.txt:265 (message):
+  FFmpeg development libraries not found - video playback will be disabled
+
+
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/runner/work/Dtock/Dtock/build-armv7a
+
+----- inject.log -----
+'src/libretro/libretro.h' -> 'butterscotch/src/libretro/libretro.h'
+'src/libretro/main.c' -> 'butterscotch/src/libretro/main.c'
+--- CMakeLists.txt : fin après injection ---
+endif()
+# ---- Injection Dtock : cible libretro Android (armeabi-v7a) ----
+# Ajouté à la fin du CMakeLists.txt de Butterscotch par le workflow.
+# La cible `butterscotch` est déjà SHARED en PLATFORM=android et inclut
+# src/android/*.c (dont platformLog). On ajoute seulement l'entrée libretro.
+if(PLATFORM STREQUAL "android")
+    target_sources(butterscotch PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/libretro/main.c)
+    target_include_directories(butterscotch PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/libretro)
+    set_target_properties(butterscotch PROPERTIES
+        OUTPUT_NAME "butterscotch_libretro_android"
+        PREFIX "")
+endif()
+
+----- sdk.log -----
+ANDROID_HOME=/usr/local/lib/android/sdk
+Loading package information...                                                  Loading local repository...                                                     [                                       ] 3% Loading local repository...        [                                       ] 3% Fetch remote repository...         [=                                      ] 3% Fetch remote repository...         [=                                      ] 4% Fetch remote repository...         [=                                      ] 5% Fetch remote repository...         [==                                     ] 5% Fetch remote repository...         [==                                     ] 6% Fetch remote repository...         [==                                     ] 7% Fetch remote repository...         [==                                     ] 7% Computing updates...               [===                                    ] 8% Computing updates...               [===                                    ] 10% Computing updates...              [===                                    ] 10% Installing CMake 3.22.1           [===                                    ] 10% Downloading cmake-3.22.1-linux.zip[====                                   ] 10% Downloading cmake-3.22.1-linux.zip[====                                   ] 11% Downloading cmake-3.22.1-linux.zip[====                                   ] 12% Downloading cmake-3.22.1-linux.zip[=====                                  ] 13% Downloading cmake-3.22.1-linux.zip[=====                                  ] 14% Downloading cmake-3.22.1-linux.zip[=====                                  ] 15% Downloading cmake-3.22.1-linux.zip[======                                 ] 15% Downloading cmake-3.22.1-linux.zip[======                                 ] 16% Downloading cmake-3.22.1-linux.zip[======                                 ] 17% Downloading cmake-3.22.1-linux.zip[=======                                ] 18% Downloading cmake-3.22.1-linux.zip[=======                                ] 19% Downloading cmake-3.22.1-linux.zip[=======                                ] 20% Downloading cmake-3.22.1-linux.zip[========                               ] 20% Downloading cmake-3.22.1-linux.zip[========                               ] 21% Downloading cmake-3.22.1-linux.zip[========                               ] 21% Unzipping...                      [========                               ] 21% Unzipping... bin/cmake            [========                               ] 22% Unzipping... bin/cmake            [=========                              ] 23% Unzipping... bin/cmake            [=========                              ] 24% Unzipping... bin/cmake            [=========                              ] 24% Unzipping... bin/ctest            [=========                              ] 25% Unzipping... bin/ctest            [==========                             ] 25% Unzipping... bin/ctest            [==========                             ] 26% Unzipping... bin/ctest            [==========                             ] 27% Unzipping... bin/ctest            [===========                            ] 28% Unzipping... bin/ctest            [===========                            ] 28% Unzipping... bin/cpack            [===========                            ] 29% Unzipping... bin/cpack            [===========                            ] 30% Unzipping... bin/cpack            [============                           ] 30% Unzipping... bin/cpack            [============                           ] 31% Unzipping... bin/cpack            [============                           ] 31% Unzipping... share/vim/vimfiles/in[============                           ] 31% Unzipping... share/vim/vimfiles/sy[============                           ] 31% Unzipping... share/aclocal/cmake.m[============                           ] 31% Unzipping... share/emacs/site-lisp[============                           ] 31% Unzipping... share/cmake-3.22/incl[============                           ] 31% Unzipping... share/cmake-3.22/Help[============                           ] 31% Unzipping... share/cmake-3.22/Temp[============                           ] 32% Unzipping... share/cmake-3.22/Temp[============                           ] 32% Unzipping... share/cmake-3.22/Modu[============                           ] 32% Unzipping... share/bash-completion[============                           ] 32% Unzipping... doc/cmake-3.22/Copyri[============                           ] 32% Unzipping... doc/cmake-3.22/cmzlib[============                           ] 32% Unzipping... doc/cmake-3.22/cmzstd[============                           ] 32% Unzipping... doc/cmake-3.22/cmnght[============                           ] 32% Unzipping... doc/cmake-3.22/cmsys/[============                           ] 32% Unzipping... doc/cmake-3.22/cmcurl[============                           ] 32% Unzipping... doc/cmake-3.22/cmlibr[============                           ] 32% Unzipping... doc/cmake-3.22/cmliba[============                           ] 32% Unzipping... doc/cmake-3.22/cmlibl[============                           ] 32% Unzipping... doc/cmake-3.22/cmlibu[============                           ] 32% Unzipping... doc/openssl-1.1.1l/LI[============                           ] 32% Unzipping... source.properties    [============                           ] 32% Unzipping... bin/ninja            [============                           ] 32% Unzipping... doc/ninja/LICENSE    [============                           ] 32% Unzipping... share/cmake-3.22/Modu[=============                          ] 33% Unzipping... share/cmake-3.22/Modu[=====================                  ] 55% Unzipping... share/cmake-3.22/Modu[=====================                  ] 55% Installing NDK (Side by side) 26.3[=====================                  ] 55% Downloading android-ndk-r26d-linux[======================                 ] 55% Downloading android-ndk-r26d-linux[======================                 ] 56% Downloading android-ndk-r26d-linux[======================                 ] 57% Downloading android-ndk-r26d-linux[=======================                ] 58% Downloading android-ndk-r26d-linux[=======================                ] 59% Downloading android-ndk-r26d-linux[=======================                ] 60% Downloading android-ndk-r26d-linux[========================               ] 60% Downloading android-ndk-r26d-linux[========================               ] 61% Downloading android-ndk-r26d-linux[========================               ] 62% Downloading android-ndk-r26d-linux[=========================              ] 63% Downloading android-ndk-r26d-linux[=========================              ] 64% Downloading android-ndk-r26d-linux[=========================              ] 65% Downloading android-ndk-r26d-linux[==========================             ] 65% Downloading android-ndk-r26d-linux[==========================             ] 66% Downloading android-ndk-r26d-linux[==========================             ] 66% Unzipping... share/cmake-3.22/Modu[==========================             ] 66% Unzipping... android-ndk-r26d/    [==========================             ] 66% Unzipping... android-ndk-r26d/CHAN[==========================             ] 66% Unzipping... android-ndk-r26d/wrap[==========================             ] 66% Unzipping... android-ndk-r26d/preb[==========================             ] 66% Unzipping... android-ndk-r26d/buil[==========================             ] 66% Unzipping... android-ndk-r26d/NOTI[==========================             ] 66% Unzipping... android-ndk-r26d/ndk-[==========================             ] 66% Unzipping... android-ndk-r26d/NOTI[==========================             ] 66% Unzipping... android-ndk-r26d/meta[==========================             ] 66% Unzipping... android-ndk-r26d/ndk-[==========================             ] 66% Unzipping... android-ndk-r26d/pyth[==========================             ] 66% Unzipping... android-ndk-r26d/sour[==========================             ] 66% Unzipping... android-ndk-r26d/simp[==========================             ] 67% Unzipping... android-ndk-r26d/simp[==========================             ] 67% Unzipping... android-ndk-r26d/ndk-[==========================             ] 67% Unzipping... android-ndk-r26d/READ[==========================             ] 67% Unzipping... android-ndk-r26d/tool[===========================            ] 68% Unzipping... android-ndk-r26d/tool[===========================            ] 69% Unzipping... android-ndk-r26d/tool[===========================            ] 70% Unzipping... android-ndk-r26d/tool[============================           ] 70% Unzipping... android-ndk-r26d/tool[============================           ] 71% Unzipping... android-ndk-r26d/tool[============================           ] 72% Unzipping... android-ndk-r26d/tool[=============================          ] 73% Unzipping... android-ndk-r26d/tool[=============================          ] 74% Unzipping... android-ndk-r26d/tool[=============================          ] 75% Unzipping... android-ndk-r26d/tool[==============================         ] 75% Unzipping... android-ndk-r26d/tool[==============================         ] 76% Unzipping... android-ndk-r26d/tool[==============================         ] 77% Unzipping... android-ndk-r26d/tool[==============================         ] 77% Unzipping... android-ndk-r26d/ndk-[==============================         ] 77% Unzipping... android-ndk-r26d/shad[==============================         ] 78% Unzipping... android-ndk-r26d/shad[=======================================] 100% Unzipping... android-ndk-r26d/sha
+
+/usr/local/lib/android/sdk/ndk/26.3.11579264/build/cmake/android.toolchain.cmake
