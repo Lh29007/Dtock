@@ -16,6 +16,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -40,6 +41,8 @@ fun SettingsPanel(vm: AssistantViewModel, modifier: Modifier = Modifier) {
     var apiKey by rememberSaveable { mutableStateOf(store.apiKey) }
     var model by rememberSaveable { mutableStateOf(store.model) }
     var systemPrompt by rememberSaveable { mutableStateOf(store.systemPrompt) }
+    var includeDateTime by rememberSaveable { mutableStateOf(store.includeDateTime) }
+    var webSearch by rememberSaveable { mutableStateOf(store.webSearch) }
     var showKey by remember { mutableStateOf(false) }
     var menuOpen by remember { mutableStateOf(false) }
     var status by remember { mutableStateOf("") }
@@ -104,6 +107,46 @@ fun SettingsPanel(vm: AssistantViewModel, modifier: Modifier = Modifier) {
             label = { Text("ID de modèle OpenRouter (texte libre)") },
         )
 
+        Text("Options", style = MaterialTheme.typography.titleSmall)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text("Date et heure", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    "Transmet la date et l'heure actuelles au modèle.",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
+            Switch(
+                checked = includeDateTime,
+                onCheckedChange = {
+                    includeDateTime = it
+                    status = ""
+                },
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text("Recherche Internet", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    "Autorise le modèle à consulter le web (plugin OpenRouter).",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
+            Switch(
+                checked = webSearch,
+                onCheckedChange = {
+                    webSearch = it
+                    status = ""
+                },
+            )
+        }
+
         Text("Prompt système", style = MaterialTheme.typography.titleSmall)
         OutlinedTextField(
             value = systemPrompt,
@@ -120,8 +163,14 @@ fun SettingsPanel(vm: AssistantViewModel, modifier: Modifier = Modifier) {
                 store.apiKey = apiKey
                 store.model = model
                 store.systemPrompt = systemPrompt
+                store.includeDateTime = includeDateTime
+                store.webSearch = webSearch
                 model = store.model
-                AppLog.i("Paramètres enregistrés (modèle : ${store.model})")
+                AppLog.i(
+                    "Paramètres enregistrés (modèle : ${store.model}, " +
+                        "date=${if (includeDateTime) "oui" else "non"}, " +
+                        "web=${if (webSearch) "oui" else "non"})"
+                )
                 status = "Enregistré"
             }) {
                 Text("Enregistrer")

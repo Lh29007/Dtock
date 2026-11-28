@@ -12,9 +12,12 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /** Message affiché : role = "user", "assistant" ou "error". */
-data class UiMessage(val role: String, val content: String)
+data class UiMessage(val id: Long, val role: String, val content: String)
 
 class AssistantViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -27,6 +30,7 @@ class AssistantViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val history = mutableListOf<ChatMessage>()
     private var streamJob: Job? = null
+    private var nextId = 0L
 
     private val speech = SpeechInput(
         context = application,
@@ -82,7 +86,8 @@ class AssistantViewModel(application: Application) : AndroidViewModel(applicatio
         }
 
         val model = settings.model
-        val systemPrompt = settings.systemPrompt.ifBlank { SettingsStore.DEFAULT_SYSTEM_PROMPT }
+        val systemPrompt = buildSystemPrompt()
+        val webSearch = settings.webSearch
 
         history += ChatMessage("user", text)
         addMessage("user", text)
@@ -92,18 +97,22 @@ class AssistantViewModel(application: Application) : AndroidViewModel(applicatio
         val answer = StringBuilder()
 
         streamJob = viewModelScope.launch {
-            AppLog.i("Requête vers $model (${history.size} message(s) dans le contexte)")
+            AppLog.i("Requête vers $model (web=${if (webSearch) "oui" else "non"}, ${history.size} message(s))")
+            var lastUiUpdate = 0L
             try {
                 OpenRouterClient
-                    .stream(apiKey, model, systemPrompt, history.toList())
+                    .stream(apiKey, model, systemPrompt, history.toList(), webSearch)
                     .collect { piece ->
                         answer.append(piece)
-                        replaceLast("assistant", answer.toString())
+                        // Mise à jour de l'écran au plus toutes les 80 ms : évite le lag pendant le streaming.
+                        val now = System.currentTimeMillis()
+                        if (now - lastUiUpdate >= 80) {
+                            lastUiUpdate = now
+                            replaceLast("assistant", answer.toString())
+                        }
                     }
 
-                if (answer.isEmpty()) {
-                    replaceLast("assistant", "(réponse vide)")
-                }
+                replaceLast("assistant", answer.ifEmpty { "(réponse vide)" }.toString())
                 history += ChatMessage("assistant", answer.toString())
                 AppLog.i("Réponse reçue (${answer.length} caractères) de $model")
             } catch (e: CancellationException) {
@@ -119,13 +128,24 @@ class AssistantViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
+    /** Prompt système, complété par la date et l'heure si l'option est active. */
+    private fun buildSystemPrompt(): String {
+        val base = settings.systemPrompt.ifBlank { SettingsStore.DEFAULT_SYSTEM_PROMPT }
+        if (!settings.includeDateTime) return base
+        val now = SimpleDateFormat("EEEE d MMMM yyyy 'à' HH:mm (z)", Locale.FRENCH).format(Date())
+        return "$base\n\nDate et heure actuelles sur l'appareil : $now."
+    }
+
     private fun addMessage(role: String, content: String) {
-        messages.value = messages.value + UiMessage(role, content)
+        messages.value = messages.value + UiMessage(nextId++, role, content)
     }
 
     private fun replaceLast(role: String, content: String) {
         val list = messages.value.toMutableList()
-        if (list.isNotEmpty()) list[list.lastIndex] = UiMessage(role, content)
+        if (list.isNotEmpty()) {
+            val last = list[list.lastIndex]
+            list[list.lastIndex] = UiMessage(last.id, role, content)
+        }
         messages.value = list
     }
 

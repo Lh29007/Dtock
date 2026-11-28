@@ -34,6 +34,7 @@ object OpenRouterClient {
         model: String,
         systemPrompt: String,
         history: List<ChatMessage>,
+        webSearch: Boolean,
     ): Flow<String> = flow {
         val messages = JSONArray().apply {
             put(JSONObject().put("role", "system").put("content", systemPrompt))
@@ -46,6 +47,11 @@ object OpenRouterClient {
             .put("model", model)
             .put("stream", true)
             .put("messages", messages)
+
+        if (webSearch) {
+            // Plugin de recherche web natif d'OpenRouter, valable pour tous les modèles.
+            payload.put("plugins", JSONArray().put(JSONObject().put("id", "web")))
+        }
 
         val request = Request.Builder()
             .url(ENDPOINT)

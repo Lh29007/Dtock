@@ -28,10 +28,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -57,8 +56,10 @@ fun AssistantScreen(
     val listState = rememberLazyListState()
     val keyboard = LocalSoftwareKeyboardController.current
 
-    LaunchedEffect(messages.size, messages.lastOrNull()?.content) {
-        if (messages.isNotEmpty()) listState.animateScrollToItem(messages.lastIndex)
+    val lastContent = messages.lastOrNull()?.content
+    // Défilement sans animation : une animation par token ferait ramer l'interface.
+    LaunchedEffect(messages.size, lastContent) {
+        if (messages.isNotEmpty()) listState.scrollToItem(messages.lastIndex)
     }
 
     fun submit() {
@@ -82,7 +83,6 @@ fun AssistantScreen(
                 .fillMaxHeight(0.85f)
                 .clickable(onClick = {}),
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-            tonalElevation = 6.dp,
             color = MaterialTheme.colorScheme.surface,
         ) {
             Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -113,7 +113,7 @@ fun AssistantScreen(
                             .fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        items(messages) { message ->
+                        items(messages, key = { it.id }) { message ->
                             MessageBubble(message)
                         }
                     }

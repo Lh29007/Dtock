@@ -4,6 +4,9 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+// Numéro de version fourni par la CI (numéro de run GitHub), sinon 1.
+val ciVersionCode: Int = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
+
 android {
     namespace = "com.xona.assist"
     compileSdk = 34
@@ -12,13 +15,25 @@ android {
         applicationId = "com.xona.assist"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = ciVersionCode
+        versionName = "1.0.$ciVersionCode"
+    }
+
+    // Keystore fixe du projet : indispensable pour que chaque nouvelle APK
+    // puisse mettre à jour la précédente sur le téléphone.
+    signingConfigs {
+        create("xona") {
+            storeFile = file("xonaassist-release.jks")
+            storePassword = "xonaassist-2026"
+            keyAlias = "xonaassist"
+            keyPassword = "xonaassist-2026"
+        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("xona")
         }
     }
 
@@ -59,11 +74,4 @@ dependencies {
 
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
-
-    androidTestImplementation(composeBom)
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test:runner:1.6.2")
-    androidTestImplementation("androidx.test:rules:1.6.1")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }

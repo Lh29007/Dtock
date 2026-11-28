@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 
 /**
- * Stockage local des réglages (clé API, modèle, prompt système).
+ * Stockage local des réglages (clé API, modèle, prompt système, options).
  * Tout reste sur l'appareil, dans les SharedPreferences privées de l'application.
  */
 class SettingsStore(context: Context) {
@@ -30,6 +30,20 @@ class SettingsStore(context: Context) {
             prefs.edit().putString(KEY_SYSTEM_PROMPT, value).apply()
         }
 
+    /** Ajoute la date et l'heure actuelles au contexte envoyé au modèle. */
+    var includeDateTime: Boolean
+        get() = prefs.getBoolean(KEY_DATETIME, true)
+        set(value) {
+            prefs.edit().putBoolean(KEY_DATETIME, value).apply()
+        }
+
+    /** Active la recherche web (plugin "web" d'OpenRouter). */
+    var webSearch: Boolean
+        get() = prefs.getBoolean(KEY_WEB_SEARCH, false)
+        set(value) {
+            prefs.edit().putBoolean(KEY_WEB_SEARCH, value).apply()
+        }
+
     companion object {
         const val DEFAULT_MODEL = "openrouter/free"
 
@@ -48,5 +62,7 @@ class SettingsStore(context: Context) {
         private const val KEY_API_KEY = "api_key"
         private const val KEY_MODEL = "model"
         private const val KEY_SYSTEM_PROMPT = "system_prompt"
+        private const val KEY_DATETIME = "include_datetime"
+        private const val KEY_WEB_SEARCH = "web_search"
     }
 }

@@ -5,9 +5,12 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 /**
  * Journal local conservé dans un fichier privé (300 lignes maximum).
+ * Les écritures se font en arrière-plan pour ne jamais bloquer l'interface.
  * Ne jamais y écrire la clé API.
  */
 object AppLog {
@@ -17,6 +20,9 @@ object AppLog {
 
     private var file: File? = null
     private val lock = Any()
+    private val worker: ExecutorService = Executors.newSingleThreadExecutor { r ->
+        Thread(r, "xona-log").apply { isDaemon = true }
+    }
     private val timeFormat = SimpleDateFormat("dd/MM HH:mm:ss", Locale.FRANCE)
 
     fun init(context: Context) {
@@ -38,16 +44,20 @@ object AppLog {
 
     fun clear() {
         val f = file ?: return
-        synchronized(lock) { f.writeText("") }
+        worker.execute {
+            synchronized(lock) { f.writeText("") }
+        }
     }
 
     private fun write(level: String, message: String) {
         val f = file ?: return
         val line = "${timeFormat.format(Date())} [$level] $message"
-        synchronized(lock) {
-            val lines = if (f.exists()) f.readLines().toMutableList() else mutableListOf()
-            lines += line
-            f.writeText(lines.takeLast(MAX_LINES).joinToString("\n", postfix = "\n"))
+        worker.execute {
+            synchronized(lock) {
+                val lines = if (f.exists()) f.readLines().toMutableList() else mutableListOf()
+                lines += line
+                f.writeText(lines.takeLast(MAX_LINES).joinToString("\n", postfix = "\n"))
+            }
         }
     }
 }
