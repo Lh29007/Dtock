@@ -1,0 +1,205 @@
+name: Build Butterscotch libretro Android (armeabi-v7a)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/libretro/**'
+      - 'cmake/libretro-android.cmake'
+      - '.github/workflows/build_android_armv7a.yml'
+  workflow_dispatch:
+
+# Le commit des logs dans logs/ ne doit pas relancer le workflow : logs/ n'est pas dans paths.
+permissions:
+  contents: write
+
+concurrency:
+  group: butterscotch-libretro-armv7a
+  cancel-in-progress: true
+
+env:
+  NDK_VERSION: "26.3.11579264"
+  SDK_CMAKE_VERSION: "3.22.1"
+  ABI: "armeabi-v7a"
+  ANDROID_API: "21"
+
+jobs:
+  build:
+    name: Core libretro butterscotch_libretro_android.so (armeabi-v7a)
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Récupérer Dtock
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Récupérer Butterscotch (ButterscotchRunner)
+        uses: actions/checkout@v4
+        with:
+          repository: ButterscotchRunner/Butterscotch
+          path: butterscotch
+          submodules: recursive
+          fetch-depth: 1
+
+      - name: Préparer le dossier de logs
+        run: mkdir -p "$RUNNER_TEMP/logs"
+
+      - name: Installer Ninja
+        run: |
+          sudo apt-get update -y > "$RUNNER_TEMP/logs/apt.log" 2>&1
+          sudo apt-get install -y ninja-build zip >> "$RUNNER_TEMP/logs/apt.log" 2>&1
+          ninja --version | tee -a "$RUNNER_TEMP/logs/apt.log"
+
+      - name: Installer le NDK et CMake Android
+        run: |
+          LOG="$RUNNER_TEMP/logs/sdk.log"
+          SDKM=$(find "$ANDROID_HOME" -path "*cmdline-tools*" -name sdkmanager -type f 2>/dev/null | head -n1)
+          {
+            echo "ANDROID_HOME=$ANDROID_HOME"
+            test -n "$SDKM" || { echo "sdkmanager introuvable"; exit 1; }
+            yes 2>/dev/null | "$SDKM" --licenses >/dev/null || true
+            "$SDKM" "ndk;${NDK_VERSION}" "cmake;${SDK_CMAKE_VERSION}"
+            ls "$ANDROID_HOME/ndk/${NDK_VERSION}/build/cmake/android.toolchain.cmake"
+          } > "$LOG" 2>&1
+          rc=$?
+          tail -n 20 "$LOG"
+          exit $rc
+
+      - name: Injecter le core libretro dans Butterscotch
+        run: |
+          set -e
+          LOG="$RUNNER_TEMP/logs/inject.log"
+          {
+            mkdir -p butterscotch/src/libretro
+            cp -v src/libretro/* butterscotch/src/libretro/
+            # La cible android de Butterscotch est ajoutée ici, à la fin de son CMakeLists.txt.
+            cat cmake/libretro-android.cmake >> butterscotch/CMakeLists.txt
+            echo "--- CMakeLists.txt : fin après injection ---"
+            tail -n 12 butterscotch/CMakeLists.txt
+          } > "$LOG" 2>&1
+          cat "$LOG"
+
+      - name: Configurer CMake (armeabi-v7a, NEON, API 21)
+        run: |
+          NDK="$ANDROID_HOME/ndk/${NDK_VERSION}"
+          CMAKE_BIN="$ANDROID_HOME/cmake/${SDK_CMAKE_VERSION}/bin"
+          export PATH="$CMAKE_BIN:$PATH"
+          cmake -S butterscotch -B build-armv7a -G Ninja \
+            -DCMAKE_TOOLCHAIN_FILE="$NDK/build/cmake/android.toolchain.cmake" \
+            -DANDROID_ABI="$ABI" \
+            -DANDROID_PLATFORM="android-$ANDROID_API" \
+            -DANDROID_ARM_NEON=ON \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DPLATFORM=android \
+            > "$RUNNER_TEMP/logs/cmake.log" 2>&1
+          rc=$?
+          tail -n 40 "$RUNNER_TEMP/logs/cmake.log"
+          exit $rc
+
+      - name: Compiler
+        run: |
+          CMAKE_BIN="$ANDROID_HOME/cmake/${SDK_CMAKE_VERSION}/bin"
+          export PATH="$CMAKE_BIN:$PATH"
+          rc=0
+          cmake --build build-armv7a -j"$(nproc)" > "$RUNNER_TEMP/logs/build.log" 2>&1 || rc=$?
+          tail -n 60 "$RUNNER_TEMP/logs/build.log"
+          exit $rc
+
+      - name: Vérifier le .so (ELF ARM 32 bits)
+        if: success()
+        run: |
+          set -e
+          SO=build-armv7a/butterscotch_libretro_android.so
+          test -f "$SO" || { echo "butterscotch_libretro_android.so absent" | tee -a "$RUNNER_TEMP/logs/check.log"; exit 1; }
+          NDK_BIN="$ANDROID_HOME/ndk/${NDK_VERSION}/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          mkdir -p dist
+          cp "$SO" dist/butterscotch_libretro_android.so
+          "$NDK_BIN/llvm-strip" dist/butterscotch_libretro_android.so
+          cp butterscotch/butterscotch.info dist/ 2>/dev/null || true
+          {
+            echo "Taille : $(stat -c %s dist/butterscotch_libretro_android.so) octets"
+            file dist/butterscotch_libretro_android.so
+            readelf -h dist/butterscotch_libretro_android.so | grep -E 'Machine|Class|Type'
+            readelf -A dist/butterscotch_libretro_android.so | grep -E 'Tag_CPU_arch|Tag_ABI_VFP' || true
+            echo "Symboles retro_* exportés :"
+            "$NDK_BIN/llvm-nm" -D --defined-only dist/butterscotch_libretro_android.so | grep ' retro_' || echo "AUCUN retro_* exporté"
+          } | tee "$RUNNER_TEMP/logs/check.log"
+
+      - name: Préparer le fichier .info pour RetroArch
+        if: success()
+        run: |
+          cat > dist/butterscotch_libretro.info <<'EOF'
+          display_name = "Butterscotch (GameMaker)"
+          authors = "ButterscotchRunner"
+          supported_extensions = "win|droid|unx|ios"
+          corename = "Butterscotch"
+          categories = "Game Engine"
+          license = "GPL-3.0"
+          permissions = ""
+          display_version = "1.0"
+          needs_fullpath = "true"
+          supports_no_game = "false"
+          EOF
+
+      - name: Garder le core en artefact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: butterscotch-libretro-armv7a
+          path: dist/
+          if-no-files-found: error
+
+      - name: Publier les logs dans logs/ de la repo (toujours)
+        if: always()
+        continue-on-error: true
+        run: |
+          set -e
+          mkdir -p logs
+          STAMP="${GITHUB_RUN_ID}"
+          {
+            echo "=== Run ${GITHUB_RUN_ID} | commit ${GITHUB_SHA} | statut : ${{ job.status }} ==="
+            for f in "$RUNNER_TEMP/logs/"*.log; do
+              [ -f "$f" ] || continue
+              echo ""
+              echo "----- $(basename "$f") -----"
+              cat "$f"
+            done
+          } > logs/armv7a-latest.log
+          cp logs/armv7a-latest.log "logs/armv7a-run-${STAMP}.log"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add logs/
+          if git diff --cached --quiet; then
+            echo "Logs inchangés."
+            exit 0
+          fi
+          git commit -q -m "Logs CI libretro armv7a (run ${GITHUB_RUN_ID})"
+          git pull -q --rebase origin main || true
+          git push origin HEAD:main
+
+      - name: Publier une release (succès uniquement)
+        if: success()
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: butterscotch-libretro-armv7a-${{ github.run_number }}
+          name: Butterscotch libretro armeabi-v7a (run ${{ github.run_number }})
+          files: |
+            dist/butterscotch_libretro_android.so
+            dist/butterscotch_libretro.info
+          make_latest: true
+
+      - name: Résumé en cas d'échec
+        if: failure()
+        run: |
+          {
+            echo "## Échec du build libretro armv7a"
+            echo ""
+            echo "Logs complets : dossier logs/ de la repo (logs/armv7a-latest.log)."
+            echo ""
+            echo '### Fin du log de build'
+            echo '```'
+            tail -n 120 "$RUNNER_TEMP/logs/build.log" 2>/dev/null || echo "(pas de log de build)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
