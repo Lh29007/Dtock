@@ -1,0 +1,7 @@
+NAME="Ruche"
+ID=ruche
+ID_LIKE=alpine
+VERSION_ID=3.24.4
+PRETTY_NAME="Ruche (base Alpine 3.24, armv7)"
+HOME_URL="https://github.com/Lh29007/dtock"
+BUG_REPORT_URL="https://github.com/Lh29007/dtock/issues"

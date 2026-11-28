@@ -1,0 +1,187 @@
+#!/bin/sh
+# ruche — gestionnaire de paquets minimal au-dessus d'apk.
+# Script POSIX sh : tourne avec BusyBox ash, sans compilation.
+set -eu
+
+MANIFEST="${RUCHE_MANIFEST:-/etc/ruche/manifest}"
+LOG="${RUCHE_LOG:-/var/log/ruche.log}"
+
+die() {
+    echo "ruche: $*" >&2
+    exit 1
+}
+
+log() {
+    mkdir -p "$(dirname "$LOG")" 2>/dev/null || true
+    printf '%s %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >> "$LOG" 2>/dev/null || true
+}
+
+# Lance une commande avec les droits root (directement, ou via doas).
+run() {
+    if [ "$(id -u)" -eq 0 ]; then
+        "$@"
+    elif command -v doas >/dev/null 2>&1; then
+        doas "$@"
+    else
+        die "droits root requis (ni root ni doas disponible)"
+    fi
+}
+
+# Un nom de paquet ne contient que des caractères sûrs.
+check_names() {
+    for p in "$@"; do
+        case "$p" in
+            ''|*[!a-zA-Z0-9._+-]*) die "nom de paquet invalide : $p" ;;
+        esac
+    done
+}
+
+manifest_has() {
+    [ -f "$MANIFEST" ] && grep -qxF "$1" "$MANIFEST"
+}
+
+manifest_add() {
+    mkdir -p "$(dirname "$MANIFEST")"
+    touch "$MANIFEST"
+    for p in "$@"; do
+        manifest_has "$p" || echo "$p" >> "$MANIFEST"
+    done
+}
+
+manifest_del() {
+    [ -f "$MANIFEST" ] || return 0
+    for p in "$@"; do
+        grep -vxF "$p" "$MANIFEST" > "$MANIFEST.tmp" || true
+        mv "$MANIFEST.tmp" "$MANIFEST"
+    done
+}
+
+cmd_add() {
+    [ $# -ge 1 ] || die "usage : ruche add PAQUET..."
+    check_names "$@"
+    run apk add "$@"
+    manifest_add "$@"
+    log "add $*"
+    echo "ajouté : $*"
+}
+
+cmd_rm() {
+    [ $# -ge 1 ] || die "usage : ruche rm PAQUET..."
+    check_names "$@"
+    run apk del "$@"
+    manifest_del "$@"
+    log "rm $*"
+    echo "retiré : $*"
+}
+
+cmd_up() {
+    run apk update
+    run apk upgrade
+    log "up"
+    echo "système mis à jour"
+}
+
+# Installe tout ce qui figure dans le manifeste (utile sur une nouvelle machine).
+cmd_sync() {
+    [ -f "$MANIFEST" ] || die "manifeste absent : $MANIFEST"
+    set --
+    while IFS= read -r line; do
+        case "$line" in
+            ''|'#'*) continue ;;
+        esac
+        set -- "$@" "$line"
+    done < "$MANIFEST"
+    if [ $# -eq 0 ]; then
+        echo "manifeste vide, rien à installer"
+        return 0
+    fi
+    check_names "$@"
+    run apk add "$@"
+    log "sync $*"
+    echo "manifeste appliqué ($# paquet(s))"
+}
+
+cmd_search() {
+    [ $# -ge 1 ] || die "usage : ruche search TERME"
+    apk search -v "$1"
+}
+
+cmd_info() {
+    [ $# -ge 1 ] || die "usage : ruche info PAQUET"
+    apk info -a "$1"
+}
+
+cmd_list() {
+    if [ -f "$MANIFEST" ]; then
+        grep -v -e '^#' -e '^$' "$MANIFEST" || echo "manifeste vide"
+    else
+        echo "manifeste absent : $MANIFEST"
+    fi
+}
+
+cmd_doctor() {
+    problemes=0
+    if [ ! -f "$MANIFEST" ]; then
+        echo "manifeste absent : $MANIFEST"
+        problemes=$((problemes + 1))
+    else
+        while IFS= read -r p; do
+            case "$p" in
+                ''|'#'*) continue ;;
+            esac
+            if ! apk info -e "$p" >/dev/null 2>&1; then
+                echo "manquant : $p"
+                problemes=$((problemes + 1))
+            fi
+        done < "$MANIFEST"
+    fi
+    # Information seulement : os-release est modifié volontairement par Ruche.
+    apk audit >/dev/null 2>&1 || echo "info : apk audit signale des fichiers modifiés (voir 'apk audit')"
+    if [ "$problemes" -eq 0 ]; then
+        echo "tout est en ordre"
+    else
+        echo "$problemes problème(s) détecté(s)"
+        return 1
+    fi
+}
+
+cmd_log() {
+    if [ -f "$LOG" ]; then
+        tail -n 30 "$LOG"
+    else
+        echo "journal vide"
+    fi
+}
+
+cmd_help() {
+    cat <<'EOF'
+ruche — gestion des paquets (au-dessus d'apk)
+
+  ruche add PAQUET...     installe et ajoute au manifeste
+  ruche rm PAQUET...      désinstalle et retire du manifeste
+  ruche up                met à jour l'index et les paquets
+  ruche sync              installe tout ce qui est dans le manifeste
+  ruche list              affiche le manifeste
+  ruche search TERME      cherche un paquet
+  ruche info PAQUET       détails d'un paquet
+  ruche doctor            vérifie le manifeste et l'état du système
+  ruche log               affiche les dernières actions
+EOF
+}
+
+cmd=${1:-help}
+[ $# -gt 0 ] && shift
+
+case "$cmd" in
+    add)             cmd_add "$@" ;;
+    rm|remove)       cmd_rm "$@" ;;
+    up|upgrade)      cmd_up ;;
+    sync)            cmd_sync ;;
+    search)          cmd_search "$@" ;;
+    info)            cmd_info "$@" ;;
+    list)            cmd_list ;;
+    doctor)          cmd_doctor ;;
+    log)             cmd_log ;;
+    help|-h|--help)  cmd_help ;;
+    *)               die "commande inconnue : $cmd (voir 'ruche help')" ;;
+esac

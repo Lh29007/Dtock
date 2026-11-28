@@ -1,0 +1,75 @@
+name: Build Ruche rootfs (armv7)
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - 'ruche/**'
+      - '.github/workflows/build-ruche-rootfs.yml'
+    tags: ['ruche-v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Construire le rootfs armv7
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Vérifier la syntaxe des scripts sh
+        run: |
+          sh -n ruche/overlay/usr/local/bin/ruche
+          sh -n ruche/overlay/etc/profile.d/ruche.sh
+          sh -n ruche/scripts/build-rootfs.sh
+
+      - name: Installer qemu (binfmt armv7)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq qemu-user-static binfmt-support
+          # qemu-user-static enregistre binfmt à l'installation ; on vérifie.
+          test -e /proc/sys/fs/binfmt_misc/qemu-arm
+
+      - name: Construire le rootfs
+        run: sudo sh ruche/scripts/build-rootfs.sh
+
+      - name: Garder l'archive en artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruche-rootfs-armv7
+          path: |
+            ruche/dist/ruche-rootfs-3.24.4-armv7.tar.gz
+            ruche/dist/ruche-rootfs-3.24.4-armv7.tar.gz.sha256
+          if-no-files-found: error
+
+  release:
+    name: Publier la release
+    needs: build
+    runs-on: ubuntu-24.04
+    if: startsWith(github.ref, 'refs/tags/ruche-v')
+
+    steps:
+      - name: Télécharger l'archive
+        uses: actions/download-artifact@v4
+        with:
+          name: ruche-rootfs-armv7
+          path: dist
+
+      - name: Créer la release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Ruche rootfs (${{ github.ref_name }})
+          body: |
+            Rootfs Ruche armv7, base Alpine 3.24.4 (commit `${{ github.sha }}`).
+
+            Utilisation dans proot (Termux) : extraire l'archive dans le dossier du rootfs,
+            puis lancer le shell avec proot. Vérifier avec le fichier `.sha256` joint.
+          files: |
+            dist/ruche-rootfs-3.24.4-armv7.tar.gz
+            dist/ruche-rootfs-3.24.4-armv7.tar.gz.sha256
+          fail_on_unmatched_files: true
