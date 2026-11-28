@@ -34,6 +34,16 @@ android {
     buildFeatures {
         compose = true
     }
+
+    // APK ARMv7 (32 bits) uniquement, pour les téléphones entrée de gamme type Redmi A3.
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("armeabi-v7a")
+            isUniversalApk = false
+        }
+    }
 }
 
 dependencies {
